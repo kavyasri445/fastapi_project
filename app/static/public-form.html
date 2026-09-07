@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Share Form</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .link-box {
+            display: none;
+            margin-top: 25px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Share Form</h1>
+
+    <p>
+        Generate a public link to share this form.
+    </p>
+
+    <button onclick="generateLink()">
+        Generate Link
+    </button>
+
+    <div id="linkBox" class="link-box">
+
+        <label>
+            Public Form Link
+        </label>
+
+        <input
+            type="text"
+            id="publicLink"
+            readonly
+        >
+
+        <button onclick="copyLink()">
+            Copy Link
+        </button>
+
+    </div>
+
+    <div id="message" class="message"></div>
+
+</div>
+
+
+<script>
+
+    /*
+     * IMPORTANT:
+     * Replace this ID with the ID of the form
+     * you want to share.
+     */
+
+    const formId =
+        "e281d799-b97d-42e3-9e23-058e9f8e6cf9";
+
+
+    async function generateLink() {
+
+        const message =
+            document.getElementById("message");
+
+        const linkBox =
+            document.getElementById("linkBox");
+
+        const publicLink =
+            document.getElementById("publicLink");
+
+
+        message.textContent = "";
+        message.className = "message";
+
+
+        try {
+
+            const response = await fetch(
+                `/forms/${formId}/generate-link`,
+                {
+                    method: "POST"
+                }
+            );
+
+
+            if (!response.ok) {
+
+                let errorMessage =
+                    "Unable to generate public link.";
+
+                try {
+
+                    const errorData =
+                        await response.json();
+
+                    errorMessage =
+                        errorData.detail ||
+                        errorMessage;
+
+                } catch (e) {
+                    // Ignore JSON parsing error
+                }
+
+                throw new Error(errorMessage);
+            }
+
+
+            const data =
+                await response.json();
+
+
+            /*
+             * Your API may return either:
+             *
+             * "http://127.0.0.1:8000/public/forms/..."
+             *
+             * OR
+             *
+             * {
+             *     "public_url": "..."
+             * }
+             *
+             * This code supports both.
+             */
+
+            let link;
+
+
+            if (typeof data === "string") {
+
+                link = data;
+
+            } else {
+
+                link =
+                    data.public_url ||
+                    data.url ||
+                    data.link;
+            }
+
+
+            if (!link) {
+
+                throw new Error(
+                    "Public link was not returned by the API."
+                );
+            }
+
+
+            publicLink.value = link;
+
+            linkBox.style.display = "block";
+
+            message.textContent =
+                "Public link generated successfully.";
+
+            message.className =
+                "message success";
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.textContent =
+                error.message;
+
+            message.className =
+                "message error";
+        }
+    }
+
+
+    async function copyLink() {
+
+        const publicLink =
+            document.getElementById("publicLink");
+
+        const link =
+            publicLink.value;
+
+
+        if (!link) {
+
+            alert("Generate the link first.");
+
+            return;
+        }
+
+
+        try {
+
+            await navigator.clipboard.writeText(link);
+
+            alert(
+                "Public link copied successfully!"
+            );
+
+        } catch (error) {
+
+            /*
+             * Fallback for browsers where
+             * clipboard API is unavailable.
+             */
+
+            publicLink.select();
+
+            document.execCommand("copy");
+
+            alert(
+                "Public link copied successfully!"
+            );
+        }
+    }
+
+</script>
+
+</body>
+</html>

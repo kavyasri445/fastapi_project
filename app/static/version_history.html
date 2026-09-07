@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Version History</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .form-info {
+            margin-bottom: 25px;
+        }
+
+        .version {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .active {
+            border-left: 5px solid green;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: green;
+            color: white;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #1976d2;
+            color: white;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #125aa0;
+        }
+
+        #message {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Form Version History</h1>
+
+    <div id="message">Loading versions...</div>
+
+    <div class="form-info">
+        <strong>Form ID:</strong>
+        <span id="formId"></span>
+    </div>
+
+    <div id="versions"></div>
+
+</div>
+
+<script>
+
+    // Your form ID
+    const formId = "e281d799-b97d-42e3-9e23-058e9f8e6cf9";
+
+    const API_URL = "http://127.0.0.1:8000";
+
+    document.getElementById("formId").textContent = formId;
+
+
+    // Load Version History
+    async function loadVersions() {
+
+        try {
+
+            const response = await fetch(
+                `${API_URL}/forms/${formId}/versions`
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to load versions");
+            }
+
+            const data = await response.json();
+
+            document.getElementById("message").textContent =
+                `Form: ${data.form_title} | Status: ${data.current_status}`;
+
+            const versionsContainer =
+                document.getElementById("versions");
+
+            versionsContainer.innerHTML = "";
+
+
+            data.versions.forEach(version => {
+
+                const versionDiv = document.createElement("div");
+
+                versionDiv.className = "version";
+
+                if (version.is_active) {
+                    versionDiv.classList.add("active");
+                }
+
+
+                const publishedDate =
+                    version.published_at
+                        ? new Date(version.published_at).toLocaleString()
+                        : "Not published";
+
+
+                versionDiv.innerHTML = `
+
+                    <h2>
+                        Version ${version.version_number}
+
+                        ${
+                            version.is_active
+                            ? '<span class="badge">ACTIVE</span>'
+                            : ''
+                        }
+                    </h2>
+
+                    <p>
+                        <strong>Published:</strong>
+                        ${publishedDate}
+                    </p>
+
+                    <p>
+                        <strong>Version ID:</strong>
+                        ${version.version_id}
+                    </p>
+
+                    <button
+                        onclick="viewVersion('${version.version_id}')">
+                        View Details
+                    </button>
+
+                `;
+
+                versionsContainer.appendChild(versionDiv);
+
+            });
+
+        } catch (error) {
+
+            document.getElementById("message").textContent =
+                "Error loading version history.";
+
+            console.error(error);
+
+        }
+    }
+
+
+    // View Version Details
+    async function viewVersion(versionId) {
+
+        try {
+
+            const response = await fetch(
+                `${API_URL}/forms/${formId}/versions/${versionId}`
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to load version details");
+            }
+
+            const data = await response.json();
+
+            let fieldsHtml = "";
+
+            if (data.fields.length === 0) {
+
+                fieldsHtml = "<p>No fields in this version.</p>";
+
+            } else {
+
+                data.fields.forEach(field => {
+
+                    fieldsHtml += `
+
+                        <div class="version">
+
+                            <h3>${field.label}</h3>
+
+                            <p>
+                                <strong>Type:</strong>
+                                ${field.field_type}
+                            </p>
+
+                            <p>
+                                <strong>Placeholder:</strong>
+                                ${field.placeholder || "None"}
+                            </p>
+
+                            <p>
+                                <strong>Required:</strong>
+                                ${field.is_required ? "Yes" : "No"}
+                            </p>
+
+                            <p>
+                                <strong>Display Order:</strong>
+                                ${field.display_order}
+                            </p>
+
+                        </div>
+
+                    `;
+
+                });
+
+            }
+
+
+            document.getElementById("versions").innerHTML = `
+
+                <h2>
+                    Version ${data.version_number} Details
+                </h2>
+
+                <p>
+                    <strong>Status:</strong>
+                    ${data.status}
+                </p>
+
+                <p>
+                    <strong>Published:</strong>
+                    ${
+                        data.published_at
+                        ? new Date(data.published_at).toLocaleString()
+                        : "Not published"
+                    }
+                </p>
+
+                <h3>Fields</h3>
+
+                ${fieldsHtml}
+
+                <button onclick="loadVersions()">
+                    ← Back to Version History
+                </button>
+
+            `;
+
+        } catch (error) {
+
+            alert("Unable to load version details.");
+
+            console.error(error);
+
+        }
+
+    }
+
+
+    // Start
+    loadVersions();
+
+</script>
+
+</body>
+</html>

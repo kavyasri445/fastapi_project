@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Edit Form</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 30px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 7px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-top: 10px;
+        }
+
+        #saveBtn,
+        #saveRuleButton {
+            background: #2196F3;
+            color: white;
+        }
+
+        #addRuleButton {
+            background: #4CAF50;
+            color: white;
+        }
+
+        #cancelRuleButton {
+            background: #777;
+            color: white;
+        }
+
+        .delete-button {
+            background: #f44336;
+            color: white;
+        }
+
+        .edit-button {
+            background: #ff9800;
+            color: white;
+        }
+
+        #message,
+        #ruleMessage {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .conditional-rules-section {
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+            padding-top: 25px;
+        }
+
+        #ruleForm {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .rule-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .loading {
+            color: #777;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>Edit Form</h1>
+
+
+    <p>
+        <strong>Form ID:</strong>
+        <span id="formId">Loading...</span>
+    </p>
+
+
+    <!-- =====================================================
+         FORM DETAILS
+    ====================================================== -->
+
+    <label for="title">
+        Title
+    </label>
+
+    <input
+        type="text"
+        id="title"
+        placeholder="Enter form title"
+    >
+
+
+    <label for="description">
+        Description
+    </label>
+
+    <textarea
+        id="description"
+        rows="5"
+        placeholder="Enter form description"
+    ></textarea>
+
+
+    <button
+        type="button"
+        id="saveBtn"
+    >
+        Save Changes
+    </button>
+
+
+    <div id="message"></div>
+
+
+
+    <!-- =====================================================
+         CONDITIONAL RULES
+    ====================================================== -->
+
+    <section class="conditional-rules-section">
+
+        <h2>
+            Conditional Rules
+        </h2>
+
+
+        <button
+            type="button"
+            id="addRuleButton"
+        >
+            + Add Rule
+        </button>
+
+
+        <!-- =================================================
+             RULE FORM
+        ================================================== -->
+
+        <div
+            id="ruleForm"
+            style="display:none;"
+        >
+
+            <h3 id="ruleFormTitle">
+                Add Conditional Rule
+            </h3>
+
+
+            <!-- WHEN FIELD -->
+
+            <label for="triggerField">
+                When Field:
+            </label>
+
+            <select id="triggerField">
+
+                <option value="">
+                    Select trigger field
+                </option>
+
+            </select>
+
+
+            <!-- OPERATOR -->
+
+            <label for="ruleOperator">
+                Operator:
+            </label>
+
+            <select id="ruleOperator">
+
+                <option value="">
+                    Select operator
+                </option>
+
+                <option value="equals">
+                    Equals
+                </option>
+
+                <option value="not_equals">
+                    Not Equals
+                </option>
+
+                <option value="contains">
+                    Contains
+                </option>
+
+                <option value="greater_than">
+                    Greater Than
+                </option>
+
+                <option value="is_empty">
+                    Is Empty
+                </option>
+
+            </select>
+
+
+            <!-- VALUE -->
+
+            <label for="comparisonValue">
+                Value:
+            </label>
+
+            <input
+                type="text"
+                id="comparisonValue"
+                placeholder="Enter comparison value"
+            >
+
+
+            <!-- ACTION -->
+
+            <label for="ruleAction">
+                Then:
+            </label>
+
+            <select id="ruleAction">
+
+                <option value="show">
+                    Show
+                </option>
+
+                <option value="hide">
+                    Hide
+                </option>
+
+            </select>
+
+
+            <!-- TARGET FIELD -->
+
+            <label for="targetField">
+                Field:
+            </label>
+
+            <select id="targetField">
+
+                <option value="">
+                    Select target field
+                </option>
+
+            </select>
+
+
+            <div id="ruleMessage"></div>
+
+
+            <button
+                type="button"
+                id="saveRuleButton"
+            >
+                Save Rule
+            </button>
+
+
+            <button
+                type="button"
+                id="cancelRuleButton"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             EXISTING RULES
+        ================================================== -->
+
+        <div style="margin-top:30px;">
+
+            <h3>
+                Existing Rules
+            </h3>
+
+
+            <div id="rulesContainer">
+                Loading rules...
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let editingRuleId = null;
+
+let currentFormId = null;
+
+let fields = [];
+
+
+
+/* =========================================================
+   GET FORM ID
+========================================================= */
+
+function getFormId() {
+
+    /*
+     * Expected URL:
+     *
+     * /edit-form/1464d5d2-65f5-495b-ac9a-b49c42dfc5be
+     */
+
+    const parts =
+        window.location.pathname
+            .split("/")
+            .filter(Boolean);
+
+
+    /*
+     * Example:
+     *
+     * parts[0] = edit-form
+     * parts[1] = form ID
+     */
+
+    if (
+        parts.length >= 2 &&
+        parts[0] === "edit-form"
+    ) {
+
+        return parts[1];
+
+    }
+
+
+    /*
+     * Also support:
+     *
+     * /edit-form?form_id=xxxxx
+     */
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const queryFormId =
+        params.get("form_id");
+
+
+    if (queryFormId) {
+
+        return queryFormId;
+
+    }
+
+
+    /*
+     * Finally check localStorage
+     */
+
+    const storedFormId =
+        localStorage.getItem(
+            "currentFormId"
+        );
+
+
+    if (storedFormId) {
+
+        return storedFormId;
+
+    }
+
+
+    return null;
+
+}
+
+
+
+/* =========================================================
+   SHOW MESSAGE
+========================================================= */
+
+function showMessage(
+    text,
+    type = "error"
+) {
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.textContent =
+        text;
+
+
+    message.className =
+        type === "success"
+            ? "success"
+            : "error";
+
+}
+
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        console.log(
+            "Edit Form page loaded."
+        );
+
+
+        /*
+         * Get Form ID
+         */
+
+        currentFormId =
+            getFormId();
+
+
+        console.log(
+            "Current Form ID:",
+            currentFormId
+        );
+
+
+        const formIdElement =
+            document.getElementById(
+                "formId"
+            );
+
+
+        /*
+         * Check Form ID
+         */
+
+        if (!currentFormId) {
+
+            formIdElement.textContent =
+                "FORM ID MISSING";
+
+
+            showMessage(
+                "Form ID is missing. Open the page using /edit-form/<form-id>",
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+         * Display Form ID
+         */
+
+        formIdElement.textContent =
+            currentFormId;
+
+
+        /*
+         * Store Form ID
+         */
+
+        localStorage.setItem(
+            "currentFormId",
+            currentFormId
+        );
+
+
+        /*
+         * Load form details
+         */
+
+        await loadForm();
+
+
+        /*
+         * Load fields
+         */
+
+        await loadRuleFields();
+
+
+        /*
+         * Load existing rules
+         */
+
+        await loadRules();
+
+
+        /*
+         * Add Rule
+         */
+
+        document
+            .getElementById(
+                "addRuleButton"
+            )
+            .addEventListener(
+                "click",
+                showRuleForm
+            );
+
+
+        /*
+         * Save Rule
+         */
+
+        document
+            .getElementById(
+                "saveRuleButton"
+            )
+            .addEventListener(
+                "click",
+                saveRule
+            );
+
+
+        /*
+         * Cancel
+         */
+
+        document
+            .getElementById(
+                "cancelRuleButton"
+            )
+            .addEventListener(
+                "click",
+                cancelRuleForm
+            );
+
+
+        /*
+         * Operator change
+         */
+
+        document
+            .getElementById(
+                "ruleOperator"
+            )
+            .addEventListener(
+                "change",
+                handleOperatorChange
+            );
+
+
+        /*
+         * Save form
+         */
+
+        document
+            .getElementById(
+                "saveBtn"
+            )
+            .addEventListener(
+                "click",
+                updateForm
+            );
+
+    }
+);
+
+
+
+/* =========================================================
+   LOAD FORM
+========================================================= */
+
+async function loadForm() {
+
+    try {
+
+        console.log(
+            "GET:",
+            `/forms/${currentFormId}`
+        );
+
+
+        const response =
+            await fetch(
+                `/forms/${currentFormId}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Form response:",
+            data
+        );
+
+
+        if (!response.ok) {
+
+            showMessage(
+                data.detail ||
+                "Unable to load form.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "title"
+        ).value =
+            data.title || "";
+
+
+        document.getElementById(
+            "description"
+        ).value =
+            data.description || "";
+
+    }
+    catch (error) {
+
+        console.error(
+            "Load form error:",
+            error
+        );
+
+
+        showMessage(
+            "Error connecting to server. Check that FastAPI is running.",
+            "error"
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   UPDATE FORM
+========================================================= */
+
+async function updateForm() {
+
+    const title =
+        document.getElementById(
+            "title"
+        ).value.trim();
+
+
+    const description =
+        document.getElementById(
+            "description"
+        ).value.trim();
+
+
+    if (!title) {
+
+        showMessage(
+            "Title is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        console.log(
+            "PUT:",
+            `/forms/${currentFormId}`
+        );
+
+
+        const response =
+            await fetch(
+                `/forms/${currentFormId}`,
+                {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            title:
+                                title,
+
+                            description:
+                                description
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Update response:",
+            data
+        );
+
+
+        if (!response.ok) {
+
+            showMessage(
+                data.detail ||
+                "Unable to update form.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+            "Form updated successfully!",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Update form error:",
+            error
+        );
+
+
+        showMessage(
+            "Error connecting to server.",
+            "error"
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SHOW RULE FORM
+========================================================= */
+
+async function showRuleForm() {
+
+    editingRuleId =
+        null;
+
+
+    document.getElementById(
+        "ruleFormTitle"
+    ).textContent =
+        "Add Conditional Rule";
+
+
+    document.getElementById(
+        "ruleForm"
+    ).style.display =
+        "block";
+
+
+    clearRuleForm();
+
+
+    /*
+     * IMPORTANT:
+     * Reload fields every time Add Rule is clicked.
+     */
+
+    await loadRuleFields();
+
+}
+
+
+
+/* =========================================================
+   CANCEL RULE
+========================================================= */
+
+function cancelRuleForm() {
+
+    editingRuleId =
+        null;
+
+
+    document.getElementById(
+        "ruleForm"
+    ).style.display =
+        "none";
+
+
+    clearRuleForm();
+
+}
+
+
+
+/* =========================================================
+   CLEAR RULE FORM
+========================================================= */
+
+function clearRuleForm() {
+
+    document.getElementById(
+        "triggerField"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "ruleOperator"
+    ).value =
+        "";
+
+
+    const comparison =
+        document.getElementById(
+            "comparisonValue"
+        );
+
+
+    comparison.value =
+        "";
+
+
+    comparison.disabled =
+        false;
+
+
+    comparison.placeholder =
+        "Enter comparison value";
+
+
+    document.getElementById(
+        "ruleAction"
+    ).value =
+        "show";
+
+
+    document.getElementById(
+        "targetField"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "ruleMessage"
+    ).textContent =
+        "";
+
+}
+
+
+
+/* =========================================================
+   LOAD FIELDS
+========================================================= */
+
+async function loadRuleFields() {
+
+    const triggerSelect =
+        document.getElementById(
+            "triggerField"
+        );
+
+
+    const targetSelect =
+        document.getElementById(
+            "targetField"
+        );
+
+
+    if (!currentFormId) {
+
+        console.error(
+            "Form ID is missing."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Loading text
+     */
+
+    triggerSelect.innerHTML =
+        `
+        <option value="">
+            Loading fields...
+        </option>
+        `;
+
+
+    targetSelect.innerHTML =
+        `
+        <option value="">
+            Loading fields...
+        </option>
+        `;
+
+
+    try {
+
+        /*
+         * IMPORTANT:
+         *
+         * Your FastAPI endpoint is:
+         *
+         * GET /fields/form/{form_id}
+         *
+         * NOT:
+         *
+         * /forms/{form_id}/fields
+         */
+
+        const url =
+            `/fields/form/${currentFormId}`;
+
+
+        console.log(
+            "GET FIELDS:",
+            url
+        );
+
+
+        const response =
+            await fetch(
+                url
+            );
+
+
+        /*
+         * IMPORTANT:
+         *
+         * Read response JSON BEFORE
+         * checking data.detail.
+         */
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Fields API response:",
+            data
+        );
+
+
+        /*
+         * Check HTTP response
+         */
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Failed to load fields"
+            );
+
+        }
+
+
+        /*
+         * Backend currently returns:
+         *
+         * [
+         *     {...},
+         *     {...}
+         * ]
+         *
+         * So this handles that.
+         *
+         * It also supports:
+         *
+         * {
+         *     "fields": [...]
+         * }
+         */
+
+        if (
+            Array.isArray(data)
+        ) {
+
+            fields =
+                data;
+
+        }
+        else if (
+            data &&
+            Array.isArray(
+                data.fields
+            )
+        ) {
+
+            fields =
+                data.fields;
+
+        }
+        else {
+
+            fields =
+                [];
+
+        }
+
+
+        console.log(
+            "Fields loaded:",
+            fields
+        );
+
+
+        /*
+         * Clear dropdowns
+         */
+
+        triggerSelect.innerHTML =
+            `
+            <option value="">
+                Select trigger field
+            </option>
+            `;
+
+
+        targetSelect.innerHTML =
+            `
+            <option value="">
+                Select target field
+            </option>
+            `;
+
+
+        /*
+         * Add fields to dropdowns
+         */
+
+        fields.forEach(
+            function(field) {
+
+                /*
+                 * Field ID
+                 */
+
+                const fieldId =
+                    field.id;
+
+
+                /*
+                 * Field label
+                 *
+                 * Depending on your backend,
+                 * it may be called:
+                 *
+                 * label
+                 * name
+                 * field_name
+                 * title
+                 */
+
+                const fieldLabel =
+                    field.label ||
+                    field.name ||
+                    field.field_name ||
+                    field.title ||
+                    "Unnamed Field";
+
+
+                /*
+                 * Trigger option
+                 */
+
+                const triggerOption =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                triggerOption.value =
+                    fieldId;
+
+
+                triggerOption.textContent =
+                    fieldLabel;
+
+
+                triggerSelect.appendChild(
+                    triggerOption
+                );
+
+
+                /*
+                 * Target option
+                 */
+
+                const targetOption =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                targetOption.value =
+                    fieldId;
+
+
+                targetOption.textContent =
+                    fieldLabel;
+
+
+                targetSelect.appendChild(
+                    targetOption
+                );
+
+            }
+        );
+
+
+        /*
+         * No fields
+         */
+
+        if (
+            fields.length === 0
+        ) {
+
+            triggerSelect.innerHTML =
+                `
+                <option value="">
+                    No fields available
+                </option>
+                `;
+
+
+            targetSelect.innerHTML =
+                `
+                <option value="">
+                    No fields available
+                </option>
+                `;
+
+
+            console.warn(
+                "The backend returned an empty field list."
+            );
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "LOAD FIELDS ERROR:",
+            error
+        );
+
+
+        triggerSelect.innerHTML =
+            `
+            <option value="">
+                Unable to load fields
+            </option>
+            `;
+
+
+        targetSelect.innerHTML =
+            `
+            <option value="">
+                Unable to load fields
+            </option>
+            `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   OPERATOR CHANGE
+========================================================= */
+
+function handleOperatorChange() {
+
+    const operator =
+        document.getElementById(
+            "ruleOperator"
+        );
+
+
+    const valueInput =
+        document.getElementById(
+            "comparisonValue"
+        );
+
+
+    if (
+        operator.value ===
+        "is_empty"
+    ) {
+
+        valueInput.value =
+            "";
+
+
+        valueInput.disabled =
+            true;
+
+
+        valueInput.placeholder =
+            "Not required for Is Empty";
+
+    }
+    else {
+
+        valueInput.disabled =
+            false;
+
+
+        valueInput.placeholder =
+            "Enter comparison value";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SAVE RULE
+========================================================= */
+
+async function saveRule() {
+
+    const message =
+        document.getElementById(
+            "ruleMessage"
+        );
+
+
+    if (!currentFormId) {
+
+        message.style.color =
+            "red";
+
+
+        message.textContent =
+            "Form ID is missing.";
+
+
+        return;
+
+    }
+
+
+    /*
+     * Get values
+     */
+
+    const triggerFieldId =
+        document.getElementById(
+            "triggerField"
+        ).value;
+
+
+    const operator =
+        document.getElementById(
+            "ruleOperator"
+        ).value;
+
+
+    const comparisonInput =
+        document.getElementById(
+            "comparisonValue"
+        );
+
+
+    const comparisonValue =
+        comparisonInput.value.trim();
+
+
+    const action =
+        document.getElementById(
+            "ruleAction"
+        ).value;
+
+
+    const targetFieldId =
+        document.getElementById(
+            "targetField"
+        ).value;
+
+
+
+    /*
+     * Validation
+     */
+
+    if (!triggerFieldId) {
+
+        message.textContent =
+            "Please select a trigger field.";
+
+
+        message.style.color =
+            "red";
+
+
+        return;
+
+    }
+
+
+    if (!operator) {
+
+        message.textContent =
+            "Please select an operator.";
+
+
+        message.style.color =
+            "red";
+
+
+        return;
+
+    }
+
+
+    if (
+        operator !== "is_empty" &&
+        !comparisonValue
+    ) {
+
+        message.textContent =
+            "Please enter a comparison value.";
+
+
+        message.style.color =
+            "red";
+
+
+        return;
+
+    }
+
+
+    if (!targetFieldId) {
+
+        message.textContent =
+            "Please select a target field.";
+
+
+        message.style.color =
+            "red";
+
+
+        return;
+
+    }
+
+
+    if (
+        String(triggerFieldId) ===
+        String(targetFieldId)
+    ) {
+
+        message.textContent =
+            "Trigger field and target field cannot be the same.";
+
+
+        message.style.color =
+            "red";
+
+
+        return;
+
+    }
+
+
+
+    /*
+     * Rule data
+     */
+
+    const ruleData = {
+
+        trigger_field_id:
+            triggerFieldId,
+
+        operator:
+            operator,
+
+        comparison_value:
+            operator === "is_empty"
+                ? null
+                : comparisonValue,
+
+        target_field_id:
+            targetFieldId,
+
+        action:
+            action
+
+    };
+
+
+    console.log(
+        "Rule data:",
+        ruleData
+    );
+
+
+
+    try {
+
+        let url;
+
+        let method;
+
+
+        /*
+         * EDIT
+         */
+
+        if (editingRuleId) {
+
+            url =
+                `/conditional-rules/${editingRuleId}`;
+
+
+            method =
+                "PUT";
+
+        }
+
+
+        /*
+         * CREATE
+         */
+
+        else {
+
+            url =
+                `/conditional-rules/forms/${currentFormId}/rules`;
+
+
+            method =
+                "POST";
+
+        }
+
+
+        console.log(
+            method,
+            url
+        );
+
+
+        const response =
+            await fetch(
+                url,
+                {
+
+                    method:
+                        method,
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            ruleData
+                        )
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Rule response:",
+            data
+        );
+
+
+        if (!response.ok) {
+
+            message.style.color =
+                "red";
+
+
+            message.textContent =
+                data.detail ||
+                "Failed to save rule.";
+
+
+            return;
+
+        }
+
+
+        message.style.color =
+            "green";
+
+
+        message.textContent =
+            editingRuleId
+                ? "Rule updated successfully!"
+                : "Rule created successfully!";
+
+
+        editingRuleId =
+            null;
+
+
+        /*
+         * Reload rules
+         */
+
+        await loadRules();
+
+
+        /*
+         * Close form
+         */
+
+        setTimeout(
+            function() {
+
+                cancelRuleForm();
+
+            },
+            800
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "SAVE RULE ERROR:",
+            error
+        );
+
+
+        message.style.color =
+            "red";
+
+
+        message.textContent =
+            "Unable to connect to server.";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   LOAD EXISTING RULES
+========================================================= */
+
+async function loadRules() {
+
+    const container =
+        document.getElementById(
+            "rulesContainer"
+        );
+
+
+    if (!currentFormId) {
+
+        container.innerHTML =
+            `
+            <p class="error">
+                Form ID is missing.
+            </p>
+            `;
+
+
+        return;
+
+    }
+
+
+    try {
+
+        const url =
+            `/conditional-rules/forms/${currentFormId}/rules`;
+
+
+        console.log(
+            "GET RULES:",
+            url
+        );
+
+
+        const response =
+            await fetch(
+                url
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Rules response:",
+            data
+        );
+
+
+        if (!response.ok) {
+
+            container.innerHTML =
+                `
+                <p class="error">
+                    ${
+                        data.detail ||
+                        "Failed to load rules."
+                    }
+                </p>
+                `;
+
+
+            return;
+
+        }
+
+
+        let rules =
+            [];
+
+
+        if (
+            Array.isArray(data)
+        ) {
+
+            rules =
+                data;
+
+        }
+        else if (
+            data &&
+            Array.isArray(
+                data.rules
+            )
+        ) {
+
+            rules =
+                data.rules;
+
+        }
+
+
+        if (
+            rules.length === 0
+        ) {
+
+            container.innerHTML =
+                `
+                <p>
+                    No conditional rules created yet.
+                </p>
+                `;
+
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            "";
+
+
+        /*
+         * Display each rule
+         */
+
+        rules.forEach(
+            function(rule) {
+
+                const triggerLabel =
+                    findFieldLabel(
+                        rule.trigger_field_id
+                    );
+
+
+                const targetLabel =
+                    findFieldLabel(
+                        rule.target_field_id
+                    );
+
+
+                const ruleElement =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                ruleElement.className =
+                    "rule-item";
+
+
+                ruleElement.innerHTML =
+                    `
+
+                    <div>
+
+                        <strong>
+                            If ${escapeHtml(
+                                triggerLabel
+                            )}
+                        </strong>
+
+                        ${formatOperator(
+                            rule.operator
+                        )}
+
+                        ${
+                            rule.comparison_value !== null &&
+                            rule.comparison_value !== undefined
+                                ? `
+                                    <strong>
+                                        ${escapeHtml(
+                                            rule.comparison_value
+                                        )}
+                                    </strong>
+                                  `
+                                : ""
+                        }
+
+                        →
+
+                        <strong>
+                            ${formatAction(
+                                rule.action
+                            )}
+                        </strong>
+
+                        <strong>
+                            ${escapeHtml(
+                                targetLabel
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div style="margin-top:8px;">
+
+                        <button
+                            type="button"
+                            class="edit-button"
+                            onclick="editRule('${rule.id}')"
+                        >
+                            Edit
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="delete-button"
+                            onclick="deleteRule('${rule.id}')"
+                        >
+                            Delete
+                        </button>
+
+                    </div>
+
+                    `;
+
+
+                container.appendChild(
+                    ruleElement
+                );
+
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "LOAD RULES ERROR:",
+            error
+        );
+
+
+        container.innerHTML =
+            `
+            <p class="error">
+                Unable to load rules.
+            </p>
+            `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   FIND FIELD LABEL
+========================================================= */
+
+function findFieldLabel(fieldId) {
+
+    const field =
+        fields.find(
+            function(item) {
+
+                return String(item.id) ===
+                       String(fieldId);
+
+            }
+        );
+
+
+    if (!field) {
+
+        return fieldId ||
+               "Unknown field";
+
+    }
+
+
+    return (
+        field.label ||
+        field.name ||
+        field.field_name ||
+        field.title ||
+        "Unnamed field"
+    );
+
+}
+
+
+
+/* =========================================================
+   FORMAT OPERATOR
+========================================================= */
+
+function formatOperator(operator) {
+
+    const operators = {
+
+        equals:
+            "=",
+
+        not_equals:
+            "≠",
+
+        contains:
+            "contains",
+
+        greater_than:
+            ">",
+
+        is_empty:
+            "is empty"
+
+    };
+
+
+    return (
+        operators[operator] ||
+        operator ||
+        ""
+    );
+
+}
+
+
+
+/* =========================================================
+   FORMAT ACTION
+========================================================= */
+
+function formatAction(action) {
+
+    if (
+        action === "show"
+    ) {
+
+        return "Show";
+
+    }
+
+
+    if (
+        action === "hide"
+    ) {
+
+        return "Hide";
+
+    }
+
+
+    return action ||
+           "";
+
+}
+
+
+
+/* =========================================================
+   EDIT RULE
+========================================================= */
+
+async function editRule(ruleId) {
+
+    try {
+
+        const response =
+            await fetch(
+                `/conditional-rules/forms/${currentFormId}/rules`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.detail ||
+                "Unable to load rules."
+            );
+
+
+            return;
+
+        }
+
+
+        let rules =
+            Array.isArray(data)
+                ? data
+                : data.rules || [];
+
+
+        const rule =
+            rules.find(
+                function(item) {
+
+                    return String(item.id) ===
+                           String(ruleId);
+
+                }
+            );
+
+
+        if (!rule) {
+
+            alert(
+                "Rule not found."
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+         * Set editing ID
+         */
+
+        editingRuleId =
+            rule.id;
+
+
+        /*
+         * Load fields first
+         */
+
+        await loadRuleFields();
+
+
+        /*
+         * Set values
+         */
+
+        document.getElementById(
+            "triggerField"
+        ).value =
+            rule.trigger_field_id;
+
+
+        document.getElementById(
+            "ruleOperator"
+        ).value =
+            rule.operator;
+
+
+        document.getElementById(
+            "comparisonValue"
+        ).value =
+            rule.comparison_value || "";
+
+
+        document.getElementById(
+            "ruleAction"
+        ).value =
+            rule.action;
+
+
+        document.getElementById(
+            "targetField"
+        ).value =
+            rule.target_field_id;
+
+
+        document.getElementById(
+            "ruleFormTitle"
+        ).textContent =
+            "Edit Conditional Rule";
+
+
+        document.getElementById(
+            "ruleForm"
+        ).style.display =
+            "block";
+
+
+        handleOperatorChange();
+
+    }
+    catch (error) {
+
+        console.error(
+            "EDIT RULE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Unable to load rule."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   DELETE RULE
+========================================================= */
+
+async function deleteRule(ruleId) {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this rule?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/conditional-rules/${ruleId}`,
+                {
+
+                    method:
+                        "DELETE"
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.detail ||
+                "Failed to delete rule."
+            );
+
+
+            return;
+
+        }
+
+
+        alert(
+            "Conditional rule deleted successfully."
+        );
+
+
+        await loadRules();
+
+    }
+    catch (error) {
+
+        console.error(
+            "DELETE RULE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Unable to connect to server."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Form</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 15px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background-color: #777;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Create Form</h1>
+
+    <form id="createForm">
+
+        <label for="title">Form Title</label>
+
+        <input
+            type="text"
+            id="title"
+            placeholder="Enter form title"
+            required
+        >
+
+
+        <label for="description">Description</label>
+
+        <textarea
+            id="description"
+            placeholder="Enter form description"
+        ></textarea>
+
+
+        <label for="created_by">Created By (User ID)</label>
+
+        <input
+            type="text"
+            id="created_by"
+            placeholder="Enter user UUID"
+            required
+        >
+
+
+        <button type="submit">
+            Create Form
+        </button>
+
+        <button
+            type="button"
+            class="back-btn"
+            onclick="goBack()"
+        >
+            Back
+        </button>
+
+    </form>
+
+    <div id="message"></div>
+
+</div>
+
+
+<script>
+
+document.getElementById("createForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const title =
+            document.getElementById("title").value.trim();
+
+        const description =
+            document.getElementById("description").value.trim();
+
+        const created_by =
+            document.getElementById("created_by").value.trim();
+
+
+        const formData = {
+
+            title: title,
+
+            description:
+                description || null,
+
+            status: "draft",
+
+            created_by: created_by
+
+        };
+
+
+        const message =
+            document.getElementById("message");
+
+
+        try {
+
+            const response =
+                await fetch("/forms/", {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(formData)
+
+                });
+
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                message.innerText =
+                    "Error: " +
+                    (
+                        result.detail ||
+                        "Failed to create form"
+                    );
+
+                return;
+
+            }
+
+
+            message.innerText =
+                "Form created successfully!";
+
+
+            /*
+             * Wait briefly and return
+             * to Form List page.
+             */
+
+            setTimeout(function() {
+
+                window.location.href =
+                    "/forms-page";
+
+            }, 1000);
+
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            message.innerText =
+                "Error connecting to server.";
+
+        }
+
+    }
+);
+
+
+/* Back button */
+
+function goBack() {
+
+    window.location.href =
+        "/forms-page";
+
+}
+
+</script>
+
+</body>
+
+</html>

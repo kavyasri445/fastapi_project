@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form List</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Form List</h1>
+
+    <button onclick="loadForms()">Refresh Forms</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Form ID</th>
+            </tr>
+        </thead>
+
+        <tbody id="formsTableBody">
+            <tr>
+                <td colspan="4">Loading...</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <script>
+
+        async function loadForms() {
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:8000/forms"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch forms");
+                }
+
+                const forms = await response.json();
+
+                const tableBody =
+                    document.getElementById("formsTableBody");
+
+                tableBody.innerHTML = "";
+
+                forms.forEach(form => {
+
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${form.title}</td>
+                        <td>${form.description || ""}</td>
+                        <td>${form.status}</td>
+                        <td>${form.id}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById("formsTableBody").innerHTML = `
+                    <tr>
+                        <td colspan="4">
+                            Error loading forms
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        loadForms();
+
+    </script>
+
+</body>
+</html>
