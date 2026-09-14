@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin - Uploaded Files</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 30px;
+            background-color: #f5f6fa;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .loading {
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Admin - Uploaded Files</h1>
+
+    <div id="message" class="loading">
+        Loading uploaded files...
+    </div>
+
+    <table id="filesTable" style="display: none;">
+
+        <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Size</th>
+            <th>Uploaded At</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody id="filesBody">
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+    async function loadFiles() {
+
+        const message = document.getElementById("message");
+        const table = document.getElementById("filesTable");
+        const filesBody = document.getElementById("filesBody");
+
+        /*
+         * Get the access token saved after admin login.
+         */
+        const token = localStorage.getItem("access_token");
+
+        if (!token) {
+
+            message.innerHTML =
+                '<span class="error">Please login as admin first.</span>';
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch("/admin/files/", {
+
+                method: "GET",
+
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+
+            });
+
+            if (!response.ok) {
+
+                if (response.status === 401) {
+                    throw new Error("Unauthorized. Please login again.");
+                }
+
+                if (response.status === 403) {
+                    throw new Error("Admin access required.");
+                }
+
+                throw new Error("Failed to load uploaded files.");
+            }
+
+            const files = await response.json();
+
+            filesBody.innerHTML = "";
+
+            if (files.length === 0) {
+
+                message.innerHTML = "No uploaded files found.";
+                return;
+            }
+
+            files.forEach(file => {
+
+                const row = document.createElement("tr");
+
+                const fileNameCell = document.createElement("td");
+                fileNameCell.textContent = file.original_name;
+
+                const sizeCell = document.createElement("td");
+                sizeCell.textContent =
+                    formatFileSize(file.file_size);
+
+                const uploadedAtCell = document.createElement("td");
+
+                uploadedAtCell.textContent =
+                    new Date(file.uploaded_at).toLocaleString();
+
+                const actionCell = document.createElement("td");
+
+                const downloadButton =
+                    document.createElement("button");
+
+                downloadButton.textContent = "Download";
+
+                downloadButton.onclick = function () {
+                    downloadFile(file.file_id);
+                };
+
+                actionCell.appendChild(downloadButton);
+
+                row.appendChild(fileNameCell);
+                row.appendChild(sizeCell);
+                row.appendChild(uploadedAtCell);
+                row.appendChild(actionCell);
+
+                filesBody.appendChild(row);
+
+            });
+
+            message.style.display = "none";
+            table.style.display = "table";
+
+        } catch (error) {
+
+            message.innerHTML =
+                '<span class="error">' +
+                error.message +
+                '</span>';
+
+        }
+    }
+
+
+    function formatFileSize(bytes) {
+
+        if (bytes < 1024) {
+            return bytes + " B";
+        }
+
+        if (bytes < 1024 * 1024) {
+            return (bytes / 1024).toFixed(2) + " KB";
+        }
+
+        return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+    }
+
+
+    async function downloadFile(fileId) {
+
+        const token = localStorage.getItem("access_token");
+
+        if (!token) {
+            alert("Please login first.");
+            return;
+        }
+
+        try {
+
+            /*
+             * First request a temporary secure download URL.
+             */
+            const secureResponse = await fetch(
+                "/files/" + fileId + "/secure-url"
+            );
+
+            if (!secureResponse.ok) {
+                throw new Error(
+                    "Could not generate secure download URL."
+                );
+            }
+
+            const secureData = await secureResponse.json();
+
+            /*
+             * The secure URL contains a temporary file-access token.
+             */
+            const downloadResponse = await fetch(
+                secureData.download_url
+            );
+
+            if (!downloadResponse.ok) {
+                throw new Error(
+                    "File download failed."
+                );
+            }
+
+            const blob = await downloadResponse.blob();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+
+            link.href = url;
+
+            link.download = secureData.file_id;
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            link.remove();
+
+            window.URL.revokeObjectURL(url);
+
+        } catch (error) {
+
+            alert(error.message);
+
+        }
+    }
+
+
+    /*
+     * Load files when the page opens.
+     */
+    loadFiles();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Sign In</title>
+</head>
+
+<body>
+
+<h2>Admin Sign In</h2>
+
+<form id="signinForm">
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <br><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <br><br>
+
+    <button type="submit">Sign In</button>
+
+</form>
+
+<p id="message"></p>
+
+<script>
+
+document.getElementById("signinForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const email =
+            document.getElementById("email").value;
+
+        const password =
+            document.getElementById("password").value;
+
+        try {
+
+            const response = await fetch("/auth/signin", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+
+                /*
+                 * Save the access token in browser storage.
+                 */
+                localStorage.setItem(
+                    "access_token",
+                    data.access_token
+                );
+
+                document.getElementById("message").innerText =
+                    "Sign in successful!";
+
+                /*
+                 * Open the admin uploaded-files page.
+                 */
+                window.location.href = "/admin-files";
+
+            } else {
+
+                document.getElementById("message").innerText =
+                    data.detail || "Sign in failed";
+
+            }
+
+        } catch (error) {
+
+            document.getElementById("message").innerText =
+                "Unable to connect to the server.";
+
+            console.error(error);
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>

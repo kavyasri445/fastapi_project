@@ -15,6 +15,10 @@ from app.models.response_value import ResponseValue
 from app.schemas.submission import PublicSubmissionCreate
 
 
+# =========================================================
+# ROUTER
+# =========================================================
+
 router = APIRouter(
     prefix="/public/forms",
     tags=["Public Forms"]
@@ -33,9 +37,9 @@ def submit_public_form(
     db: Session = Depends(get_db)
 ):
 
-    # =====================================================
+    # -----------------------------------------------------
     # 1. FIND PUBLIC LINK
-    # =====================================================
+    # -----------------------------------------------------
 
     public_link = (
         db.query(PublicLink)
@@ -52,9 +56,9 @@ def submit_public_form(
             detail="Public form not found or inactive"
         )
 
-    # =====================================================
+    # -----------------------------------------------------
     # 2. FIND FORM VERSION
-    # =====================================================
+    # -----------------------------------------------------
 
     form_version = (
         db.query(FormVersion)
@@ -71,9 +75,9 @@ def submit_public_form(
             detail="Published form version not found"
         )
 
-    # =====================================================
+    # -----------------------------------------------------
     # 3. GET FIELDS
-    # =====================================================
+    # -----------------------------------------------------
 
     fields = (
         db.query(Field)
@@ -90,9 +94,9 @@ def submit_public_form(
             detail="No fields found for this form version"
         )
 
-    # =====================================================
-    # 4. CHECK REQUEST
-    # =====================================================
+    # -----------------------------------------------------
+    # 4. CHECK RESPONSE VALUES
+    # -----------------------------------------------------
 
     if not submission_data.response_values:
         raise HTTPException(
@@ -100,33 +104,14 @@ def submit_public_form(
             detail="No response values submitted"
         )
 
-    # =====================================================
-    # 5. CREATE SUBMITTED VALUES DICTIONARY
-    # =====================================================
-
-    submitted_values = {
-        item.field_id: item.value
-        for item in submission_data.response_values
-    }
-
-    # DEBUG
-    print("======================================")
-    print("SUBMITTED VALUES:")
-    print(submitted_values)
-    print("======================================")
-
-    # =====================================================
-    # 6. VALID FIELD IDs
-    # =====================================================
+    # -----------------------------------------------------
+    # 5. CHECK FIELD IDS
+    # -----------------------------------------------------
 
     valid_field_ids = {
         field.id
         for field in fields
     }
-
-    # =====================================================
-    # 7. CHECK INVALID FIELD IDs
-    # =====================================================
 
     for item in submission_data.response_values:
 
@@ -140,23 +125,26 @@ def submit_public_form(
                 }
             )
 
-    # =====================================================
-    # 8. VALIDATION
-    # =====================================================
+    # -----------------------------------------------------
+    # 6. CONVERT SUBMITTED VALUES TO DICTIONARY
+    # -----------------------------------------------------
+
+    submitted_values = {
+        str(item.field_id): item.value
+        for item in submission_data.response_values
+    }
 
     validation_errors = {}
 
+    # -----------------------------------------------------
+    # 7. VALIDATE FIELDS
+    # -----------------------------------------------------
+
     for field in fields:
 
-        field_id = field.id
+        field_id = str(field.id)
 
         value = submitted_values.get(field_id)
-
-        print(
-            f"FIELD: {field.label} | "
-            f"ID: {field_id} | "
-            f"VALUE: {value}"
-        )
 
         # -------------------------------------------------
         # REQUIRED
@@ -166,7 +154,7 @@ def submit_public_form(
 
             if value is None or value == "":
 
-                validation_errors[str(field_id)] = [
+                validation_errors[field_id] = [
                     "This field is required"
                 ]
 
@@ -179,9 +167,9 @@ def submit_public_form(
         if value is None or value == "":
             continue
 
-        # =================================================
+        # -------------------------------------------------
         # DROPDOWN
-        # =================================================
+        # -------------------------------------------------
 
         if field.field_type == "dropdown":
 
@@ -190,9 +178,7 @@ def submit_public_form(
                 .filter(
                     FieldOption.field_id == field.id
                 )
-                .order_by(
-                    FieldOption.display_order
-                )
+                .order_by(FieldOption.display_order)
                 .all()
             )
 
@@ -201,16 +187,18 @@ def submit_public_form(
                 for option in options
             ]
 
-            if allowed_values and str(value) not in allowed_values:
+            if allowed_values:
 
-                validation_errors[str(field_id)] = [
-                    "Invalid option. Allowed values: "
-                    + ", ".join(allowed_values)
-                ]
+                if str(value) not in allowed_values:
 
-        # =================================================
+                    validation_errors[field_id] = [
+                        "Invalid option. Allowed values: "
+                        + ", ".join(allowed_values)
+                    ]
+
+        # -------------------------------------------------
         # CHECKBOX
-        # =================================================
+        # -------------------------------------------------
 
         elif field.field_type == "checkbox":
 
@@ -218,20 +206,20 @@ def submit_public_form(
 
             if config.get("must_be_checked") is True:
 
-                is_checked = (
+                checked = (
                     value is True
                     or str(value).lower() == "true"
                 )
 
-                if not is_checked:
+                if not checked:
 
-                    validation_errors[str(field_id)] = [
+                    validation_errors[field_id] = [
                         "This field must be checked"
                     ]
 
-        # =================================================
+        # -------------------------------------------------
         # RATING
-        # =================================================
+        # -------------------------------------------------
 
         elif field.field_type == "rating":
 
@@ -246,25 +234,22 @@ def submit_public_form(
 
                 if rating < minimum or rating > maximum:
 
-                    validation_errors[str(field_id)] = [
+                    validation_errors[field_id] = [
                         f"Rating must be between "
                         f"{minimum} and {maximum}"
                     ]
 
             except (ValueError, TypeError):
 
-                validation_errors[str(field_id)] = [
+                validation_errors[field_id] = [
                     "Rating must be a number"
                 ]
 
-    # =====================================================
-    # 9. RETURN VALIDATION ERRORS
-    # =====================================================
+    # -----------------------------------------------------
+    # 8. VALIDATION ERROR
+    # -----------------------------------------------------
 
     if validation_errors:
-
-        print("VALIDATION ERRORS:")
-        print(validation_errors)
 
         raise HTTPException(
             status_code=400,
@@ -274,15 +259,15 @@ def submit_public_form(
             }
         )
 
-    # =====================================================
-    # 10. GENERATE RESPONSE ID
-    # =====================================================
+    # -----------------------------------------------------
+    # 9. CREATE RESPONSE ID
+    # -----------------------------------------------------
 
     response_id = uuid.uuid4()
 
-    # =====================================================
-    # 11. CREATE SUBMISSION
-    # =====================================================
+    # -----------------------------------------------------
+    # 10. CREATE SUBMISSION
+    # -----------------------------------------------------
 
     submission = Submission(
         form_version_id=form_version.id,
@@ -297,9 +282,9 @@ def submit_public_form(
     # Generate submission.id
     db.flush()
 
-    # =====================================================
-    # 12. SAVE RESPONSE VALUES
-    # =====================================================
+    # -----------------------------------------------------
+    # 11. SAVE RESPONSE VALUES
+    # -----------------------------------------------------
 
     for item in submission_data.response_values:
 
@@ -311,9 +296,9 @@ def submit_public_form(
 
         db.add(response_value)
 
-    # =====================================================
-    # 13. COMMIT
-    # =====================================================
+    # -----------------------------------------------------
+    # 12. COMMIT
+    # -----------------------------------------------------
 
     try:
 
@@ -323,23 +308,20 @@ def submit_public_form(
 
         db.rollback()
 
-        print("DATABASE ERROR:")
-        print(e)
-
         raise HTTPException(
             status_code=500,
-            detail="Failed to save submission"
+            detail=f"Failed to save submission: {str(e)}"
         )
 
-    # =====================================================
-    # 14. REFRESH
-    # =====================================================
+    # -----------------------------------------------------
+    # 13. REFRESH
+    # -----------------------------------------------------
 
     db.refresh(submission)
 
-    # =====================================================
-    # 15. SUCCESS
-    # =====================================================
+    # -----------------------------------------------------
+    # 14. SUCCESS
+    # -----------------------------------------------------
 
     return {
         "message": "Form submitted successfully",

@@ -16,7 +16,10 @@ class User(Base):
         default=uuid.uuid4
     )
 
-    full_name = Column(String, nullable=False)
+    full_name = Column(
+        String,
+        nullable=False
+    )
 
     email = Column(
         String,
@@ -24,11 +27,28 @@ class User(Base):
         nullable=False
     )
 
-    password_hash = Column(String, nullable=False)
+    password_hash = Column(
+        String,
+        nullable=False
+    )
 
-    is_active = Column(Boolean, default=True, nullable=False)
+    role = Column(
+        String,
+        nullable=False,
+        default="user",
+        server_default="user"
+    )
 
-    last_login = Column(DateTime, nullable=True)
+    is_active = Column(
+        Boolean,
+        default=True,
+        nullable=False
+    )
+
+    last_login = Column(
+        DateTime,
+        nullable=True
+    )
 
     created_at = Column(
         DateTime,

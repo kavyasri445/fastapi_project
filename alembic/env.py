@@ -20,6 +20,7 @@ from app.models.conditional_rule import ConditionalRule
 from app.models.submission import Submission
 from app.models.response_value import ResponseValue
 from app.models.public_link import PublicLink
+from app.models.uploaded_file import UploadedFile
 
 
 # =========================================================

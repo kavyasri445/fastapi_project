@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Share Form</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Public Form</title>
 
     <style>
+
         body {
             font-family: Arial, sans-serif;
             background: #f4f6f8;
@@ -23,8 +30,34 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        h1 {
-            margin-top: 0;
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+            background: #fafafa;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: auto;
         }
 
         button {
@@ -35,121 +68,232 @@
             color: white;
             cursor: pointer;
             font-size: 15px;
-            margin-top: 10px;
         }
 
         button:hover {
             background: #0056b3;
         }
 
-        .link-box {
-            display: none;
-            margin-top: 25px;
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
         }
 
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            margin-top: 10px;
-        }
-
-        .message {
-            margin-top: 15px;
-            padding: 10px;
-        }
-
-        .error {
+        .required {
             color: red;
         }
 
-        .success {
+        .success-message {
+            margin-top: 20px;
+            padding: 12px;
             color: green;
+            background: #e8f5e9;
+            border-radius: 6px;
         }
+
+        .error-message {
+            margin-top: 20px;
+            padding: 12px;
+            color: red;
+            background: #ffebee;
+            border-radius: 6px;
+        }
+
+        #form-container {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .file-error {
+            margin-top: 8px;
+            color: red;
+            font-size: 13px;
+        }
+
+        .file-success {
+            margin-top: 8px;
+            color: green;
+            font-size: 13px;
+        }
+
+        .upload-progress-container {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .upload-progress-label {
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .upload-progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .upload-progress {
+            width: 0%;
+            height: 100%;
+            background: #007bff;
+            transition: width 0.2s;
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
 <div class="container">
 
-    <h1>Share Form</h1>
-
-    <p>
-        Generate a public link to share this form.
-    </p>
-
-    <button onclick="generateLink()">
-        Generate Link
-    </button>
-
-    <div id="linkBox" class="link-box">
-
-        <label>
-            Public Form Link
-        </label>
-
-        <input
-            type="text"
-            id="publicLink"
-            readonly
-        >
-
-        <button onclick="copyLink()">
-            Copy Link
-        </button>
-
+    <div id="loading">
+        Loading form...
     </div>
 
-    <div id="message" class="message"></div>
+    <div id="error"></div>
+
+    <div id="form-container">
+
+        <h1 id="form-title"></h1>
+
+        <p id="form-description"></p>
+
+        <form id="public-form">
+
+            <div id="fields-container"></div>
+
+            <button
+                type="submit"
+                id="submit-button"
+            >
+                Submit
+            </button>
+
+        </form>
+
+        <div id="success-message"></div>
+
+    </div>
 
 </div>
 
 
 <script>
 
+
+    // =========================================================
+    // GET SLUG FROM URL
+    // =========================================================
+
+    const pathParts =
+        window.location.pathname.split("/");
+
+
     /*
-     * IMPORTANT:
-     * Replace this ID with the ID of the form
-     * you want to share.
-     */
+        Works for:
 
-    const formId =
-        "e281d799-b97d-42e3-9e23-058e9f8e6cf9";
+        /public/form-page/SLUG
 
+        and
 
-    async function generateLink() {
+        /public/forms/SLUG
+    */
 
-        const message =
-            document.getElementById("message");
-
-        const linkBox =
-            document.getElementById("linkBox");
-
-        const publicLink =
-            document.getElementById("publicLink");
+    const slug =
+        pathParts
+            .filter(
+                part => part.length > 0
+            )
+            .pop();
 
 
-        message.textContent = "";
-        message.className = "message";
+    console.log(
+        "Current URL:",
+        window.location.pathname
+    );
 
+
+    console.log(
+        "Public form slug:",
+        slug
+    );
+
+
+    // =========================================================
+    // CURRENT FORM
+    // =========================================================
+
+    let currentForm = null;
+
+
+    // =========================================================
+    // DEFAULT FILE EXTENSIONS
+    // =========================================================
+
+    const DEFAULT_ALLOWED_EXTENSIONS = [
+        ".pdf",
+        ".doc",
+        ".docx",
+        ".jpg",
+        ".jpeg",
+        ".png"
+    ];
+
+
+    // =========================================================
+    // DEFAULT MAX FILE SIZE
+    // =========================================================
+
+    const DEFAULT_MAX_FILE_SIZE =
+        5 * 1024 * 1024;
+
+
+    // =========================================================
+    // LOAD PUBLIC FORM
+    // =========================================================
+
+    async function loadForm() {
 
         try {
 
-            const response = await fetch(
-                `/forms/${formId}/generate-link`,
-                {
-                    method: "POST"
-                }
+            if (!slug) {
+
+                throw new Error(
+                    "Public form slug is missing."
+                );
+
+            }
+
+
+            // -------------------------------------------------
+            // GET FORM API
+            // -------------------------------------------------
+
+            const response =
+                await fetch(
+                    `/public/forms/${slug}`
+                );
+
+
+            console.log(
+                "GET public form status:",
+                response.status
             );
 
 
             if (!response.ok) {
 
                 let errorMessage =
-                    "Unable to generate public link.";
+                    "Unable to load public form.";
 
                 try {
 
@@ -160,123 +304,1488 @@
                         errorData.detail ||
                         errorMessage;
 
-                } catch (e) {
-                    // Ignore JSON parsing error
                 }
 
-                throw new Error(errorMessage);
+                catch (e) {
+
+                    console.log(
+                        "Could not read error response."
+                    );
+
+                }
+
+
+                throw new Error(
+                    errorMessage
+                );
+
             }
 
 
-            const data =
+            // -------------------------------------------------
+            // READ FORM JSON
+            // -------------------------------------------------
+
+            const form =
                 await response.json();
 
 
-            /*
-             * Your API may return either:
-             *
-             * "http://127.0.0.1:8000/public/forms/..."
-             *
-             * OR
-             *
-             * {
-             *     "public_url": "..."
-             * }
-             *
-             * This code supports both.
-             */
-
-            let link;
+            console.log(
+                "Public form data:",
+                form
+            );
 
 
-            if (typeof data === "string") {
-
-                link = data;
-
-            } else {
-
-                link =
-                    data.public_url ||
-                    data.url ||
-                    data.link;
-            }
+            currentForm = form;
 
 
-            if (!link) {
+            // -------------------------------------------------
+            // SHOW FORM
+            // -------------------------------------------------
 
-                throw new Error(
-                    "Public link was not returned by the API."
+            document.getElementById(
+                "loading"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "form-container"
+            ).style.display = "block";
+
+
+            // -------------------------------------------------
+            // TITLE
+            // -------------------------------------------------
+
+            document.getElementById(
+                "form-title"
+            ).textContent =
+                form.title || "Public Form";
+
+
+            // -------------------------------------------------
+            // DESCRIPTION
+            // -------------------------------------------------
+
+            document.getElementById(
+                "form-description"
+            ).textContent =
+                form.description || "";
+
+
+            // -------------------------------------------------
+            // GET FIELDS
+            // -------------------------------------------------
+
+            const fields =
+                form.fields || [];
+
+
+            // -------------------------------------------------
+            // SORT FIELDS
+            // -------------------------------------------------
+
+            fields.sort(
+                (a, b) =>
+                    a.display_order -
+                    b.display_order
+            );
+
+
+            const fieldsContainer =
+                document.getElementById(
+                    "fields-container"
                 );
-            }
 
 
-            publicLink.value = link;
-
-            linkBox.style.display = "block";
-
-            message.textContent =
-                "Public link generated successfully.";
-
-            message.className =
-                "message success";
+            fieldsContainer.innerHTML = "";
 
 
-        } catch (error) {
+            // =================================================
+            // CREATE FIELDS
+            // =================================================
 
-            console.error(error);
+            fields.forEach(
+                field => {
 
-            message.textContent =
+                    const fieldDiv =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    fieldDiv.className =
+                        "field";
+
+
+                    fieldDiv.dataset.fieldId =
+                        field.id;
+
+
+                    // =================================================
+                    // LABEL
+                    // =================================================
+
+                    const label =
+                        document.createElement(
+                            "label"
+                        );
+
+
+                    label.textContent =
+                        field.label;
+
+
+                    if (field.is_required) {
+
+                        const required =
+                            document.createElement(
+                                "span"
+                            );
+
+
+                        required.className =
+                            "required";
+
+
+                        required.textContent =
+                            " *";
+
+
+                        label.appendChild(
+                            required
+                        );
+
+                    }
+
+
+                    fieldDiv.appendChild(
+                        label
+                    );
+
+
+                    // =================================================
+                    // INPUT
+                    // =================================================
+
+                    let input;
+
+
+                    // =================================================
+                    // FILE
+                    // =================================================
+
+                    if (
+                        field.field_type === "file" ||
+                        field.field_type === "file_upload" ||
+                        field.field_type === "upload"
+                    ) {
+
+                        input =
+                            document.createElement(
+                                "input"
+                            );
+
+
+                        input.type =
+                            "file";
+
+
+                        const validationConfig =
+                            field.validation_config || {};
+
+
+                        const allowedExtensions =
+                            validationConfig.allowed_extensions &&
+                            validationConfig.allowed_extensions.length > 0
+                                ? validationConfig.allowed_extensions
+                                : DEFAULT_ALLOWED_EXTENSIONS;
+
+
+                        input.accept =
+                            allowedExtensions.join(",");
+
+
+                        input.required =
+                            Boolean(
+                                field.is_required
+                            );
+
+
+                        input.name =
+                            field.id;
+
+
+                        input.dataset.fieldId =
+                            field.id;
+
+
+                        input.dataset.maxSize =
+                            validationConfig.max_size ||
+                            DEFAULT_MAX_FILE_SIZE;
+
+
+                        input.dataset.allowedExtensions =
+                            JSON.stringify(
+                                allowedExtensions
+                            );
+
+
+                        const fileInfo =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        fileInfo.className =
+                            "file-info";
+
+
+                        fileInfo.textContent =
+                            `Allowed: ${allowedExtensions.join(", ")} | Maximum: 5 MB`;
+
+
+                        fieldDiv.appendChild(
+                            input
+                        );
+
+
+                        fieldDiv.appendChild(
+                            fileInfo
+                        );
+
+
+                        const fileError =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        fileError.className =
+                            "file-error";
+
+
+                        fieldDiv.appendChild(
+                            fileError
+                        );
+
+
+                        const fileSuccess =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        fileSuccess.className =
+                            "file-success";
+
+
+                        fieldDiv.appendChild(
+                            fileSuccess
+                        );
+
+
+                        // =================================================
+                        // PROGRESS
+                        // =================================================
+
+                        const progressContainer =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        progressContainer.className =
+                            "upload-progress-container";
+
+
+                        const progressLabel =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        progressLabel.className =
+                            "upload-progress-label";
+
+
+                        progressLabel.textContent =
+                            "Uploading... 0%";
+
+
+                        const progressBarContainer =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        progressBarContainer.className =
+                            "upload-progress-bar";
+
+
+                        const progressBar =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        progressBar.className =
+                            "upload-progress";
+
+
+                        progressBarContainer.appendChild(
+                            progressBar
+                        );
+
+
+                        progressContainer.appendChild(
+                            progressLabel
+                        );
+
+
+                        progressContainer.appendChild(
+                            progressBarContainer
+                        );
+
+
+                        fieldDiv.appendChild(
+                            progressContainer
+                        );
+
+
+                        // =================================================
+                        // FILE CHANGE
+                        // =================================================
+
+                        input.addEventListener(
+                            "change",
+                            function() {
+
+                                fileError.textContent =
+                                    "";
+
+                                fileSuccess.textContent =
+                                    "";
+
+                                progressContainer.style.display =
+                                    "none";
+
+                                progressBar.style.width =
+                                    "0%";
+
+
+                                if (
+                                    !input.files.length
+                                ) {
+
+                                    return;
+
+                                }
+
+
+                                const file =
+                                    input.files[0];
+
+
+                                const validationResult =
+                                    validateFile(
+                                        file,
+                                        input
+                                    );
+
+
+                                if (
+                                    !validationResult.valid
+                                ) {
+
+                                    fileError.textContent =
+                                        validationResult.message;
+
+                                    input.value =
+                                        "";
+
+                                    return;
+
+                                }
+
+
+                                fileSuccess.textContent =
+                                    `${file.name} selected (${formatFileSize(file.size)})`;
+
+                            }
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // TEXTAREA
+                    // =================================================
+
+                    else if (
+                        field.field_type ===
+                        "textarea"
+                    ) {
+
+                        input =
+                            document.createElement(
+                                "textarea"
+                            );
+
+                    }
+
+
+                    // =================================================
+                    // SELECT
+                    // =================================================
+
+                    else if (
+                        field.field_type ===
+                        "select"
+                    ) {
+
+                        input =
+                            document.createElement(
+                                "select"
+                            );
+
+
+                        if (field.options) {
+
+                            field.options.forEach(
+                                option => {
+
+                                    const optionElement =
+                                        document.createElement(
+                                            "option"
+                                        );
+
+
+                                    optionElement.value =
+                                        option.value;
+
+
+                                    optionElement.textContent =
+                                        option.label;
+
+
+                                    input.appendChild(
+                                        optionElement
+                                    );
+
+                                }
+                            );
+
+                        }
+
+                    }
+
+
+                    // =================================================
+                    // CHECKBOX
+                    // =================================================
+
+                    else if (
+                        field.field_type ===
+                        "checkbox"
+                    ) {
+
+                        input =
+                            document.createElement(
+                                "input"
+                            );
+
+
+                        input.type =
+                            "checkbox";
+
+
+                        input.name =
+                            field.id;
+
+
+                        input.dataset.fieldId =
+                            field.id;
+
+
+                        input.value =
+                            "true";
+
+
+                        input.required =
+                            Boolean(
+                                field.is_required
+                            );
+
+
+                        fieldDiv.appendChild(
+                            input
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // RADIO
+                    // =================================================
+
+                    else if (
+                        field.field_type ===
+                        "radio"
+                    ) {
+
+                        input =
+                            document.createElement(
+                                "input"
+                            );
+
+
+                        input.type =
+                            "radio";
+
+
+                        input.name =
+                            field.id;
+
+
+                        input.dataset.fieldId =
+                            field.id;
+
+
+                        fieldDiv.appendChild(
+                            input
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // NORMAL INPUT
+                    // =================================================
+
+                    else {
+
+                        input =
+                            document.createElement(
+                                "input"
+                            );
+
+
+                        const allowedTypes = [
+                            "text",
+                            "number",
+                            "email",
+                            "date"
+                        ];
+
+
+                        if (
+                            allowedTypes.includes(
+                                field.field_type
+                            )
+                        ) {
+
+                            input.type =
+                                field.field_type;
+
+                        }
+
+                        else {
+
+                            input.type =
+                                "text";
+
+                        }
+
+                    }
+
+
+                    // =================================================
+                    // COMMON SETTINGS
+                    // =================================================
+
+                    if (
+                        input &&
+                        input.type !== "file" &&
+                        field.field_type !== "checkbox" &&
+                        field.field_type !== "radio"
+                    ) {
+
+                        if (
+                            field.placeholder &&
+                            input.tagName !== "SELECT"
+                        ) {
+
+                            input.placeholder =
+                                field.placeholder;
+
+                        }
+
+
+                        input.required =
+                            Boolean(
+                                field.is_required
+                            );
+
+
+                        input.name =
+                            field.id;
+
+
+                        input.dataset.fieldId =
+                            field.id;
+
+
+                        fieldDiv.appendChild(
+                            input
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // ADD FIELD
+                    // =================================================
+
+                    fieldsContainer.appendChild(
+                        fieldDiv
+                    );
+
+                }
+            );
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Load form error:",
+                error
+            );
+
+
+            document.getElementById(
+                "loading"
+            ).style.display =
+                "none";
+
+
+            const errorBox =
+                document.getElementById(
+                    "error"
+                );
+
+
+            errorBox.className =
+                "error-message";
+
+
+            errorBox.textContent =
                 error.message;
 
-            message.className =
-                "message error";
         }
+
     }
 
 
-    async function copyLink() {
+    // =========================================================
+    // FORMAT FILE SIZE
+    // =========================================================
 
-        const publicLink =
-            document.getElementById("publicLink");
+    function formatFileSize(bytes) {
 
-        const link =
-            publicLink.value;
+        if (bytes < 1024) {
 
+            return `${bytes} bytes`;
 
-        if (!link) {
-
-            alert("Generate the link first.");
-
-            return;
         }
+
+
+        if (bytes < 1024 * 1024) {
+
+            return `${(bytes / 1024).toFixed(2)} KB`;
+
+        }
+
+
+        return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+
+    }
+
+
+    // =========================================================
+    // VALIDATE FILE
+    // =========================================================
+
+    function validateFile(
+        file,
+        input
+    ) {
+
+        const maxSize =
+            Number(
+                input.dataset.maxSize ||
+                DEFAULT_MAX_FILE_SIZE
+            );
+
+
+        if (
+            file.size > maxSize
+        ) {
+
+            return {
+                valid: false,
+                message:
+                    "File exceeds 5 MB limit."
+            };
+
+        }
+
+
+        let allowedExtensions =
+            DEFAULT_ALLOWED_EXTENSIONS;
 
 
         try {
 
-            await navigator.clipboard.writeText(link);
+            allowedExtensions =
+                JSON.parse(
+                    input.dataset.allowedExtensions
+                );
 
-            alert(
-                "Public link copied successfully!"
-            );
-
-        } catch (error) {
-
-            /*
-             * Fallback for browsers where
-             * clipboard API is unavailable.
-             */
-
-            publicLink.select();
-
-            document.execCommand("copy");
-
-            alert(
-                "Public link copied successfully!"
-            );
         }
+
+        catch (e) {
+
+            console.log(
+                "Using default file extensions."
+            );
+
+        }
+
+
+        const fileName =
+            file.name.toLowerCase();
+
+
+        const isAllowed =
+            allowedExtensions.some(
+                extension =>
+                    fileName.endsWith(
+                        extension.toLowerCase()
+                    )
+            );
+
+
+        if (!isAllowed) {
+
+            return {
+                valid: false,
+                message:
+                    `Invalid file type. Allowed types: ${allowedExtensions.join(", ")}`
+            };
+
+        }
+
+
+        return {
+            valid: true,
+            message: ""
+        };
+
     }
+
+
+    // =========================================================
+    // UPLOAD FILE WITH PROGRESS
+    // =========================================================
+
+    function uploadFile(
+        file,
+        input
+    ) {
+
+        return new Promise(
+            (resolve, reject) => {
+
+                const fieldDiv =
+                    input.closest(
+                        ".field"
+                    );
+
+
+                const progressContainer =
+                    fieldDiv.querySelector(
+                        ".upload-progress-container"
+                    );
+
+
+                const progressLabel =
+                    fieldDiv.querySelector(
+                        ".upload-progress-label"
+                    );
+
+
+                const progressBar =
+                    fieldDiv.querySelector(
+                        ".upload-progress"
+                    );
+
+
+                const fileSuccess =
+                    fieldDiv.querySelector(
+                        ".file-success"
+                    );
+
+
+                const fileError =
+                    fieldDiv.querySelector(
+                        ".file-error"
+                    );
+
+
+                progressContainer.style.display =
+                    "block";
+
+
+                progressBar.style.width =
+                    "0%";
+
+
+                progressLabel.textContent =
+                    "Uploading... 0%";
+
+
+                fileSuccess.textContent =
+                    "";
+
+
+                fileError.textContent =
+                    "";
+
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "file",
+                    file
+                );
+
+
+                const xhr =
+                    new XMLHttpRequest();
+
+
+                // =================================================
+                // UPLOAD PROGRESS
+                // =================================================
+
+                xhr.upload.addEventListener(
+                    "progress",
+                    function(event) {
+
+                        if (
+                            event.lengthComputable
+                        ) {
+
+                            const percent =
+                                Math.round(
+                                    (
+                                        event.loaded /
+                                        event.total
+                                    ) * 100
+                                );
+
+
+                            progressBar.style.width =
+                                `${percent}%`;
+
+
+                            progressLabel.textContent =
+                                `Uploading... ${percent}%`;
+
+                        }
+
+                    }
+                );
+
+
+                // =================================================
+                // UPLOAD COMPLETE
+                // =================================================
+
+                xhr.addEventListener(
+                    "load",
+                    function() {
+
+                        if (
+                            xhr.status >= 200 &&
+                            xhr.status < 300
+                        ) {
+
+                            let data;
+
+
+                            try {
+
+                                data =
+                                    JSON.parse(
+                                        xhr.responseText
+                                    );
+
+                            }
+
+                            catch (e) {
+
+                                reject(
+                                    new Error(
+                                        "Invalid upload response."
+                                    )
+                                );
+
+                                return;
+
+                            }
+
+
+                            progressBar.style.width =
+                                "100%";
+
+
+                            progressLabel.textContent =
+                                "Upload complete: 100%";
+
+
+                            fileSuccess.textContent =
+                                `${file.name} uploaded successfully.`;
+
+
+                            resolve(
+                                data
+                            );
+
+                        }
+
+                        else {
+
+                            let message =
+                                "File upload failed.";
+
+
+                            try {
+
+                                const errorData =
+                                    JSON.parse(
+                                        xhr.responseText
+                                    );
+
+
+                                message =
+                                    errorData.detail ||
+                                    message;
+
+                            }
+
+                            catch (e) {
+
+                                console.log(
+                                    "Could not read upload error."
+                                );
+
+                            }
+
+
+                            reject(
+                                new Error(
+                                    message
+                                )
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                // =================================================
+                // NETWORK ERROR
+                // =================================================
+
+                xhr.addEventListener(
+                    "error",
+                    function() {
+
+                        reject(
+                            new Error(
+                                "Network error while uploading file."
+                            )
+                        );
+
+                    }
+                );
+
+
+                // =================================================
+                // SEND UPLOAD
+                // =================================================
+
+                xhr.open(
+                    "POST",
+                    "/upload"
+                );
+
+
+                xhr.send(
+                    formData
+                );
+
+            }
+        );
+
+    }
+
+
+    // =========================================================
+    // SUBMIT PUBLIC FORM
+    // =========================================================
+
+    document
+        .getElementById(
+            "public-form"
+        )
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                console.log(
+                    "Submit button clicked."
+                );
+
+
+                if (!currentForm) {
+
+                    return;
+
+                }
+
+
+                const submitButton =
+                    document.getElementById(
+                        "submit-button"
+                    );
+
+
+                const successMessage =
+                    document.getElementById(
+                        "success-message"
+                    );
+
+
+                const errorBox =
+                    document.getElementById(
+                        "error"
+                    );
+
+
+                successMessage.textContent =
+                    "";
+
+
+                errorBox.textContent =
+                    "";
+
+
+                const formElement =
+                    document.getElementById(
+                        "public-form"
+                    );
+
+
+                // =================================================
+                // BROWSER VALIDATION
+                // =================================================
+
+                if (
+                    !formElement.checkValidity()
+                ) {
+
+                    formElement.reportValidity();
+
+                    return;
+
+                }
+
+
+                // =================================================
+                // DISABLE SUBMIT
+                // =================================================
+
+                submitButton.disabled =
+                    true;
+
+
+                submitButton.textContent =
+                    "Submitting...";
+
+
+                try {
+
+                    // =================================================
+                    // COLLECT FORM DATA
+                    // =================================================
+
+                    const formData =
+                        new FormData(
+                            formElement
+                        );
+
+
+                    const responseValues = [];
+
+
+                    // =================================================
+                    // PROCESS ALL FIELDS
+                    // =================================================
+
+                    for (
+                        const [fieldId, value]
+                        of formData.entries()
+                    ) {
+
+                        // =================================================
+                        // FILE FIELD
+                        // =================================================
+
+                        if (
+                            value instanceof File
+                        ) {
+
+                            if (
+                                !value.name
+                            ) {
+
+                                continue;
+
+                            }
+
+
+                            const fileInput =
+                                formElement.querySelector(
+                                    `input[name="${fieldId}"]`
+                                );
+
+
+                            if (!fileInput) {
+
+                                throw new Error(
+                                    "File input not found."
+                                );
+
+                            }
+
+
+                            const validationResult =
+                                validateFile(
+                                    value,
+                                    fileInput
+                                );
+
+
+                            if (
+                                !validationResult.valid
+                            ) {
+
+                                throw new Error(
+                                    validationResult.message
+                                );
+
+                            }
+
+
+                            console.log(
+                                "Uploading file:",
+                                value.name
+                            );
+
+
+                            const uploadResult =
+                                await uploadFile(
+                                    value,
+                                    fileInput
+                                );
+
+
+                            console.log(
+                                "Upload result:",
+                                uploadResult
+                            );
+
+
+                            // =================================================
+                            // STORE FILE PATH
+                            // =================================================
+
+                            const filePath =
+                                `uploads/${uploadResult.stored_name}`;
+
+
+                            responseValues.push({
+
+                                field_id:
+                                    fieldId,
+
+                                value:
+                                    filePath
+
+                            });
+
+                        }
+
+
+                        // =================================================
+                        // NORMAL FIELD
+                        // =================================================
+
+                        else {
+
+                            responseValues.push({
+
+                                field_id:
+                                    fieldId,
+
+                                value:
+                                    String(value)
+
+                            });
+
+                        }
+
+                    }
+
+
+                    // =================================================
+                    // HANDLE CHECKBOXES
+                    // =================================================
+
+                    const checkboxInputs =
+                        formElement.querySelectorAll(
+                            'input[type="checkbox"]'
+                        );
+
+
+                    checkboxInputs.forEach(
+                        checkbox => {
+
+                            const alreadyAdded =
+                                responseValues.some(
+                                    item =>
+                                        item.field_id ===
+                                        checkbox.name
+                                );
+
+
+                            if (!alreadyAdded) {
+
+                                responseValues.push({
+
+                                    field_id:
+                                        checkbox.name,
+
+                                    value:
+                                        checkbox.checked
+                                            ? "true"
+                                            : "false"
+
+                                });
+
+                            }
+
+                        }
+                    );
+
+
+                    // =================================================
+                    // LOG RESPONSE VALUES
+                    // =================================================
+
+                    console.log(
+                        "Response values:",
+                        responseValues
+                    );
+
+
+                    // =================================================
+                    // SUBMIT PUBLIC FORM
+                    // =================================================
+
+                    const submissionResponse =
+                        await fetch(
+                            `/public/forms/${slug}/submit`,
+                            {
+
+                                method: "POST",
+
+                                headers: {
+
+                                    "Content-Type":
+                                        "application/json",
+
+                                    "Accept":
+                                        "application/json"
+
+                                },
+
+                                body:
+                                    JSON.stringify({
+
+                                        completion_time_seconds:
+                                            30,
+
+                                        response_values:
+                                            responseValues
+
+                                    })
+
+                            }
+                        );
+
+
+                    console.log(
+                        "Submission status:",
+                        submissionResponse.status
+                    );
+
+
+                    // =================================================
+                    // READ RESPONSE
+                    // =================================================
+
+                    const responseText =
+                        await submissionResponse.text();
+
+
+                    console.log(
+                        "Submission response:",
+                        responseText
+                    );
+
+
+                    let data = null;
+
+
+                    try {
+
+                        data =
+                            JSON.parse(
+                                responseText
+                            );
+
+                    }
+
+                    catch (e) {
+
+                        console.log(
+                            "Response was not JSON."
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // ERROR
+                    // =================================================
+
+                    if (
+                        !submissionResponse.ok
+                    ) {
+
+                        throw new Error(
+
+                            data?.detail ||
+                            responseText ||
+                            "Form submission failed."
+
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // SUCCESS
+                    // =================================================
+
+                    console.log(
+                        "Submission created:",
+                        data
+                    );
+
+
+                    successMessage.className =
+                        "success-message";
+
+
+                    successMessage.textContent =
+                        "Form submitted successfully!";
+
+
+                    // =================================================
+                    // RESET FORM
+                    // =================================================
+
+                    formElement.reset();
+
+                }
+
+
+                catch (error) {
+
+                    console.error(
+                        "Submission error:",
+                        error
+                    );
+
+
+                    errorBox.className =
+                        "error-message";
+
+
+                    errorBox.textContent =
+                        error.message;
+
+                }
+
+
+                finally {
+
+                    submitButton.disabled =
+                        false;
+
+
+                    submitButton.textContent =
+                        "Submit";
+
+                }
+
+            }
+        );
+
+
+    // =========================================================
+    // START
+    // =========================================================
+
+    loadForm();
+
 
 </script>
 
+
 </body>
+
 </html>

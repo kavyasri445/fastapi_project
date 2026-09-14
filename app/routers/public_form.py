@@ -1,10 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException
+from pathlib import Path
+
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
 from app.models.form import Form
 from app.models.form_version import FormVersion
 from app.models.field import Field
+from app.models.field_option import FieldOption
 from app.models.public_link import PublicLink
 from app.models.conditional_rule import ConditionalRule
 
@@ -16,7 +20,55 @@ router = APIRouter(
 
 
 # =========================================================
-# GET PUBLIC FORM
+# TEMPLATE DIRECTORY
+# =========================================================
+
+# public_form.py is inside:
+# fastapi_project/app/routers/
+#
+# parent.parent.parent -> fastapi_project
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+TEMPLATES_DIR = BASE_DIR / "templates"
+
+templates = Jinja2Templates(
+    directory=str(TEMPLATES_DIR)
+)
+
+
+# =========================================================
+# DISPLAY PUBLIC FORM PAGE
+# GET /public/form-page/{slug}
+# =========================================================
+
+@router.get("/form-page/{slug}")
+def public_form_page(
+    slug: str,
+    request: Request
+):
+    print("===================================")
+    print("PUBLIC FORM PAGE CALLED")
+    print("Slug:", slug)
+    print("Template directory:", TEMPLATES_DIR)
+    print(
+        "Template directory exists:",
+        TEMPLATES_DIR.exists()
+    )
+    print(
+        "HTML file exists:",
+        (TEMPLATES_DIR / "public_form.html").exists()
+    )
+    print("===================================")
+
+    return templates.TemplateResponse(
+        request=request,
+        name="public_form.html"
+    )
+
+
+# =========================================================
+# GET PUBLIC FORM DATA
 # GET /public/forms/{slug}
 # =========================================================
 
@@ -108,10 +160,6 @@ def get_public_form(
 
     # -----------------------------------------------------
     # 7. Get conditional rules
-    #
-    # IMPORTANT:
-    # ConditionalRule does NOT have form_version_id.
-    # It has form_id.
     # -----------------------------------------------------
 
     rules = db.query(ConditionalRule).filter(
@@ -131,10 +179,6 @@ def get_public_form(
         "version_number": version.version_number,
         "published_at": version.published_at,
 
-        # -------------------------------------------------
-        # Fields
-        # -------------------------------------------------
-
         "fields": [
             {
                 "id": str(field.id),
@@ -143,14 +187,27 @@ def get_public_form(
                 "placeholder": field.placeholder,
                 "is_required": field.is_required,
                 "display_order": field.display_order,
-                "validation_config": field.validation_config
+                "validation_config": field.validation_config,
+
+                # -------------------------------------------------
+                # FIELD OPTIONS
+                # -------------------------------------------------
+                "options": [
+                    {
+                        "id": str(option.id),
+                        "label": option.option_label,
+                        "value": option.option_value,
+                        "display_order": option.display_order
+                    }
+                    for option in db.query(FieldOption).filter(
+                        FieldOption.field_id == field.id
+                    ).order_by(
+                        FieldOption.display_order
+                    ).all()
+                ]
             }
             for field in fields
         ],
-
-        # -------------------------------------------------
-        # Conditional Rules
-        # -------------------------------------------------
 
         "conditional_rules": [
             {

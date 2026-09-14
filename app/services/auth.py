@@ -4,6 +4,10 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from sqlalchemy.orm import Session
+
+from app.database.connection import get_db
+from app.models.user import User
 
 
 # ==============================
@@ -29,8 +33,14 @@ def hash_password(password: str):
     return pwd_context.hash(password)
 
 
-def verify_password(password: str, hashed_password: str):
-    return pwd_context.verify(password, hashed_password)
+def verify_password(
+    password: str,
+    hashed_password: str
+):
+    return pwd_context.verify(
+        password,
+        hashed_password
+    )
 
 
 # ==============================
@@ -40,7 +50,9 @@ def verify_password(password: str, hashed_password: str):
 def create_access_token(data: dict):
     to_encode = data.copy()
 
-    expire = datetime.now(timezone.utc) + timedelta(
+    expire = datetime.now(
+        timezone.utc
+    ) + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
@@ -90,14 +102,59 @@ def verify_access_token(token: str):
 
 security = HTTPBearer()
 
-security = HTTPBearer()
-
 
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
+    credentials: HTTPAuthorizationCredentials = Depends(
+        security
+    )
 ):
     token = credentials.credentials
 
     user_id = verify_access_token(token)
 
     return user_id
+
+
+# ==============================
+# ADMIN AUTHENTICATION
+# ==============================
+
+def get_current_admin(
+    credentials: HTTPAuthorizationCredentials = Depends(
+        security
+    ),
+    db: Session = Depends(get_db)
+):
+    # Get token
+    token = credentials.credentials
+
+    # Verify token and get user ID
+    user_id = verify_access_token(token)
+
+    # Find user
+    user = db.query(User).filter(
+        User.id == user_id
+    ).first()
+
+    # User not found
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found"
+        )
+
+    # Check active status
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is inactive"
+        )
+
+    # Check admin role
+    if user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+
+    return user

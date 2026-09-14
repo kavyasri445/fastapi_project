@@ -7,7 +7,9 @@ from sqlalchemy import text
 
 from app.database.connection import engine
 
-from app.models.public_link import PublicLink
+# =========================================================
+# ROUTERS
+# =========================================================
 
 from app.routers.user import router as user_router
 from app.routers.form import router as form_router
@@ -19,7 +21,11 @@ from app.routers.submission import router as submission_router
 from app.routers.response_value import router as response_value_router
 from app.routers.auth import router as auth_router
 from app.routers.public_form import router as public_form_router
-from app.routers import submission
+from app.routers import public_submissions
+from app.routers.upload import router as upload_router
+from app.routers.files import router as files_router
+from app.routers.admin_files import router as admin_files_router
+
 
 # =========================================================
 # CREATE FASTAPI APP
@@ -34,16 +40,12 @@ app = FastAPI(
 # PROJECT DIRECTORIES
 # =========================================================
 
-# Location of app/main.py
 APP_DIR = Path(__file__).resolve().parent
 
-# Location of fastapi_project/
 PROJECT_DIR = APP_DIR.parent
 
-# Location of fastapi_project/templates/
 TEMPLATES_DIR = PROJECT_DIR / "templates"
 
-# Location of fastapi_project/app/static/
 STATIC_DIR = APP_DIR / "static"
 
 
@@ -62,20 +64,48 @@ app.mount(
 # INCLUDE API ROUTERS
 # =========================================================
 
+# Users
 app.include_router(user_router)
+
+# Forms
 app.include_router(form_router)
+
+# Form Versions
 app.include_router(form_version_router)
+
+# Fields
 app.include_router(field_router)
+
+# Field Options
 app.include_router(field_option_router)
 
 # Conditional Rules
 app.include_router(conditional_rule_router)
 
+# Normal Submissions
 app.include_router(submission_router)
+
+# Response Values
 app.include_router(response_value_router)
+
+# Authentication
 app.include_router(auth_router)
+
+# Public Forms
 app.include_router(public_form_router)
-app.include_router(submission.router)
+
+# Task 4 - Public Form Submission
+app.include_router(public_submissions.router)
+
+# Task 5 - File Upload
+app.include_router(upload_router)
+
+# Task 5 - Secure File Access
+app.include_router(files_router)
+
+# Task 5 - Admin Uploaded Files
+app.include_router(admin_files_router)
+
 
 # =========================================================
 # HOME / API ROOT
@@ -210,3 +240,9 @@ def share_form_page(form_id: str):
     return FileResponse(
         TEMPLATES_DIR / "share_form.html"
     )
+@app.get("/admin-files")
+def admin_files_page():
+    return FileResponse(TEMPLATES_DIR / "admin_files.html")
+@app.get("/signin")
+def signin_page():
+    return FileResponse(TEMPLATES_DIR / "signin.html")

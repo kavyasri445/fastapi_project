@@ -1,12 +1,14 @@
 from uuid import UUID
+from datetime import datetime
+from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ResponseValueCreate(BaseModel):
     submission_id: UUID
     field_id: UUID
-    value: str | None = None
+    value: Any
 
 
 class ResponseValueResponse(BaseModel):
@@ -14,7 +16,8 @@ class ResponseValueResponse(BaseModel):
     submission_id: UUID
     field_id: UUID
     value: str | None
-    created_at: object
+    created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
