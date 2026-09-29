@@ -1,0 +1,136 @@
+{
+  "title": "Dynamic Workflow Automation System",
+  "welcome": "Welcome to the Workflow Automation System.",
+
+  "language": "Language",
+  "english": "English",
+  "telugu": "Telugu",
+  "hindi": "Hindi",
+  "tamil": "Tamil",
+
+  "formList": "Form List",
+  "createNewForm": "+ Create New Form",
+  "formBuilder": "Form Builder",
+
+  "formId": "Form ID",
+  "status": "Status",
+
+  "edit": "Edit",
+  "archive": "Archive",
+  "builder": "Builder",
+  "analytics": "Analytics",
+
+  "loading": "Loading forms...",
+  "noFormsFound": "No forms found.",
+  "noDescription": "No description",
+
+  "unableToLoadForms": "Unable to load forms.",
+  "serverError": "Error connecting to server.",
+
+  "builderMessage": "Please select a draft form and click Builder.",
+
+  "error": "Error",
+  "unableToArchive": "Unable to archive form",
+  "archiveSuccess": "Form archived successfully!",
+
+  "createFormTitle": "Create Form",
+  "formTitle": "Form Title",
+  "enterFormTitle": "Enter form title",
+  "description": "Description",
+  "enterFormDescription": "Enter form description",
+  "createdBy": "Created By (User ID)",
+  "enterUserUUID": "Enter user UUID",
+  "createFormButton": "Create Form",
+  "back": "Back",
+  "failedToCreateForm": "Failed to create form",
+  "formCreatedSuccess": "Form created successfully!",
+
+  "formBuilderTitle": "Form Builder",
+  "saveChanges": "Save Changes",
+  "fields": "Fields",
+  "conditionalRules": "Conditional Rules",
+  "addRule": "+ Add Rule",
+  "existingRules": "Existing Rules",
+
+  "type": "Type",
+  "order": "Order",
+  "delete": "Delete",
+  "unnamedField": "Unnamed Field",
+
+  "loadingFields": "Loading fields...",
+  "noFieldsAvailable": "No fields available for this form.",
+  "unableToLoadFields": "Unable to load fields.",
+  "failedToLoadFields": "Failed to load fields",
+
+  "formIdNotFound": "Form ID not found",
+  "formIdMissing": "Form ID is missing.",
+
+  "confirmDeleteField": "Are you sure you want to delete this field?",
+  "failedToDeleteField": "Failed to delete field.",
+  "fieldDeletedSuccess": "Field deleted successfully.",
+
+  "addConditionalRule": "Add Conditional Rule",
+  "editConditionalRule": "Edit Conditional Rule",
+
+  "whenField": "When Field:",
+  "operator": "Operator:",
+  "value": "Value:",
+  "then": "Then:",
+  "field": "Field:",
+
+  "selectTriggerField": "Select trigger field",
+  "selectTargetField": "Select target field",
+  "selectOperator": "Select operator",
+
+  "equals": "Equals",
+  "notEquals": "Not Equals",
+  "contains": "Contains",
+  "greaterThan": "Greater Than",
+  "isEmpty": "Is Empty",
+
+  "show": "Show",
+  "hide": "Hide",
+
+  "enterComparisonValue": "Enter comparison value",
+  "notRequiredForIsEmpty": "Not required for Is Empty",
+
+  "saveRule": "Save Rule",
+  "cancel": "Cancel",
+
+  "selectTriggerFieldError": "Please select a trigger field.",
+  "selectOperatorError": "Please select an operator.",
+  "comparisonValueError": "Please enter a comparison value.",
+  "selectTargetFieldError": "Please select a target field.",
+  "sameFieldError": "Trigger field and target field cannot be the same.",
+
+  "failedToSaveRule": "Failed to save rule.",
+  "ruleCreatedSuccess": "Rule created successfully!",
+  "ruleUpdatedSuccess": "Rule updated successfully!",
+
+  "loadingRules": "Loading rules...",
+  "failedToLoadRules": "Failed to load rules.",
+  "unableToLoadRules": "Unable to load rules.",
+  "noRulesCreated": "No conditional rules created yet.",
+
+  "if": "If",
+
+  "ruleNotFound": "Rule not found.",
+  "unableToLoadRule": "Unable to load rule.",
+
+  "confirmDeleteRule": "Are you sure you want to delete this rule?",
+  "failedToDeleteRule": "Failed to delete rule.",
+  "ruleDeletedSuccess": "Conditional rule deleted successfully.",
+
+  "enterFormTitleError": "Please enter a form title.",
+  "formUpdateEndpointMessage": "Form information is ready. Connect this button to your existing Form update endpoint.",
+
+  "editFormTitle": "Edit Form",
+  "titleRequired": "Title is required.",
+  "unableToLoadForm": "Unable to load form.",
+  "unableToUpdateForm": "Unable to update form.",
+  "formUpdatedSuccess": "Form updated successfully!",
+  "openEditFormCorrectly": "Form ID is missing. Open the Edit Form page using the correct form ID.",
+  "unknownField": "Unknown field"
+
+
+}

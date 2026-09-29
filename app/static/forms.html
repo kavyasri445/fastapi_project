@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Form List</title>
 
     <style>
@@ -11,6 +15,23 @@
 
         h1 {
             margin-bottom: 20px;
+        }
+
+        .language-container {
+            margin-bottom: 20px;
+        }
+
+        .language-container label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        #languageSelector {
+            padding: 8px 12px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
         button {
@@ -38,26 +59,63 @@
 
 <body>
 
-    <h1>Form List</h1>
+    <div class="language-container">
+        <label for="languageSelector" data-i18n="language">
+            Language
+        </label>
 
-    <button onclick="loadForms()">Refresh Forms</button>
+        <select id="languageSelector">
+            <option value="en" data-i18n="english">
+                English
+            </option>
+
+            <option value="te" data-i18n="telugu">
+                Telugu
+            </option>
+
+            <option value="hi" data-i18n="hindi">
+                Hindi
+            </option>
+
+            <option value="ta" data-i18n="tamil">
+                Tamil
+            </option>
+        </select>
+    </div>
+
+
+    <h1 data-i18n="formList">
+        Form List
+    </h1>
+
+
+    <button onclick="loadForms()" data-i18n="refreshForms">
+        Refresh Forms
+    </button>
+
 
     <table>
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Form ID</th>
+                <th data-i18n="titleColumn">Title</th>
+                <th data-i18n="descriptionColumn">Description</th>
+                <th data-i18n="statusColumn">Status</th>
+                <th data-i18n="formIdColumn">Form ID</th>
             </tr>
         </thead>
 
         <tbody id="formsTableBody">
             <tr>
-                <td colspan="4">Loading...</td>
+                <td colspan="4" data-i18n="loading">
+                    Loading...
+                </td>
             </tr>
         </tbody>
     </table>
+
+
+    <!-- Multilingual JavaScript -->
+    <script src="/static/language.js"></script>
 
 
     <script>
@@ -101,13 +159,25 @@
 
                 document.getElementById("formsTableBody").innerHTML = `
                     <tr>
-                        <td colspan="4">
+                        <td colspan="4" data-i18n="errorLoadingForms">
                             Error loading forms
                         </td>
                     </tr>
                 `;
+
+                /*
+                 * Re-apply the currently selected language
+                 * to the newly created error message.
+                 */
+                const selectedLanguage =
+                    localStorage.getItem("selectedLanguage") || "en";
+
+                if (typeof loadLanguage === "function") {
+                    loadLanguage(selectedLanguage);
+                }
             }
         }
+
 
         loadForms();
 

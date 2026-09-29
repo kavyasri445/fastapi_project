@@ -1,0 +1,134 @@
+{
+  "title": "డైనమిక్ వర్క్‌ఫ్లో ఆటోమేషన్ సిస్టమ్",
+  "welcome": "వర్క్‌ఫ్లో ఆటోమేషన్ సిస్టమ్‌కు స్వాగతం.",
+
+  "language": "భాష",
+  "english": "ఇంగ్లీష్",
+  "telugu": "తెలుగు",
+  "hindi": "హిందీ",
+  "tamil": "తమిళం",
+
+  "formList": "ఫారమ్‌ల జాబితా",
+  "createNewForm": "+ కొత్త ఫారమ్‌ను సృష్టించండి",
+  "formBuilder": "ఫారమ్ బిల్డర్",
+
+  "formId": "ఫారమ్ ID",
+  "status": "స్థితి",
+
+  "edit": "ఎడిట్",
+  "archive": "ఆర్కైవ్",
+  "builder": "బిల్డర్",
+  "analytics": "విశ్లేషణలు",
+
+  "loading": "ఫారమ్‌లు లోడ్ అవుతున్నాయి...",
+  "noFormsFound": "ఫారమ్‌లు ఏవీ కనుగొనబడలేదు.",
+  "noDescription": "వివరణ లేదు",
+
+  "unableToLoadForms": "ఫారమ్‌లను లోడ్ చేయడం సాధ్యం కాలేదు.",
+  "serverError": "సర్వర్‌కు కనెక్ట్ చేయడంలో లోపం.",
+
+  "builderMessage": "దయచేసి డ్రాఫ్ట్ ఫారమ్‌ను ఎంచుకుని బిల్డర్‌ను క్లిక్ చేయండి.",
+
+  "error": "లోపం",
+  "unableToArchive": "ఫారమ్‌ను ఆర్కైవ్ చేయడం సాధ్యం కాలేదు",
+  "archiveSuccess": "ఫారమ్ విజయవంతంగా ఆర్కైవ్ చేయబడింది!",
+
+  "createFormTitle": "ఫారమ్‌ను సృష్టించండి",
+  "formTitle": "ఫారమ్ పేరు",
+  "enterFormTitle": "ఫారమ్ పేరును నమోదు చేయండి",
+  "description": "వివరణ",
+  "enterFormDescription": "ఫారమ్ వివరణను నమోదు చేయండి",
+  "createdBy": "సృష్టించిన వారు (యూజర్ ID)",
+  "enterUserUUID": "యూజర్ UUID నమోదు చేయండి",
+  "createFormButton": "ఫారమ్‌ను సృష్టించండి",
+  "back": "వెనుకకు",
+  "failedToCreateForm": "ఫారమ్‌ను సృష్టించడంలో విఫలమైంది",
+  "formCreatedSuccess": "ఫారమ్ విజయవంతంగా సృష్టించబడింది!",
+
+  "formBuilderTitle": "ఫారమ్ బిల్డర్",
+  "saveChanges": "మార్పులను సేవ్ చేయండి",
+  "fields": "ఫీల్డ్‌లు",
+  "conditionalRules": "కండిషనల్ రూల్స్",
+  "addRule": "+ రూల్‌ను జోడించండి",
+  "existingRules": "ఇప్పటికే ఉన్న రూల్స్",
+
+  "type": "రకం",
+  "order": "క్రమం",
+  "delete": "తొలగించండి",
+  "unnamedField": "పేరు లేని ఫీల్డ్",
+
+  "loadingFields": "ఫీల్డ్‌లు లోడ్ అవుతున్నాయి...",
+  "noFieldsAvailable": "ఈ ఫారమ్‌కు ఫీల్డ్‌లు అందుబాటులో లేవు.",
+  "unableToLoadFields": "ఫీల్డ్‌లను లోడ్ చేయడం సాధ్యం కాలేదు.",
+  "failedToLoadFields": "ఫీల్డ్‌లను లోడ్ చేయడంలో విఫలమైంది",
+
+  "formIdNotFound": "ఫారమ్ ID కనుగొనబడలేదు",
+  "formIdMissing": "ఫారమ్ ID లేదు.",
+
+  "confirmDeleteField": "మీరు ఈ ఫీల్డ్‌ను తొలగించాలనుకుంటున్నారా?",
+  "failedToDeleteField": "ఫీల్డ్‌ను తొలగించడంలో విఫలమైంది.",
+  "fieldDeletedSuccess": "ఫీల్డ్ విజయవంతంగా తొలగించబడింది.",
+
+  "addConditionalRule": "కండిషనల్ రూల్‌ను జోడించండి",
+  "editConditionalRule": "కండిషనల్ రూల్‌ను ఎడిట్ చేయండి",
+
+  "whenField": "ఫీల్డ్:",
+  "operator": "ఆపరేటర్:",
+  "value": "విలువ:",
+  "then": "తర్వాత:",
+  "field": "ఫీల్డ్:",
+
+  "selectTriggerField": "ట్రిగ్గర్ ఫీల్డ్‌ను ఎంచుకోండి",
+  "selectTargetField": "టార్గెట్ ఫీల్డ్‌ను ఎంచుకోండి",
+  "selectOperator": "ఆపరేటర్‌ను ఎంచుకోండి",
+
+  "equals": "సమానం",
+  "notEquals": "సమానం కాదు",
+  "contains": "కలిగి ఉంది",
+  "greaterThan": "కంటే ఎక్కువ",
+  "isEmpty": "ఖాళీగా ఉంది",
+
+  "show": "చూపించు",
+  "hide": "దాచు",
+
+  "enterComparisonValue": "పోలిక విలువను నమోదు చేయండి",
+  "notRequiredForIsEmpty": "Is Empty కోసం అవసరం లేదు",
+
+  "saveRule": "రూల్‌ను సేవ్ చేయండి",
+  "cancel": "రద్దు చేయండి",
+
+  "selectTriggerFieldError": "దయచేసి ట్రిగ్గర్ ఫీల్డ్‌ను ఎంచుకోండి.",
+  "selectOperatorError": "దయచేసి ఆపరేటర్‌ను ఎంచుకోండి.",
+  "comparisonValueError": "దయచేసి పోలిక విలువను నమోదు చేయండి.",
+  "selectTargetFieldError": "దయచేసి టార్గెట్ ఫీల్డ్‌ను ఎంచుకోండి.",
+  "sameFieldError": "ట్రిగ్గర్ ఫీల్డ్ మరియు టార్గెట్ ఫీల్డ్ ఒకేలా ఉండకూడదు.",
+
+  "failedToSaveRule": "రూల్‌ను సేవ్ చేయడంలో విఫలమైంది.",
+  "ruleCreatedSuccess": "రూల్ విజయవంతంగా సృష్టించబడింది!",
+  "ruleUpdatedSuccess": "రూల్ విజయవంతంగా నవీకరించబడింది!",
+
+  "loadingRules": "రూల్స్ లోడ్ అవుతున్నాయి...",
+  "failedToLoadRules": "రూల్స్‌ను లోడ్ చేయడంలో విఫలమైంది.",
+  "unableToLoadRules": "రూల్స్‌ను లోడ్ చేయడం సాధ్యం కాలేదు.",
+  "noRulesCreated": "ఇప్పటివరకు కండిషనల్ రూల్స్ ఏవీ సృష్టించబడలేదు.",
+
+  "if": "ఒకవేళ",
+
+  "ruleNotFound": "రూల్ కనుగొనబడలేదు.",
+  "unableToLoadRule": "రూల్‌ను లోడ్ చేయడం సాధ్యం కాలేదు.",
+
+  "confirmDeleteRule": "మీరు ఈ రూల్‌ను తొలగించాలనుకుంటున్నారా?",
+  "failedToDeleteRule": "రూల్‌ను తొలగించడంలో విఫలమైంది.",
+  "ruleDeletedSuccess": "కండిషనల్ రూల్ విజయవంతంగా తొలగించబడింది.",
+
+  "enterFormTitleError": "దయచేసి ఫారమ్ పేరును నమోదు చేయండి.",
+  "formUpdateEndpointMessage": "ఫారమ్ సమాచారం సిద్ధంగా ఉంది. ఈ బటన్‌ను మీ Form update endpoint‌కు కనెక్ట్ చేయండి.",
+
+  "editFormTitle": "ఫారమ్‌ను ఎడిట్ చేయండి",
+  "titleRequired": "ఫారమ్ పేరు అవసరం.",
+  "unableToLoadForm": "ఫారమ్‌ను లోడ్ చేయడం సాధ్యం కాలేదు.",
+  "unableToUpdateForm": "ఫారమ్‌ను నవీకరించడం సాధ్యం కాలేదు.",
+  "formUpdatedSuccess": "ఫారమ్ విజయవంతంగా నవీకరించబడింది!",
+  "openEditFormCorrectly": "ఫారమ్ ID లేదు. సరైన ఫారమ్ IDతో Edit Form పేజీని తెరవండి.",
+  "unknownField": "తెలియని ఫీల్డ్"
+}

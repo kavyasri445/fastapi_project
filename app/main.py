@@ -8,6 +8,13 @@ from sqlalchemy import text
 from app.database.connection import engine
 
 # =========================================================
+# MODELS
+# =========================================================
+
+from app.models.audit_log import AuditLog
+
+
+# =========================================================
 # ROUTERS
 # =========================================================
 
@@ -25,113 +32,64 @@ from app.routers import public_submissions
 from app.routers.upload import router as upload_router
 from app.routers.files import router as files_router
 from app.routers.admin_files import router as admin_files_router
+from app.routers.analytics import router as analytics_router
+from app.routers.responses import router as responses_router
+from app.routers.response_detail import router as response_detail_router
+from app.routers.response_management import router as response_management_router
 
+router_list = [
+    user_router,
+    form_router,
+    form_version_router,
+    field_router,
+    field_option_router,
+    conditional_rule_router,
+    submission_router,
+    response_value_router,
+    auth_router,
+    public_form_router,
+    public_submissions.router,
+    upload_router,
+    files_router,
+    admin_files_router,
+    analytics_router,
+    responses_router,
+    response_detail_router,
+    response_management_router,
+]
 
-# =========================================================
-# CREATE FASTAPI APP
-# =========================================================
-
-app = FastAPI(
-    title="FastAPI Application"
-)
-
-
-# =========================================================
-# PROJECT DIRECTORIES
-# =========================================================
+app = FastAPI(title="FastAPI Application")
 
 APP_DIR = Path(__file__).resolve().parent
-
 PROJECT_DIR = APP_DIR.parent
-
 TEMPLATES_DIR = PROJECT_DIR / "templates"
-
 STATIC_DIR = APP_DIR / "static"
 
-
-# =========================================================
-# STATIC FILES
-# =========================================================
-
-app.mount(
-    "/static",
-    StaticFiles(directory=STATIC_DIR),
-    name="static"
-)
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
 # =========================================================
-# INCLUDE API ROUTERS
+# INCLUDE ROUTERS
 # =========================================================
 
-# Users
-app.include_router(user_router)
-
-# Forms
-app.include_router(form_router)
-
-# Form Versions
-app.include_router(form_version_router)
-
-# Fields
-app.include_router(field_router)
-
-# Field Options
-app.include_router(field_option_router)
-
-# Conditional Rules
-app.include_router(conditional_rule_router)
-
-# Normal Submissions
-app.include_router(submission_router)
-
-# Response Values
-app.include_router(response_value_router)
-
-# Authentication
-app.include_router(auth_router)
-
-# Public Forms
-app.include_router(public_form_router)
-
-# Task 4 - Public Form Submission
-app.include_router(public_submissions.router)
-
-# Task 5 - File Upload
-app.include_router(upload_router)
-
-# Task 5 - Secure File Access
-app.include_router(files_router)
-
-# Task 5 - Admin Uploaded Files
-app.include_router(admin_files_router)
+for router in router_list:
+    app.include_router(router)
 
 
 # =========================================================
-# HOME / API ROOT
+# BASIC ROUTES
 # =========================================================
 
 @app.get("/")
 def root():
-    return {
-        "message": "FastAPI application is running"
-    }
+    return {"message": "FastAPI application is running"}
 
-
-# =========================================================
-# DATABASE CHECK
-# =========================================================
 
 @app.get("/database-check")
 def database_check():
-
     try:
-
         with engine.connect() as connection:
-
-            connection.execute(
-                text("SELECT 1")
-            )
+            connection.execute(text("SELECT 1"))
 
         return {
             "status": "success",
@@ -139,7 +97,6 @@ def database_check():
         }
 
     except Exception as e:
-
         return {
             "status": "error",
             "message": str(e)
@@ -147,102 +104,89 @@ def database_check():
 
 
 # =========================================================
-# SIGNUP PAGE
+# PWA ROUTES
+# =========================================================
+
+@app.get("/manifest.json")
+def pwa_manifest():
+    return FileResponse(
+        STATIC_DIR / "manifest.json",
+        media_type="application/manifest+json"
+    )
+
+
+@app.get("/sw.js")
+def service_worker():
+    return FileResponse(
+        STATIC_DIR / "sw.js",
+        media_type="application/javascript"
+    )
+
+
+# =========================================================
+# HTML PAGES
 # =========================================================
 
 @app.get("/signup")
 def signup_page():
+    return FileResponse(TEMPLATES_DIR / "signup.html")
 
-    return FileResponse(
-        TEMPLATES_DIR / "signup.html"
-    )
-
-
-# =========================================================
-# FORMS LIST PAGE
-# =========================================================
 
 @app.get("/forms-page")
 def forms_page():
+    return FileResponse(TEMPLATES_DIR / "forms.html")
 
-    return FileResponse(
-        TEMPLATES_DIR / "forms.html"
-    )
-
-
-# =========================================================
-# CREATE FORM PAGE
-# =========================================================
 
 @app.get("/create-form")
 def create_form_page():
+    return FileResponse(TEMPLATES_DIR / "create_form.html")
 
-    return FileResponse(
-        TEMPLATES_DIR / "create_form.html"
-    )
-
-
-# =========================================================
-# FORM BUILDER PAGE
-# =========================================================
 
 @app.get("/form-builder")
 def form_builder_page():
+    return FileResponse(TEMPLATES_DIR / "form_builder.html")
 
-    return FileResponse(
-        TEMPLATES_DIR / "form_builder.html"
-    )
-
-
-# =========================================================
-# EDIT FORM PAGE
-# =========================================================
 
 @app.get("/edit-form/{form_id}")
 def edit_form_page(form_id: str):
+    return FileResponse(TEMPLATES_DIR / "edit_form.html")
 
-    return FileResponse(
-        TEMPLATES_DIR / "edit_form.html"
-    )
-
-
-# =========================================================
-# VERSION HISTORY PAGE
-# =========================================================
 
 @app.get("/version-history")
 def version_history_page():
+    return FileResponse(STATIC_DIR / "version_history.html")
 
-    return FileResponse(
-        STATIC_DIR / "version_history.html"
-    )
-
-
-# =========================================================
-# PUBLIC FORM PAGE
-# =========================================================
 
 @app.get("/public/forms/{slug}/page")
 def public_form_page(slug: str):
+    return FileResponse(TEMPLATES_DIR / "public_form.html")
 
-    return FileResponse(
-        TEMPLATES_DIR / "public_form.html"
-    )
-
-
-# =========================================================
-# SHARE FORM PAGE
-# =========================================================
 
 @app.get("/share-form/{form_id}")
 def share_form_page(form_id: str):
+    return FileResponse(TEMPLATES_DIR / "share_form.html")
 
-    return FileResponse(
-        TEMPLATES_DIR / "share_form.html"
-    )
+
 @app.get("/admin-files")
 def admin_files_page():
     return FileResponse(TEMPLATES_DIR / "admin_files.html")
+
+
 @app.get("/signin")
 def signin_page():
     return FileResponse(TEMPLATES_DIR / "signin.html")
+
+
+@app.get("/analytics/{form_id}")
+def analytics_page(form_id: str):
+    return FileResponse(TEMPLATES_DIR / "analytics.html")
+
+
+@app.get("/responses/{form_id}")
+def responses_page(form_id: str):
+    return FileResponse(TEMPLATES_DIR / "responses.html")
+
+
+@app.get("/response-management/{form_id}")
+def response_management_page(form_id: str):
+    return FileResponse(TEMPLATES_DIR / "responses.html")

@@ -29,6 +29,24 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
 
+        .language-container {
+            margin-bottom: 25px;
+        }
+
+        .language-container label {
+            display: inline-block;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        #languageSelector {
+            padding: 8px 12px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
         h1 {
             margin-top: 0;
         }
@@ -91,6 +109,11 @@
             background: #16a34a;
         }
 
+        .add-field-button {
+            background: #16a34a;
+            margin-bottom: 15px;
+        }
+
         .field-card {
             border: 1px solid #ddd;
             padding: 15px;
@@ -114,6 +137,27 @@
             color: #666;
             font-size: 13px;
             margin-top: 5px;
+        }
+
+        .field-form {
+            display: none;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .checkbox-group input {
+            width: auto;
         }
 
         .rule-item {
@@ -166,13 +210,61 @@
 
 </head>
 
-
 <body>
-
 
 <div class="container">
 
-    <h1>Form Builder</h1>
+    <!-- =====================================================
+         LANGUAGE SELECTOR
+    ====================================================== -->
+
+    <div class="language-container">
+
+        <label
+            for="languageSelector"
+            data-i18n="language">
+            Language
+        </label>
+
+        <select id="languageSelector">
+
+            <option
+                value="en"
+                data-i18n="english">
+                English
+            </option>
+
+            <option
+                value="te"
+                data-i18n="telugu">
+                Telugu
+            </option>
+
+            <option
+                value="hi"
+                data-i18n="hindi">
+                Hindi
+            </option>
+
+            <option
+                value="ta"
+                data-i18n="tamil">
+                Tamil
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- =====================================================
+         FORM BUILDER TITLE
+    ====================================================== -->
+
+    <h1 data-i18n="formBuilderTitle">
+        Form Builder
+    </h1>
+
 
     <!-- =====================================================
          FORM INFORMATION
@@ -180,7 +272,9 @@
 
     <div class="info-box">
 
-        <strong>Form ID:</strong>
+        <strong data-i18n="formId">
+            Form ID:
+        </strong>
 
         <span id="formIdDisplay">
             Loading...
@@ -191,7 +285,9 @@
 
     <div class="form-group">
 
-        <label for="formTitle">
+        <label
+            for="formTitle"
+            data-i18n="title">
             Title
         </label>
 
@@ -199,6 +295,7 @@
             type="text"
             id="formTitle"
             placeholder="Enter form title"
+            data-i18n-placeholder="enterFormTitle"
         >
 
     </div>
@@ -206,7 +303,9 @@
 
     <div class="form-group">
 
-        <label for="formDescription">
+        <label
+            for="formDescription"
+            data-i18n="description">
             Description
         </label>
 
@@ -214,6 +313,7 @@
             id="formDescription"
             rows="4"
             placeholder="Enter form description"
+            data-i18n-placeholder="enterFormDescription"
         ></textarea>
 
     </div>
@@ -224,7 +324,7 @@
         <button
             type="button"
             id="saveFormButton"
-        >
+            data-i18n="saveChanges">
             Save Changes
         </button>
 
@@ -241,7 +341,159 @@
          FIELDS
     ====================================================== -->
 
-    <h2>Fields</h2>
+    <h2 data-i18n="fields">
+        Fields
+    </h2>
+
+    <!-- ADD FIELD BUTTON -->
+
+    <button
+        type="button"
+        id="addFieldButton"
+        class="add-field-button">
+        + Add Field
+    </button>
+
+
+    <!-- ADD FIELD FORM -->
+
+    <div
+        id="fieldForm"
+        class="field-form"
+    >
+
+        <h3>Add Field</h3>
+
+
+        <!-- FIELD LABEL -->
+
+        <div class="form-group">
+
+            <label for="fieldLabel">
+                Field Label
+            </label>
+
+            <input
+                type="text"
+                id="fieldLabel"
+                placeholder="Enter field label"
+            >
+
+        </div>
+
+
+        <!-- FIELD TYPE -->
+
+        <div class="form-group">
+
+            <label for="fieldType">
+                Field Type
+            </label>
+
+            <select id="fieldType">
+
+                <option value="text">
+                    Text
+                </option>
+
+                <option value="textarea">
+                    Text Area
+                </option>
+
+                <option value="number">
+                    Number
+                </option>
+
+                <option value="email">
+                    Email
+                </option>
+
+                <option value="date">
+                    Date
+                </option>
+
+                <option value="select">
+                    Select
+                </option>
+
+                <option value="radio">
+                    Radio
+                </option>
+
+                <option value="checkbox">
+                    Checkbox
+                </option>
+
+                <option value="file">
+                    File
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- PLACEHOLDER -->
+
+        <div class="form-group">
+
+            <label for="fieldPlaceholder">
+                Placeholder
+            </label>
+
+            <input
+                type="text"
+                id="fieldPlaceholder"
+                placeholder="Enter placeholder"
+            >
+
+        </div>
+
+
+        <!-- REQUIRED -->
+
+        <div class="checkbox-group">
+
+            <input
+                type="checkbox"
+                id="fieldRequired"
+            >
+
+            <label
+                for="fieldRequired"
+                style="margin-bottom:0;">
+                Required field
+            </label>
+
+        </div>
+
+
+        <div
+            id="fieldMessage"
+            class="message"
+        ></div>
+
+
+        <!-- SAVE FIELD -->
+
+        <button
+            type="button"
+            id="saveFieldButton"
+            class="success-button">
+            Save Field
+        </button>
+
+
+        <!-- CANCEL -->
+
+        <button
+            type="button"
+            id="cancelFieldButton"
+            class="secondary-button">
+            Cancel
+        </button>
+
+    </div>
 
 
     <div
@@ -263,7 +515,7 @@
 
     <section class="conditional-rules-section">
 
-        <h2>
+        <h2 data-i18n="conditionalRules">
             Conditional Rules
         </h2>
 
@@ -271,14 +523,12 @@
         <button
             type="button"
             id="addRuleButton"
-        >
+            data-i18n="addRule">
             + Add Rule
         </button>
 
 
-        <!-- =================================================
-             RULE FORM
-        ================================================== -->
+        <!-- RULE FORM -->
 
         <div
             id="ruleForm"
@@ -294,13 +544,17 @@
 
             <div class="form-group">
 
-                <label for="triggerField">
+                <label
+                    for="triggerField"
+                    data-i18n="whenField">
                     When Field:
                 </label>
 
                 <select id="triggerField">
 
-                    <option value="">
+                    <option
+                        value=""
+                        data-i18n="selectTriggerField">
                         Select trigger field
                     </option>
 
@@ -313,33 +567,47 @@
 
             <div class="form-group">
 
-                <label for="ruleOperator">
+                <label
+                    for="ruleOperator"
+                    data-i18n="operator">
                     Operator:
                 </label>
 
                 <select id="ruleOperator">
 
-                    <option value="">
+                    <option
+                        value=""
+                        data-i18n="selectOperator">
                         Select operator
                     </option>
 
-                    <option value="equals">
+                    <option
+                        value="equals"
+                        data-i18n="equals">
                         Equals
                     </option>
 
-                    <option value="not_equals">
+                    <option
+                        value="not_equals"
+                        data-i18n="notEquals">
                         Not Equals
                     </option>
 
-                    <option value="contains">
+                    <option
+                        value="contains"
+                        data-i18n="contains">
                         Contains
                     </option>
 
-                    <option value="greater_than">
+                    <option
+                        value="greater_than"
+                        data-i18n="greaterThan">
                         Greater Than
                     </option>
 
-                    <option value="is_empty">
+                    <option
+                        value="is_empty"
+                        data-i18n="isEmpty">
                         Is Empty
                     </option>
 
@@ -352,7 +620,9 @@
 
             <div class="form-group">
 
-                <label for="comparisonValue">
+                <label
+                    for="comparisonValue"
+                    data-i18n="value">
                     Value:
                 </label>
 
@@ -360,6 +630,7 @@
                     type="text"
                     id="comparisonValue"
                     placeholder="Enter comparison value"
+                    data-i18n-placeholder="enterComparisonValue"
                 >
 
             </div>
@@ -369,17 +640,23 @@
 
             <div class="form-group">
 
-                <label for="ruleAction">
+                <label
+                    for="ruleAction"
+                    data-i18n="then">
                     Then:
                 </label>
 
                 <select id="ruleAction">
 
-                    <option value="show">
+                    <option
+                        value="show"
+                        data-i18n="show">
                         Show
                     </option>
 
-                    <option value="hide">
+                    <option
+                        value="hide"
+                        data-i18n="hide">
                         Hide
                     </option>
 
@@ -392,13 +669,17 @@
 
             <div class="form-group">
 
-                <label for="targetField">
+                <label
+                    for="targetField"
+                    data-i18n="field">
                     Field:
                 </label>
 
                 <select id="targetField">
 
-                    <option value="">
+                    <option
+                        value=""
+                        data-i18n="selectTargetField">
                         Select target field
                     </option>
 
@@ -417,7 +698,7 @@
                 type="button"
                 id="saveRuleButton"
                 class="success-button"
-            >
+                data-i18n="saveRule">
                 Save Rule
             </button>
 
@@ -426,18 +707,16 @@
                 type="button"
                 id="cancelRuleButton"
                 class="secondary-button"
-            >
+                data-i18n="cancel">
                 Cancel
             </button>
 
         </div>
 
 
-        <!-- =================================================
-             EXISTING RULES
-        ================================================== -->
+        <!-- EXISTING RULES -->
 
-        <h3>
+        <h3 data-i18n="existingRules">
             Existing Rules
         </h3>
 
@@ -453,6 +732,9 @@
 </div>
 
 
+<script src="/static/language.js"></script>
+
+
 <script>
 
 /* =========================================================
@@ -464,6 +746,19 @@ let currentFormId = null;
 let fields = [];
 
 let editingRuleId = null;
+
+let currentTranslations = {};
+
+
+/* =========================================================
+   GET TRANSLATION
+========================================================= */
+
+function getTranslation(key) {
+
+    return currentTranslations[key] || key;
+
+}
 
 
 /* =========================================================
@@ -523,7 +818,123 @@ function getFormId() {
 
 
 /* =========================================================
-   INITIALIZE
+   LOAD TRANSLATIONS
+========================================================= */
+
+async function loadBuilderTranslations(language) {
+
+    try {
+
+        const response =
+            await fetch(
+                "/static/i18n/" +
+                language +
+                ".json"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Language file not found"
+            );
+        }
+
+
+        currentTranslations =
+            await response.json();
+
+
+        updateStaticText();
+
+        initializePage();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Translation loading failed:",
+            error
+        );
+
+        currentTranslations = {};
+
+        initializePage();
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE STATIC TEXT
+========================================================= */
+
+function updateStaticText() {
+
+    document
+        .querySelectorAll("[data-i18n]")
+        .forEach(function(element) {
+
+            const key =
+                element.getAttribute(
+                    "data-i18n"
+                );
+
+
+            if (currentTranslations[key]) {
+
+                element.textContent =
+                    currentTranslations[key];
+
+            }
+
+        });
+
+
+    document
+        .querySelectorAll(
+            "[data-i18n-placeholder]"
+        )
+        .forEach(function(element) {
+
+            const key =
+                element.getAttribute(
+                    "data-i18n-placeholder"
+                );
+
+
+            if (currentTranslations[key]) {
+
+                element.placeholder =
+                    currentTranslations[key];
+
+            }
+
+        });
+
+
+    const languageSelector =
+        document.getElementById(
+            "languageSelector"
+        );
+
+
+    if (languageSelector) {
+
+        languageSelector.value =
+            localStorage.getItem(
+                "selectedLanguage"
+            ) || "en";
+
+    }
+
+}
+
+
+/* =========================================================
+   GET FORM ID + INITIALIZE
 ========================================================= */
 
 function initializePage() {
@@ -547,7 +958,9 @@ function initializePage() {
     if (!currentFormId) {
 
         formIdDisplay.textContent =
-            "Form ID not found";
+            getTranslation(
+                "formIdNotFound"
+            );
 
         return;
     }
@@ -560,6 +973,253 @@ function initializePage() {
     loadFields();
 
     loadRules();
+
+}
+
+
+/* =========================================================
+   SHOW ADD FIELD FORM
+========================================================= */
+
+function showFieldForm() {
+
+    if (!currentFormId) {
+
+        alert(
+            "Form ID is missing."
+        );
+
+        return;
+    }
+
+
+    document.getElementById(
+        "fieldForm"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "fieldLabel"
+    ).focus();
+
+
+    document.getElementById(
+        "fieldMessage"
+    ).textContent = "";
+
+}
+
+
+/* =========================================================
+   CANCEL FIELD FORM
+========================================================= */
+
+function cancelFieldForm() {
+
+    document.getElementById(
+        "fieldForm"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "fieldLabel"
+    ).value = "";
+
+
+    document.getElementById(
+        "fieldType"
+    ).value = "text";
+
+
+    document.getElementById(
+        "fieldPlaceholder"
+    ).value = "";
+
+
+    document.getElementById(
+        "fieldRequired"
+    ).checked = false;
+
+
+    document.getElementById(
+        "fieldMessage"
+    ).textContent = "";
+
+}
+
+
+/* =========================================================
+   SAVE FIELD
+========================================================= */
+
+async function saveField() {
+
+    const label =
+        document.getElementById(
+            "fieldLabel"
+        ).value.trim();
+
+
+    const fieldType =
+        document.getElementById(
+            "fieldType"
+        ).value;
+
+
+    const placeholder =
+        document.getElementById(
+            "fieldPlaceholder"
+        ).value.trim();
+
+
+    const isRequired =
+        document.getElementById(
+            "fieldRequired"
+        ).checked;
+
+
+    const message =
+        document.getElementById(
+            "fieldMessage"
+        );
+
+
+    if (!currentFormId) {
+
+        message.className =
+            "message error";
+
+        message.textContent =
+            "Form ID is missing.";
+
+        return;
+    }
+
+
+    if (!label) {
+
+        message.className =
+            "message error";
+
+        message.textContent =
+            "Please enter a field label.";
+
+        return;
+    }
+
+
+    const fieldData = {
+
+        form_id:
+            currentFormId,
+
+        label:
+            label,
+
+        field_type:
+            fieldType,
+
+        placeholder:
+            placeholder || null,
+
+        is_required:
+            isRequired,
+
+        validation_config:
+            null
+
+    };
+
+
+    console.log(
+        "Creating field:",
+        fieldData
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/fields/",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            fieldData
+                        )
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Create field response:",
+            data
+        );
+
+
+        if (!response.ok) {
+
+            message.className =
+                "message error";
+
+            message.textContent =
+                data.detail ||
+                "Failed to create field.";
+
+            return;
+        }
+
+
+        message.className =
+            "message success";
+
+        message.textContent =
+            "Field created successfully!";
+
+
+        await loadFields();
+
+
+        setTimeout(
+            function() {
+
+                cancelFieldForm();
+
+            },
+            700
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Create field error:",
+            error
+        );
+
+
+        message.className =
+            "message error";
+
+        message.textContent =
+            "Server error. Please try again.";
+
+    }
+
 }
 
 
@@ -584,14 +1244,18 @@ async function loadFields() {
     if (!currentFormId) {
 
         container.innerHTML =
-            "<p class='error'>Form ID is missing.</p>";
+            `<p class="error">
+                ${getTranslation("formIdMissing")}
+            </p>`;
 
         return;
     }
 
 
     container.innerHTML =
-        "Loading fields...";
+        getTranslation(
+            "loadingFields"
+        );
 
 
     try {
@@ -609,12 +1273,6 @@ async function loadFields() {
         const response =
             await fetch(url);
 
-
-        /*
-         * IMPORTANT:
-         * response.json() must happen BEFORE
-         * using data.
-         */
 
         const data =
             await response.json();
@@ -636,24 +1294,10 @@ async function loadFields() {
 
             throw new Error(
                 data.detail ||
-                `Failed to load fields (${response.status})`
+                `${getTranslation("failedToLoadFields")} (${response.status})`
             );
         }
 
-
-        /*
-         * Backend currently returns:
-         *
-         * [
-         *   {
-         *      id,
-         *      label,
-         *      name,
-         *      field_type,
-         *      display_order
-         *   }
-         * ]
-         */
 
         if (Array.isArray(data)) {
 
@@ -678,12 +1322,6 @@ async function loadFields() {
         }
 
 
-        console.log(
-            "Loaded fields:",
-            fields
-        );
-
-
         renderFields();
 
         populateRuleFieldDropdowns();
@@ -699,11 +1337,9 @@ async function loadFields() {
 
 
         container.innerHTML =
-            `
-            <p class="error">
-                Unable to load fields.
-            </p>
-            `;
+            `<p class="error">
+                ${getTranslation("unableToLoadFields")}
+            </p>`;
 
 
         message.textContent =
@@ -736,11 +1372,9 @@ function renderFields() {
     ) {
 
         container.innerHTML =
-            `
-            <p class="warning">
-                No fields available for this form.
-            </p>
-            `;
+            `<p class="warning">
+                ${getTranslation("noFieldsAvailable")}
+            </p>`;
 
         return;
     }
@@ -761,7 +1395,7 @@ function renderFields() {
 
             const label =
                 field.label ||
-                "Unnamed Field";
+                getTranslation("unnamedField");
 
 
             const type =
@@ -786,11 +1420,11 @@ function renderFields() {
 
                         <div class="field-details">
 
-                            Type:
+                            ${getTranslation("type")}:
                             ${escapeHtml(type)}
 
                             |
-                            Order:
+                            ${getTranslation("order")}:
                             ${order}
 
                         </div>
@@ -805,7 +1439,7 @@ function renderFields() {
                             class="danger-button"
                             onclick="deleteField('${field.id}')"
                         >
-                            Delete
+                            ${getTranslation("delete")}
                         </button>
 
                     </div>
@@ -824,7 +1458,7 @@ function renderFields() {
 
 
 /* =========================================================
-   POPULATE TRIGGER/TARGET DROPDOWNS
+   POPULATE RULE DROPDOWNS
 ========================================================= */
 
 function populateRuleFieldDropdowns() {
@@ -844,10 +1478,6 @@ function populateRuleFieldDropdowns() {
     if (!triggerSelect ||
         !targetSelect) {
 
-        console.error(
-            "Rule dropdowns not found."
-        );
-
         return;
     }
 
@@ -855,7 +1485,7 @@ function populateRuleFieldDropdowns() {
     triggerSelect.innerHTML =
         `
         <option value="">
-            Select trigger field
+            ${getTranslation("selectTriggerField")}
         </option>
         `;
 
@@ -863,7 +1493,7 @@ function populateRuleFieldDropdowns() {
     targetSelect.innerHTML =
         `
         <option value="">
-            Select target field
+            ${getTranslation("selectTargetField")}
         </option>
         `;
 
@@ -876,7 +1506,7 @@ function populateRuleFieldDropdowns() {
         triggerSelect.innerHTML =
             `
             <option value="">
-                No fields available
+                ${getTranslation("noFieldsAvailable")}
             </option>
             `;
 
@@ -884,7 +1514,7 @@ function populateRuleFieldDropdowns() {
         targetSelect.innerHTML =
             `
             <option value="">
-                No fields available
+                ${getTranslation("noFieldsAvailable")}
             </option>
             `;
 
@@ -898,7 +1528,7 @@ function populateRuleFieldDropdowns() {
 
             const label =
                 field.label ||
-                "Unnamed Field";
+                getTranslation("unnamedField");
 
 
             const triggerOption =
@@ -950,7 +1580,9 @@ function populateRuleFieldDropdowns() {
 async function deleteField(fieldId) {
 
     if (!confirm(
-        "Are you sure you want to delete this field?"
+        getTranslation(
+            "confirmDeleteField"
+        )
     )) {
 
         return;
@@ -972,17 +1604,13 @@ async function deleteField(fieldId) {
             await response.json();
 
 
-        console.log(
-            "Delete field response:",
-            data
-        );
-
-
         if (!response.ok) {
 
             alert(
                 data.detail ||
-                "Failed to delete field."
+                getTranslation(
+                    "failedToDeleteField"
+                )
             );
 
             return;
@@ -990,7 +1618,9 @@ async function deleteField(fieldId) {
 
 
         alert(
-            "Field deleted successfully."
+            getTranslation(
+                "fieldDeletedSuccess"
+            )
         );
 
 
@@ -1007,8 +1637,11 @@ async function deleteField(fieldId) {
 
 
         alert(
-            "Unable to connect to server."
+            getTranslation(
+                "serverError"
+            )
         );
+
     }
 }
 
@@ -1022,7 +1655,9 @@ function showRuleForm() {
     if (!currentFormId) {
 
         alert(
-            "Form ID is missing."
+            getTranslation(
+                "formIdMissing"
+            )
         );
 
         return;
@@ -1045,7 +1680,9 @@ function showRuleForm() {
 
 
     title.textContent =
-        "Add Conditional Rule";
+        getTranslation(
+            "addConditionalRule"
+        );
 
 
     form.style.display =
@@ -1054,13 +1691,8 @@ function showRuleForm() {
 
     clearRuleForm();
 
-
-    /*
-     * Fields are already loaded by
-     * initializePage().
-     */
-
     populateRuleFieldDropdowns();
+
 }
 
 
@@ -1111,7 +1743,10 @@ function clearRuleForm() {
 
 
     comparisonInput.placeholder =
-        "Enter comparison value";
+        getTranslation(
+            "enterComparisonValue"
+        );
+
 }
 
 
@@ -1131,6 +1766,7 @@ function cancelRuleForm() {
 
 
     clearRuleForm();
+
 }
 
 
@@ -1157,28 +1793,28 @@ function handleOperatorChange() {
         "is_empty"
     ) {
 
-        valueInput.value =
-            "";
+        valueInput.value = "";
 
-
-        valueInput.disabled =
-            true;
-
+        valueInput.disabled = true;
 
         valueInput.placeholder =
-            "Not required for Is Empty";
+            getTranslation(
+                "notRequiredForIsEmpty"
+            );
 
     }
 
     else {
 
-        valueInput.disabled =
-            false;
-
+        valueInput.disabled = false;
 
         valueInput.placeholder =
-            "Enter comparison value";
+            getTranslation(
+                "enterComparisonValue"
+            );
+
     }
+
 }
 
 
@@ -1197,7 +1833,9 @@ async function saveRule() {
     if (!currentFormId) {
 
         message.textContent =
-            "Form ID is missing.";
+            getTranslation(
+                "formIdMissing"
+            );
 
         return;
     }
@@ -1237,14 +1875,12 @@ async function saveRule() {
         ).value;
 
 
-    /* =====================================================
-       VALIDATION
-    ====================================================== */
-
     if (!triggerFieldId) {
 
         message.textContent =
-            "Please select a trigger field.";
+            getTranslation(
+                "selectTriggerFieldError"
+            );
 
         return;
     }
@@ -1253,7 +1889,9 @@ async function saveRule() {
     if (!operator) {
 
         message.textContent =
-            "Please select an operator.";
+            getTranslation(
+                "selectOperatorError"
+            );
 
         return;
     }
@@ -1265,7 +1903,9 @@ async function saveRule() {
     ) {
 
         message.textContent =
-            "Please enter a comparison value.";
+            getTranslation(
+                "comparisonValueError"
+            );
 
         return;
     }
@@ -1274,7 +1914,9 @@ async function saveRule() {
     if (!targetFieldId) {
 
         message.textContent =
-            "Please select a target field.";
+            getTranslation(
+                "selectTargetFieldError"
+            );
 
         return;
     }
@@ -1286,15 +1928,13 @@ async function saveRule() {
     ) {
 
         message.textContent =
-            "Trigger field and target field cannot be the same.";
+            getTranslation(
+                "sameFieldError"
+            );
 
         return;
     }
 
-
-    /* =====================================================
-       REQUEST DATA
-    ====================================================== */
 
     const ruleData = {
 
@@ -1316,12 +1956,6 @@ async function saveRule() {
             action
 
     };
-
-
-    console.log(
-        "Saving rule:",
-        ruleData
-    );
 
 
     try {
@@ -1378,17 +2012,16 @@ async function saveRule() {
             await response.json();
 
 
-        console.log(
-            "Rule save response:",
-            data
-        );
-
-
         if (!response.ok) {
+
+            message.className =
+                "message error";
 
             message.textContent =
                 data.detail ||
-                "Failed to save rule.";
+                getTranslation(
+                    "failedToSaveRule"
+                );
 
             return;
         }
@@ -1400,12 +2033,15 @@ async function saveRule() {
 
         message.textContent =
             editingRuleId
-                ? "Rule updated successfully!"
-                : "Rule created successfully!";
+                ? getTranslation(
+                    "ruleUpdatedSuccess"
+                )
+                : getTranslation(
+                    "ruleCreatedSuccess"
+                );
 
 
-        editingRuleId =
-            null;
+        editingRuleId = null;
 
 
         await loadRules();
@@ -1441,7 +2077,10 @@ async function saveRule() {
 
 
         message.textContent =
-            "Unable to connect to server.";
+            getTranslation(
+                "serverError"
+            );
+
     }
 }
 
@@ -1463,12 +2102,18 @@ async function loadRules() {
         container.innerHTML =
             `
             <p class="error">
-                Form ID is missing.
+                ${getTranslation("formIdMissing")}
             </p>
             `;
 
         return;
     }
+
+
+    container.innerHTML =
+        getTranslation(
+            "loadingRules"
+        );
 
 
     try {
@@ -1483,12 +2128,6 @@ async function loadRules() {
             await response.json();
 
 
-        console.log(
-            "Rules response:",
-            data
-        );
-
-
         if (!response.ok) {
 
             container.innerHTML =
@@ -1496,7 +2135,9 @@ async function loadRules() {
                 <p class="error">
                     ${
                         data.detail ||
-                        "Failed to load rules."
+                        getTranslation(
+                            "failedToLoadRules"
+                        )
                     }
                 </p>
                 `;
@@ -1513,7 +2154,9 @@ async function loadRules() {
             container.innerHTML =
                 `
                 <p>
-                    No conditional rules created yet.
+                    ${getTranslation(
+                        "noRulesCreated"
+                    )}
                 </p>
                 `;
 
@@ -1521,8 +2164,7 @@ async function loadRules() {
         }
 
 
-        container.innerHTML =
-            "";
+        container.innerHTML = "";
 
 
         data.forEach(
@@ -1584,7 +2226,8 @@ async function loadRules() {
                     <div>
 
                         <strong>
-                            If ${escapeHtml(triggerLabel)}
+                            ${getTranslation("if")}
+                            ${escapeHtml(triggerLabel)}
                         </strong>
 
                         ${formatOperator(rule.operator)}
@@ -1614,7 +2257,7 @@ async function loadRules() {
                             type="button"
                             onclick="editRule('${rule.id}')"
                         >
-                            Edit
+                            ${getTranslation("edit")}
                         </button>
 
 
@@ -1623,7 +2266,7 @@ async function loadRules() {
                             class="danger-button"
                             onclick="deleteRule('${rule.id}')"
                         >
-                            Delete
+                            ${getTranslation("delete")}
                         </button>
 
                     </div>
@@ -1650,9 +2293,12 @@ async function loadRules() {
         container.innerHTML =
             `
             <p class="error">
-                Unable to load rules.
+                ${getTranslation(
+                    "unableToLoadRules"
+                )}
             </p>
             `;
+
     }
 }
 
@@ -1672,13 +2318,13 @@ function formatOperator(operator) {
             "≠",
 
         contains:
-            "contains",
+            getTranslation("contains"),
 
         greater_than:
             ">",
 
         is_empty:
-            "is empty"
+            getTranslation("isEmpty")
 
     };
 
@@ -1687,6 +2333,7 @@ function formatOperator(operator) {
         operators[operator] ||
         operator
     );
+
 }
 
 
@@ -1698,17 +2345,20 @@ function formatAction(action) {
 
     if (action === "show") {
 
-        return "Show";
+        return getTranslation("show");
+
     }
 
 
     if (action === "hide") {
 
-        return "Hide";
+        return getTranslation("hide");
+
     }
 
 
     return action;
+
 }
 
 
@@ -1721,7 +2371,9 @@ async function editRule(ruleId) {
     if (!currentFormId) {
 
         alert(
-            "Form ID is missing."
+            getTranslation(
+                "formIdMissing"
+            )
         );
 
         return;
@@ -1744,7 +2396,9 @@ async function editRule(ruleId) {
 
             alert(
                 rules.detail ||
-                "Unable to load rules."
+                getTranslation(
+                    "unableToLoadRules"
+                )
             );
 
             return;
@@ -1765,7 +2419,9 @@ async function editRule(ruleId) {
         if (!rule) {
 
             alert(
-                "Rule not found."
+                getTranslation(
+                    "ruleNotFound"
+                )
             );
 
             return;
@@ -1812,7 +2468,9 @@ async function editRule(ruleId) {
         document.getElementById(
             "ruleFormTitle"
         ).textContent =
-            "Edit Conditional Rule";
+            getTranslation(
+                "editConditionalRule"
+            );
 
 
         document.getElementById(
@@ -1834,8 +2492,11 @@ async function editRule(ruleId) {
 
 
         alert(
-            "Unable to load rule."
+            getTranslation(
+                "unableToLoadRule"
+            )
         );
+
     }
 }
 
@@ -1847,7 +2508,9 @@ async function editRule(ruleId) {
 async function deleteRule(ruleId) {
 
     if (!confirm(
-        "Are you sure you want to delete this rule?"
+        getTranslation(
+            "confirmDeleteRule"
+        )
     )) {
 
         return;
@@ -1873,7 +2536,9 @@ async function deleteRule(ruleId) {
 
             alert(
                 data.detail ||
-                "Failed to delete rule."
+                getTranslation(
+                    "failedToDeleteRule"
+                )
             );
 
             return;
@@ -1881,7 +2546,9 @@ async function deleteRule(ruleId) {
 
 
         alert(
-            "Conditional rule deleted successfully."
+            getTranslation(
+                "ruleDeletedSuccess"
+            )
         );
 
 
@@ -1898,8 +2565,11 @@ async function deleteRule(ruleId) {
 
 
         alert(
-            "Unable to connect to server."
+            getTranslation(
+                "serverError"
+            )
         );
+
     }
 }
 
@@ -1916,12 +2586,6 @@ async function saveForm() {
         ).value.trim();
 
 
-    const description =
-        document.getElementById(
-            "formDescription"
-        ).value.trim();
-
-
     const message =
         document.getElementById(
             "formMessage"
@@ -1935,7 +2599,9 @@ async function saveForm() {
 
 
         message.textContent =
-            "Form ID is missing.";
+            getTranslation(
+                "formIdMissing"
+            );
 
         return;
     }
@@ -1948,27 +2614,22 @@ async function saveForm() {
 
 
         message.textContent =
-            "Please enter a form title.";
+            getTranslation(
+                "enterFormTitleError"
+            );
 
         return;
     }
 
-
-    /*
-     * NOTE:
-     * Your exact Form PUT endpoint was not
-     * provided in the code you shared.
-     *
-     * Therefore this function does not
-     * invent an API endpoint.
-     */
 
     message.className =
         "message warning";
 
 
     message.textContent =
-        "Form information is ready. Connect this button to your existing Form update endpoint.";
+        getTranslation(
+            "formUpdateEndpointMessage"
+        );
 
 }
 
@@ -1979,10 +2640,13 @@ async function saveForm() {
 
 function escapeHtml(value) {
 
-    if (value === null ||
-        value === undefined) {
+    if (
+        value === null ||
+        value === undefined
+    ) {
 
         return "";
+
     }
 
 
@@ -1992,6 +2656,7 @@ function escapeHtml(value) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+
 }
 
 
@@ -2008,7 +2673,40 @@ document.addEventListener(
         );
 
 
-        initializePage();
+        /* Add Field */
+
+        document
+            .getElementById(
+                "addFieldButton"
+            )
+            .addEventListener(
+                "click",
+                showFieldForm
+            );
+
+
+        /* Save Field */
+
+        document
+            .getElementById(
+                "saveFieldButton"
+            )
+            .addEventListener(
+                "click",
+                saveField
+            );
+
+
+        /* Cancel Field */
+
+        document
+            .getElementById(
+                "cancelFieldButton"
+            )
+            .addEventListener(
+                "click",
+                cancelFieldForm
+            );
 
 
         /* Add Rule */
@@ -2070,11 +2768,49 @@ document.addEventListener(
                 saveForm
             );
 
+
+        /* Language */
+
+        document
+            .getElementById(
+                "languageSelector"
+            )
+            .addEventListener(
+                "change",
+                function(event) {
+
+                    const language =
+                        event.target.value;
+
+
+                    localStorage.setItem(
+                        "selectedLanguage",
+                        language
+                    );
+
+
+                    loadBuilderTranslations(
+                        language
+                    );
+
+                }
+            );
+
+
+        const savedLanguage =
+            localStorage.getItem(
+                "selectedLanguage"
+            ) || "en";
+
+
+        loadBuilderTranslations(
+            savedLanguage
+        );
+
     }
 );
 
 </script>
-
 
 </body>
 

@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer
+from sqlalchemy import DateTime, ForeignKey, Integer, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -22,11 +22,11 @@ class Submission(Base):
         ForeignKey("form_versions.id"),
         nullable=False
     )
+
     response_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True),
         nullable=True
     )
-
 
     submitted_at: Mapped[datetime] = mapped_column(
         DateTime,
@@ -35,5 +35,16 @@ class Submission(Base):
 
     completion_time_seconds: Mapped[int | None] = mapped_column(
         Integer,
+        nullable=True
+    )
+
+    is_archived: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        nullable=False
+    )
+
+    archived_at: Mapped[datetime | None] = mapped_column(
+        DateTime,
         nullable=True
     )

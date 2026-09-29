@@ -1,11 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Form List</title>
 
+    <!-- =====================================================
+         PWA CONFIGURATION
+    ====================================================== -->
+
+    <link rel="manifest" href="/manifest.json">
+
+    <meta name="theme-color" content="#4f46e5">
+
+    <meta
+        name="mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-title"
+        content="Workflow System"
+    >
+
+
     <style>
+
         body {
             font-family: Arial, sans-serif;
             margin: 40px;
@@ -18,6 +47,23 @@
             background: white;
             padding: 25px;
             border-radius: 10px;
+        }
+
+        .language-container {
+            margin-bottom: 20px;
+        }
+
+        .language-container label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        #languageSelector {
+            padding: 8px 12px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
         h1 {
@@ -59,6 +105,7 @@
         button {
             padding: 8px 15px;
             margin-right: 10px;
+            margin-bottom: 8px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -79,6 +126,11 @@
             color: white;
         }
 
+        .analytics-btn {
+            background-color: #00897B;
+            color: white;
+        }
+
         .disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -88,26 +140,94 @@
             margin-bottom: 20px;
             font-weight: bold;
         }
+
     </style>
+
 </head>
+
 
 <body>
 
 <div class="container">
 
-    <h1>Form List</h1>
+    <!-- =====================================================
+         LANGUAGE SELECTOR
+    ====================================================== -->
+
+    <div class="language-container">
+
+        <label
+            for="languageSelector"
+            data-i18n="language">
+            Language
+        </label>
+
+        <select id="languageSelector">
+
+            <option
+                value="en"
+                data-i18n="english">
+                English
+            </option>
+
+            <option
+                value="te"
+                data-i18n="telugu">
+                Telugu
+            </option>
+
+            <option
+                value="hi"
+                data-i18n="hindi">
+                Hindi
+            </option>
+
+            <option
+                value="ta"
+                data-i18n="tamil">
+                Tamil
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- =====================================================
+         FORM LIST
+    ====================================================== -->
+
+    <h1
+        data-i18n="formList">
+        Form List
+    </h1>
+
+
+    <!-- =====================================================
+         TOP BUTTONS
+    ====================================================== -->
 
     <div class="top-buttons">
-        <button class="create-btn" onclick="createForm()">
+
+        <button
+            class="create-btn"
+            onclick="createForm()"
+            data-i18n="createNewForm">
             + Create New Form
         </button>
 
-        <button class="builder-btn" onclick="openBuilder()">
+        <button
+            class="builder-btn"
+            onclick="openBuilder()"
+            data-i18n="formBuilder">
             Form Builder
         </button>
+
     </div>
 
+
     <div id="message"></div>
+
 
     <div id="formsList">
         Loading forms...
@@ -116,22 +236,38 @@
 </div>
 
 
+<!-- =========================================================
+     LANGUAGE SCRIPT
+========================================================= -->
+
+<script src="/static/language.js"></script>
+
+
 <script>
+
+/* =========================================================
+   LOAD FORMS
+========================================================= */
 
 async function loadForms() {
 
-    const formsList = document.getElementById("formsList");
+    const formsList =
+        document.getElementById("formsList");
 
     try {
 
-        const response = await fetch("/forms/");
+        const response =
+            await fetch("/forms/");
 
-        const forms = await response.json();
+        const forms =
+            await response.json();
 
         if (!response.ok) {
 
             formsList.innerHTML =
-                "<p>Unable to load forms.</p>";
+                "<p data-i18n='unableToLoadForms'>Unable to load forms.</p>";
+
+            applyCurrentLanguage();
 
             return;
         }
@@ -141,118 +277,158 @@ async function loadForms() {
         if (forms.length === 0) {
 
             formsList.innerHTML =
-                "<p>No forms found.</p>";
+                "<p data-i18n='noFormsFound'>No forms found.</p>";
+
+            applyCurrentLanguage();
 
             return;
         }
 
         forms.forEach(function(form) {
 
-            const card = document.createElement("div");
+            const card =
+                document.createElement("div");
 
-            card.className = "form-card";
+            card.className =
+                "form-card";
 
 
-            // Title
+            /* =================================================
+               TITLE
+            ================================================= */
 
-            const title = document.createElement("h2");
+            const title =
+                document.createElement("h2");
 
-            title.innerText = form.title;
+            title.innerText =
+                form.title;
 
             card.appendChild(title);
 
 
-            // Description
+            /* =================================================
+               DESCRIPTION
+            ================================================= */
 
-            const description = document.createElement("p");
+            const description =
+                document.createElement("p");
 
             description.innerText =
-                form.description || "No description";
+                form.description ||
+                getTranslation("noDescription");
 
             card.appendChild(description);
 
 
-            // Form ID
+            /* =================================================
+               FORM ID
+            ================================================= */
 
-            const id = document.createElement("p");
+            const id =
+                document.createElement("p");
 
             id.innerText =
-                "Form ID: " + form.id;
+                getTranslation("formId") +
+                ": " +
+                form.id;
 
             card.appendChild(id);
 
 
-            // Status
+            /* =================================================
+               STATUS
+            ================================================= */
 
-            const status = document.createElement("p");
+            const status =
+                document.createElement("p");
 
             status.innerText =
-                "Status: " + form.status;
+                getTranslation("status") +
+                ": " +
+                form.status;
 
             card.appendChild(status);
 
 
-            // Edit button
+            /* =================================================
+               EDIT BUTTON
+            ================================================= */
 
             const editButton =
                 document.createElement("button");
 
-            editButton.innerText = "Edit";
+            editButton.innerText =
+                getTranslation("edit");
 
-            editButton.className = "edit-btn";
+            editButton.className =
+                "edit-btn";
 
 
             if (form.status !== "draft") {
 
                 editButton.disabled = true;
 
-                editButton.className += " disabled";
+                editButton.className +=
+                    " disabled";
 
             } else {
 
-                editButton.onclick = function() {
+                editButton.onclick =
+                    function() {
 
-                    window.location.href =
-                        "/edit-form/" + form.id;
+                        window.location.href =
+                            "/edit-form/" +
+                            form.id;
 
-                };
+                    };
 
             }
 
 
-            // Archive button
+            /* =================================================
+               ARCHIVE BUTTON
+            ================================================= */
 
             const archiveButton =
                 document.createElement("button");
 
-            archiveButton.innerText = "Archive";
+            archiveButton.innerText =
+                getTranslation("archive");
 
-            archiveButton.className = "archive-btn";
+            archiveButton.className =
+                "archive-btn";
 
 
             if (form.status !== "draft") {
 
                 archiveButton.disabled = true;
 
-                archiveButton.className += " disabled";
+                archiveButton.className +=
+                    " disabled";
 
             } else {
 
-                archiveButton.onclick = function() {
+                archiveButton.onclick =
+                    function() {
 
-                    archiveForm(form.id);
+                        archiveForm(
+                            form.id
+                        );
 
-                };
+                    };
 
             }
 
 
-            // Form Builder button
+            /* =================================================
+               BUILDER BUTTON
+            ================================================= */
 
             const builderButton =
                 document.createElement("button");
 
-            builderButton.innerText = "Builder";
+            builderButton.innerText =
+                getTranslation("builder");
 
             builderButton.className =
                 "builder-small-btn";
@@ -262,25 +438,58 @@ async function loadForms() {
 
                 builderButton.disabled = true;
 
-                builderButton.className += " disabled";
+                builderButton.className +=
+                    " disabled";
 
             } else {
 
-                builderButton.onclick = function() {
+                builderButton.onclick =
+                    function() {
 
-                    window.location.href =
-                        "/form-builder?form_id=" + form.id;
+                        window.location.href =
+                            "/form-builder?form_id=" +
+                            form.id;
 
-                };
+                    };
 
             }
 
+
+            /* =================================================
+               ANALYTICS BUTTON
+            ================================================= */
+
+            const analyticsButton =
+                document.createElement("button");
+
+            analyticsButton.innerText =
+                getTranslation("analytics");
+
+            analyticsButton.className =
+                "analytics-btn";
+
+
+            analyticsButton.onclick =
+                function() {
+
+                    window.location.href =
+                        "/analytics/" +
+                        form.id;
+
+                };
+
+
+            /* =================================================
+               ADD BUTTONS TO CARD
+            ================================================= */
 
             card.appendChild(editButton);
 
             card.appendChild(archiveButton);
 
             card.appendChild(builderButton);
+
+            card.appendChild(analyticsButton);
 
             formsList.appendChild(card);
 
@@ -293,40 +502,191 @@ async function loadForms() {
         console.error(error);
 
         formsList.innerHTML =
-            "<p>Error connecting to server.</p>";
+            "<p data-i18n='serverError'>Error connecting to server.</p>";
+
+        applyCurrentLanguage();
 
     }
 
 }
 
 
-/* =========================
-   CREATE FORM
-========================= */
+/* =========================================================
+   TRANSLATION STORAGE
+========================================================= */
 
-function createForm() {
+let currentTranslations = {};
 
-    window.location.href = "/create-form";
+
+/* =========================================================
+   GET TRANSLATION
+========================================================= */
+
+function getTranslation(key) {
+
+    return currentTranslations[key] || key;
 
 }
 
 
-/* =========================
-   FORM BUILDER
-========================= */
+/* =========================================================
+   APPLY CURRENT LANGUAGE
+========================================================= */
 
-function openBuilder() {
+function applyCurrentLanguage() {
 
-    alert(
-        "Please select a draft form and click Builder."
+    const selectedLanguage =
+        localStorage.getItem("selectedLanguage") || "en";
+
+    loadTranslationsForForms(
+        selectedLanguage
     );
 
 }
 
 
-/* =========================
+/* =========================================================
+   LOAD TRANSLATIONS
+========================================================= */
+
+async function loadTranslationsForForms(language) {
+
+    try {
+
+        const response =
+            await fetch(
+                "/static/i18n/" +
+                language +
+                ".json"
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Language file not found"
+            );
+
+        }
+
+        currentTranslations =
+            await response.json();
+
+        updateStaticText();
+
+        loadForms();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Translation loading failed:",
+            error
+        );
+
+        currentTranslations = {};
+
+        loadForms();
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE STATIC TEXT
+========================================================= */
+
+function updateStaticText() {
+
+    document
+        .querySelectorAll("[data-i18n]")
+        .forEach(function(element) {
+
+            const key =
+                element.getAttribute("data-i18n");
+
+            if (currentTranslations[key]) {
+
+                element.textContent =
+                    currentTranslations[key];
+
+            }
+
+        });
+
+
+    const languageSelector =
+        document.getElementById(
+            "languageSelector"
+        );
+
+    if (languageSelector) {
+
+        languageSelector.value =
+            localStorage.getItem(
+                "selectedLanguage"
+            ) || "en";
+
+    }
+
+}
+
+
+/* =========================================================
+   LANGUAGE SELECTOR
+========================================================= */
+
+document
+    .getElementById("languageSelector")
+    .addEventListener(
+        "change",
+        function(event) {
+
+            const language =
+                event.target.value;
+
+            localStorage.setItem(
+                "selectedLanguage",
+                language
+            );
+
+            loadTranslationsForForms(
+                language
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   CREATE FORM
+========================================================= */
+
+function createForm() {
+
+    window.location.href =
+        "/create-form";
+
+}
+
+
+/* =========================================================
+   FORM BUILDER
+========================================================= */
+
+function openBuilder() {
+
+    alert(
+        getTranslation("builderMessage")
+    );
+
+}
+
+
+/* =========================================================
    ARCHIVE FORM
-========================= */
+========================================================= */
 
 async function archiveForm(formId) {
 
@@ -337,7 +697,9 @@ async function archiveForm(formId) {
 
         const response =
             await fetch(
-                "/forms/" + formId + "/archive",
+                "/forms/" +
+                formId +
+                "/archive",
                 {
                     method: "PATCH"
                 }
@@ -349,14 +711,22 @@ async function archiveForm(formId) {
         if (!response.ok) {
 
             message.innerText =
-                "Error: " +
-                (data.detail || "Unable to archive form");
+                getTranslation("error") +
+                ": " +
+                (
+                    data.detail ||
+                    getTranslation(
+                        "unableToArchive"
+                    )
+                );
 
             return;
         }
 
         message.innerText =
-            "Form archived successfully!";
+            getTranslation(
+                "archiveSuccess"
+            );
 
         loadForms();
 
@@ -367,20 +737,75 @@ async function archiveForm(formId) {
         console.error(error);
 
         message.innerText =
-            "Error connecting to server.";
+            getTranslation(
+                "serverError"
+            );
 
     }
 
 }
 
 
-/* =========================
-   LOAD FORMS
-========================= */
+/* =========================================================
+   START
+========================================================= */
 
-loadForms();
+const savedLanguage =
+    localStorage.getItem(
+        "selectedLanguage"
+    ) || "en";
+
+loadTranslationsForForms(
+    savedLanguage
+);
 
 </script>
 
+
+<!-- =========================================================
+     PWA SERVICE WORKER
+========================================================= -->
+
+<script>
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener(
+        "load",
+        function () {
+
+            navigator.serviceWorker
+                .register("/sw.js")
+                .then(
+                    function (registration) {
+
+                        console.log(
+                            "Service Worker registered:",
+                            registration.scope
+                        );
+
+                    }
+                )
+                .catch(
+                    function (error) {
+
+                        console.error(
+                            "Service Worker registration failed:",
+                            error
+                        );
+
+                    }
+                );
+
+        }
+    );
+
+}
+
+</script>
+
+
 </body>
+
 </html>
+

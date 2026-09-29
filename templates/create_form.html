@@ -22,6 +22,24 @@
             border-radius: 10px;
         }
 
+        .language-container {
+            margin-bottom: 20px;
+        }
+
+        .language-container label {
+            display: inline-block;
+            margin: 0 10px 0 0;
+            font-weight: bold;
+        }
+
+        #languageSelector {
+            padding: 8px 12px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
         h1 {
             margin-bottom: 25px;
         }
@@ -78,164 +96,434 @@
 
 <div class="container">
 
-    <h1>Create Form</h1>
+    <!-- LANGUAGE SELECTOR -->
+
+    <div class="language-container">
+
+        <label
+            for="languageSelector"
+            data-i18n="language">
+            Language
+        </label>
+
+        <select id="languageSelector">
+
+            <option
+                value="en"
+                data-i18n="english">
+                English
+            </option>
+
+            <option
+                value="te"
+                data-i18n="telugu">
+                Telugu
+            </option>
+
+            <option
+                value="hi"
+                data-i18n="hindi">
+                Hindi
+            </option>
+
+            <option
+                value="ta"
+                data-i18n="tamil">
+                Tamil
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- PAGE TITLE -->
+
+    <h1 data-i18n="createFormTitle">
+        Create Form
+    </h1>
+
 
     <form id="createForm">
 
-        <label for="title">Form Title</label>
+        <!-- FORM TITLE -->
+
+        <label
+            for="title"
+            data-i18n="formTitle">
+            Form Title
+        </label>
 
         <input
             type="text"
             id="title"
             placeholder="Enter form title"
+            data-i18n-placeholder="enterFormTitle"
             required
         >
 
 
-        <label for="description">Description</label>
+        <!-- DESCRIPTION -->
+
+        <label
+            for="description"
+            data-i18n="description">
+            Description
+        </label>
 
         <textarea
             id="description"
             placeholder="Enter form description"
+            data-i18n-placeholder="enterFormDescription"
         ></textarea>
 
 
-        <label for="created_by">Created By (User ID)</label>
+        <!-- CREATED BY -->
+
+        <label
+            for="created_by"
+            data-i18n="createdBy">
+            Created By (User ID)
+        </label>
 
         <input
             type="text"
             id="created_by"
             placeholder="Enter user UUID"
+            data-i18n-placeholder="enterUserUUID"
             required
         >
 
 
-        <button type="submit">
+        <!-- CREATE BUTTON -->
+
+        <button
+            type="submit"
+            data-i18n="createFormButton">
             Create Form
         </button>
+
+
+        <!-- BACK BUTTON -->
 
         <button
             type="button"
             class="back-btn"
             onclick="goBack()"
-        >
+            data-i18n="back">
             Back
         </button>
 
     </form>
+
 
     <div id="message"></div>
 
 </div>
 
 
+<!-- COMMON LANGUAGE SCRIPT -->
+
+<script src="/static/language.js"></script>
+
+
 <script>
 
-document.getElementById("createForm").addEventListener(
-    "submit",
-    async function(event) {
-
-        event.preventDefault();
-
-        const title =
-            document.getElementById("title").value.trim();
-
-        const description =
-            document.getElementById("description").value.trim();
-
-        const created_by =
-            document.getElementById("created_by").value.trim();
+let currentTranslations = {};
 
 
-        const formData = {
+/* =========================================================
+   GET TRANSLATION
+========================================================= */
 
-            title: title,
+function getTranslation(key) {
 
-            description:
-                description || null,
+    return currentTranslations[key] || key;
 
-            status: "draft",
-
-            created_by: created_by
-
-        };
+}
 
 
-        const message =
-            document.getElementById("message");
+/* =========================================================
+   LOAD TRANSLATIONS
+========================================================= */
+
+async function loadTranslations(language) {
+
+    try {
+
+        const response =
+            await fetch(
+                "/static/i18n/" +
+                language +
+                ".json"
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Language file not found"
+            );
+
+        }
+
+        currentTranslations =
+            await response.json();
 
 
-        try {
-
-            const response =
-                await fetch("/forms/", {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify(formData)
-
-                });
+        updatePageText();
 
 
-            const result =
-                await response.json();
+    }
+
+    catch (error) {
+
+        console.error(
+            "Translation loading failed:",
+            error
+        );
+
+        currentTranslations = {};
+
+    }
+
+}
 
 
-            if (!response.ok) {
+/* =========================================================
+   UPDATE PAGE TEXT
+========================================================= */
 
-                message.innerText =
-                    "Error: " +
-                    (
-                        result.detail ||
-                        "Failed to create form"
+function updatePageText() {
+
+    /* Update normal text */
+
+    document
+        .querySelectorAll("[data-i18n]")
+        .forEach(function(element) {
+
+            const key =
+                element.getAttribute(
+                    "data-i18n"
+                );
+
+            if (currentTranslations[key]) {
+
+                element.textContent =
+                    currentTranslations[key];
+
+            }
+
+        });
+
+
+    /* Update placeholders */
+
+    document
+        .querySelectorAll(
+            "[data-i18n-placeholder]"
+        )
+        .forEach(function(element) {
+
+            const key =
+                element.getAttribute(
+                    "data-i18n-placeholder"
+                );
+
+            if (currentTranslations[key]) {
+
+                element.placeholder =
+                    currentTranslations[key];
+
+            }
+
+        });
+
+
+    /* Update selected language */
+
+    const languageSelector =
+        document.getElementById(
+            "languageSelector"
+        );
+
+    if (languageSelector) {
+
+        languageSelector.value =
+            localStorage.getItem(
+                "selectedLanguage"
+            ) || "en";
+
+    }
+
+}
+
+
+/* =========================================================
+   LANGUAGE SELECTOR
+========================================================= */
+
+document
+    .getElementById("languageSelector")
+    .addEventListener(
+        "change",
+        function(event) {
+
+            const language =
+                event.target.value;
+
+            localStorage.setItem(
+                "selectedLanguage",
+                language
+            );
+
+            loadTranslations(
+                language
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   CREATE FORM
+========================================================= */
+
+document
+    .getElementById("createForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const title =
+                document
+                    .getElementById("title")
+                    .value
+                    .trim();
+
+
+            const description =
+                document
+                    .getElementById("description")
+                    .value
+                    .trim();
+
+
+            const created_by =
+                document
+                    .getElementById("created_by")
+                    .value
+                    .trim();
+
+
+            const formData = {
+
+                title: title,
+
+                description:
+                    description || null,
+
+                status: "draft",
+
+                created_by: created_by
+
+            };
+
+
+            const message =
+                document.getElementById(
+                    "message"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/forms/",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    formData
+                                )
+                        }
                     );
 
-                return;
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    message.innerText =
+                        getTranslation(
+                            "error"
+                        ) +
+                        ": " +
+                        (
+                            result.detail ||
+                            getTranslation(
+                                "failedToCreateForm"
+                            )
+                        );
+
+                    return;
+
+                }
+
+
+                message.innerText =
+                    getTranslation(
+                        "formCreatedSuccess"
+                    );
+
+
+                /*
+                 * Wait briefly and return
+                 * to Form List page.
+                 */
+
+                setTimeout(
+                    function() {
+
+                        window.location.href =
+                            "/forms-page";
+
+                    },
+                    1000
+                );
 
             }
 
 
-            message.innerText =
-                "Form created successfully!";
+            catch (error) {
 
+                console.error(error);
 
-            /*
-             * Wait briefly and return
-             * to Form List page.
-             */
+                message.innerText =
+                    getTranslation(
+                        "serverError"
+                    );
 
-            setTimeout(function() {
-
-                window.location.href =
-                    "/forms-page";
-
-            }, 1000);
-
+            }
 
         }
-
-        catch (error) {
-
-            console.error(error);
-
-            message.innerText =
-                "Error connecting to server.";
-
-        }
-
-    }
-);
+    );
 
 
-/* Back button */
+/* =========================================================
+   BACK BUTTON
+========================================================= */
 
 function goBack() {
 
@@ -243,6 +531,21 @@ function goBack() {
         "/forms-page";
 
 }
+
+
+/* =========================================================
+   START
+========================================================= */
+
+const savedLanguage =
+    localStorage.getItem(
+        "selectedLanguage"
+    ) || "en";
+
+
+loadTranslations(
+    savedLanguage
+);
 
 </script>
 

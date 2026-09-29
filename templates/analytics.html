@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Response Analytics Dashboard</title>
+
+
+    <!-- ================================
+         REACT
+         ================================ -->
+
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+
+    <script src="https://unpkg.com/recharts@2.15.4/umd/Recharts.js"></script>
+
+
+    <!-- ================================
+         CSS
+         ================================ -->
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            padding: 30px;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff 0%,
+                    #f8f9ff 45%,
+                    #eef8ff 100%
+                );
+
+            color: #1e293b;
+
+            min-height: 100vh;
+
+        }
+
+
+        .container {
+
+            max-width: 1250px;
+
+            margin: auto;
+
+        }
+
+
+        /* ================================
+           BACK BUTTON
+           ================================ */
+
+        .back-btn {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #334155,
+                    #475569
+                );
+
+            color: white;
+
+            border: none;
+
+            padding: 11px 20px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            margin-bottom: 20px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            box-shadow:
+                0 4px 12px rgba(
+                    15,
+                    23,
+                    42,
+                    0.15
+                );
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+
+        }
+
+
+        .back-btn:hover {
+
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 6px 16px rgba(
+                    15,
+                    23,
+                    42,
+                    0.2
+                );
+
+        }
+
+
+        /* ================================
+           HEADER
+           ================================ */
+
+        h1 {
+
+            margin: 0;
+
+            font-size: 32px;
+
+            color: #172554;
+
+        }
+
+
+        #formTitle {
+
+            color: #64748b;
+
+            margin-top: 8px;
+
+            margin-bottom: 28px;
+
+            font-size: 17px;
+
+            font-weight: 500;
+
+        }
+
+
+        /* ================================
+           FILTERS
+           ================================ */
+
+        .filters {
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.92
+                );
+
+            padding: 22px;
+
+            border-radius: 16px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 10px 30px rgba(
+                    30,
+                    41,
+                    59,
+                    0.08
+                );
+
+            border:
+                1px solid #e2e8f0;
+
+        }
+
+
+        .filter-title {
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            color: #1e3a8a;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .filter-row {
+
+            display: flex;
+
+            align-items: end;
+
+            flex-wrap: wrap;
+
+            gap: 16px;
+
+        }
+
+
+        .filter-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            min-width: 180px;
+
+            flex: 1;
+
+        }
+
+
+        .filter-group label {
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #475569;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .filters input,
+
+        .filters select {
+
+            width: 100%;
+
+            padding: 11px 12px;
+
+            border:
+                1px solid #cbd5e1;
+
+            border-radius: 8px;
+
+            background: white;
+
+            color: #1e293b;
+
+            font-size: 14px;
+
+            outline: none;
+
+        }
+
+
+        .filters input:focus,
+
+        .filters select:focus {
+
+            border-color: #6366f1;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    99,
+                    102,
+                    241,
+                    0.12
+                );
+
+        }
+
+
+        .refresh-btn {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+                );
+
+            color: white;
+
+            border: none;
+
+            padding: 11px 22px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            min-height: 42px;
+
+            box-shadow:
+                0 6px 14px rgba(
+                    37,
+                    99,
+                    235,
+                    0.22
+                );
+
+        }
+
+
+        .refresh-btn:hover {
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        /* ================================
+           MESSAGE
+           ================================ */
+
+        .message {
+
+            display: none;
+
+            background: #fef3c7;
+
+            color: #92400e;
+
+            border:
+                1px solid #fcd34d;
+
+            padding: 14px 16px;
+
+            border-radius: 10px;
+
+            margin-bottom: 20px;
+
+            font-weight: 600;
+
+        }
+
+
+        /* ================================
+           SUMMARY CARDS
+           ================================ */
+
+        .cards {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+
+            margin-bottom: 28px;
+
+        }
+
+
+        .card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            color: white;
+
+            padding: 24px;
+
+            border-radius: 16px;
+
+            min-height: 145px;
+
+            box-shadow:
+                0 10px 25px rgba(
+                    30,
+                    41,
+                    59,
+                    0.12
+                );
+
+        }
+
+
+        .card:nth-child(1) {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #3b82f6
+                );
+
+        }
+
+
+        .card:nth-child(2) {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #059669,
+                    #10b981
+                );
+
+        }
+
+
+        .card:nth-child(3) {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #a855f7
+                );
+
+        }
+
+
+        .card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 100px;
+
+            height: 100px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.1
+                );
+
+            right: -30px;
+
+            top: -30px;
+
+        }
+
+
+        .card h3 {
+
+            margin: 0;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            opacity: 0.9;
+
+        }
+
+
+        .value {
+
+            font-size: 34px;
+
+            font-weight: 800;
+
+            margin-top: 18px;
+
+            position: relative;
+
+            z-index: 2;
+
+        }
+
+
+        /* ================================
+           CHART SECTION
+           ================================ */
+
+        .chart-section {
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.94
+                );
+
+            padding: 25px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 10px 30px rgba(
+                    30,
+                    41,
+                    59,
+                    0.08
+                );
+
+            border:
+                1px solid #e2e8f0;
+
+        }
+
+
+        .chart-title {
+
+            font-size: 22px;
+
+            font-weight: 800;
+
+            color: #172554;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .chart-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 22px;
+
+        }
+
+
+        .chart-card {
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #f8fafc
+                );
+
+            padding: 20px;
+
+            border-radius: 14px;
+
+            min-height: 390px;
+
+            box-shadow:
+                0 5px 18px rgba(
+                    15,
+                    23,
+                    42,
+                    0.06
+                );
+
+            border:
+                1px solid #e2e8f0;
+
+        }
+
+
+        .chart-card h3 {
+
+            text-align: center;
+
+            margin:
+                0 0 5px 0;
+
+            color: #1e293b;
+
+            font-size: 19px;
+
+        }
+
+
+        .chart-subtitle {
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .chart {
+
+            width: 100%;
+
+            height: 310px;
+
+        }
+
+
+        .empty-chart {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            height: 280px;
+
+            color: #94a3b8;
+
+            text-align: center;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ================================
+           RESPONSIVE
+           ================================ */
+
+        @media (max-width: 900px) {
+
+            body {
+
+                padding: 20px;
+
+            }
+
+
+            .cards {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .chart-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .filter-group {
+
+                min-width: 100%;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            body {
+
+                padding: 14px;
+
+            }
+
+
+            h1 {
+
+                font-size: 26px;
+
+            }
+
+
+            .chart-section {
+
+                padding: 16px;
+
+            }
+
+
+            .chart-card {
+
+                padding: 12px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ================================
+         BACK BUTTON
+         ================================ -->
+
+    <button
+        class="back-btn"
+        onclick="goBack()"
+    >
+
+        ← Back to Forms
+
+    </button>
+
+
+    <!-- ================================
+         TITLE
+         ================================ -->
+
+    <h1>
+
+        Response Analytics Dashboard
+
+    </h1>
+
+
+    <div id="formTitle">
+
+        Loading form analytics...
+
+    </div>
+
+
+    <!-- ================================
+         FILTERS
+         ================================ -->
+
+    <div class="filters">
+
+        <div class="filter-title">
+
+            📊 Analytics Filters
+
+        </div>
+
+
+        <div class="filter-row">
+
+
+            <div class="filter-group">
+
+                <label for="startDate">
+
+                    Start Date
+
+                </label>
+
+                <input
+                    type="date"
+                    id="startDate"
+                >
+
+            </div>
+
+
+            <div class="filter-group">
+
+                <label for="endDate">
+
+                    End Date
+
+                </label>
+
+                <input
+                    type="date"
+                    id="endDate"
+                >
+
+            </div>
+
+
+            <div class="filter-group">
+
+                <label for="versionFilter">
+
+                    Form Version
+
+                </label>
+
+                <select id="versionFilter">
+
+                    <option value="">
+
+                        All Versions
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="refresh-btn"
+                onclick="loadAnalytics()"
+            >
+
+                🔄 Refresh Dashboard
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================
+         MESSAGE
+         ================================ -->
+
+    <div
+        id="message"
+        class="message"
+    >
+
+    </div>
+
+
+    <!-- ================================
+         SUMMARY CARDS
+         ================================ -->
+
+    <div class="cards">
+
+
+        <div class="card">
+
+            <h3>
+
+                Total Submissions
+
+            </h3>
+
+
+            <div
+                id="totalSubmissions"
+                class="value"
+            >
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+
+                Completion Rate
+
+            </h3>
+
+
+            <div
+                id="completionRate"
+                class="value"
+            >
+
+                0%
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+
+                Average Completion Time
+
+            </h3>
+
+
+            <div
+                id="averageCompletionTime"
+                class="value"
+            >
+
+                0 min 0 sec
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================================
+         FIELD ANALYTICS
+         ================================ -->
+
+    <div class="chart-section">
+
+
+        <div class="chart-title">
+
+            📈 Field-wise Analytics
+
+        </div>
+
+
+        <div
+            id="chartsContainer"
+            class="chart-grid"
+        >
+
+            <p>
+
+                Loading charts...
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+(function () {
+
+
+    /* =================================
+       GET FORM ID
+       ================================= */
+
+    const pathParts =
+        window.location.pathname
+            .split("/")
+            .filter(Boolean);
+
+
+    const analyticsFormId =
+        pathParts[pathParts.length - 1];
+
+
+    /* =================================
+       BACK TO FORMS
+       ================================= */
+
+    window.goBack = function () {
+
+        window.location.href =
+            "/forms-page";
+
+    };
+
+
+    /* =================================
+       LOAD ANALYTICS
+       ================================= */
+
+    window.loadAnalytics = async function () {
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        message.style.display =
+            "none";
+
+
+        if (!analyticsFormId) {
+
+            message.innerText =
+                "Error: Form ID is missing from the URL.";
+
+            message.style.display =
+                "block";
+
+            return;
+
+        }
+
+
+        try {
+
+            const startDate =
+                document.getElementById(
+                    "startDate"
+                ).value;
+
+
+            const endDate =
+                document.getElementById(
+                    "endDate"
+                ).value;
+
+
+            const version =
+                document.getElementById(
+                    "versionFilter"
+                ).value;
+
+
+            let url =
+                "/forms/" +
+                analyticsFormId +
+                "/analytics";
+
+
+            const params =
+                new URLSearchParams();
+
+
+            if (startDate) {
+
+                params.append(
+                    "start_date",
+                    startDate
+                );
+
+            }
+
+
+            if (endDate) {
+
+                params.append(
+                    "end_date",
+                    endDate
+                );
+
+            }
+
+
+            if (version) {
+
+                params.append(
+                    "form_version_id",
+                    version
+                );
+
+            }
+
+
+            if (params.toString()) {
+
+                url +=
+                    "?" +
+                    params.toString();
+
+            }
+
+
+            const response =
+                await fetch(url);
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    "Unable to load analytics"
+                );
+
+            }
+
+
+            displayAnalytics(data);
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Analytics error:",
+                error
+            );
+
+
+            message.innerText =
+                "Error: " +
+                error.message;
+
+
+            message.style.display =
+                "block";
+
+        }
+
+    };
+
+
+    /* =================================
+       DISPLAY ANALYTICS
+       ================================= */
+
+    function displayAnalytics(data) {
+
+        document.getElementById(
+            "formTitle"
+        ).innerText =
+            "Form: " +
+            (
+                data.form_title ||
+                "Unknown"
+            );
+
+
+        document.getElementById(
+            "totalSubmissions"
+        ).innerText =
+            data.total_submissions || 0;
+
+
+        document.getElementById(
+            "completionRate"
+        ).innerText =
+            data.completion_rate_percentage ||
+            "0%";
+
+
+        document.getElementById(
+            "averageCompletionTime"
+        ).innerText =
+            data.average_completion_time ||
+            "0 min 0 sec";
+
+
+        displayCharts(
+            data.field_analytics || []
+        );
+
+    }
+
+
+    /* =================================
+       DISPLAY CHARTS
+       ================================= */
+
+    function displayCharts(
+        fieldAnalytics
+    ) {
+
+        const container =
+            document.getElementById(
+                "chartsContainer"
+            );
+
+
+        container.innerHTML = "";
+
+
+        if (
+            !fieldAnalytics ||
+            fieldAnalytics.length === 0
+        ) {
+
+            container.innerHTML = `
+
+                <div class="empty-chart">
+
+                    No dropdown or rating analytics available.
+
+                </div>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        fieldAnalytics.forEach(
+            function (field) {
+
+                const chartCard =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                chartCard.className =
+                    "chart-card";
+
+
+                const title =
+                    document.createElement(
+                        "h3"
+                    );
+
+
+                title.innerText =
+                    field.field_label;
+
+
+                chartCard.appendChild(
+                    title
+                );
+
+
+                const subtitle =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                subtitle.className =
+                    "chart-subtitle";
+
+
+                subtitle.innerText =
+                    field.field_type === "rating"
+                        ? "Response distribution by rating"
+                        : "Response distribution by option";
+
+
+                chartCard.appendChild(
+                    subtitle
+                );
+
+
+                const chart =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                chart.className =
+                    "chart";
+
+
+                chartCard.appendChild(
+                    chart
+                );
+
+
+                container.appendChild(
+                    chartCard
+                );
+
+
+                createChart(
+                    chart,
+                    field
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =================================
+       REMOVE DUPLICATE DROPDOWN OPTIONS
+       ================================= */
+
+    function normalizeDropdownData(
+        distribution
+    ) {
+
+        const grouped =
+            new Map();
+
+
+        (distribution || []).forEach(
+            function (entry) {
+
+                const label =
+                    String(
+                        entry.option ??
+                        entry.value ??
+                        ""
+                    ).trim();
+
+
+                if (!label) {
+
+                    return;
+
+                }
+
+
+                /*
+                 * Use lowercase only for comparing
+                 * labels.
+                 *
+                 * This means:
+                 *
+                 * Male
+                 * male
+                 *
+                 * are treated as the same
+                 * displayed option.
+                 */
+
+                const key =
+                    label.toLowerCase();
+
+
+                const count =
+                    Number(
+                        entry.count
+                    ) || 0;
+
+
+                if (
+                    grouped.has(key)
+                ) {
+
+                    const existing =
+                        grouped.get(key);
+
+
+                    existing.count +=
+                        count;
+
+                }
+
+                else {
+
+                    grouped.set(
+                        key,
+                        {
+                            option:
+                                label,
+
+                            value:
+                                entry.value ??
+                                label,
+
+                            count:
+                                count
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+
+        return Array.from(
+            grouped.values()
+        );
+
+    }
+
+
+    /* =================================
+       REMOVE DUPLICATE RATING VALUES
+       ================================= */
+
+    function normalizeRatingData(
+        distribution
+    ) {
+
+        const grouped =
+            new Map();
+
+
+        (distribution || []).forEach(
+            function (entry) {
+
+                const rating =
+                    Number(
+                        entry.rating
+                    );
+
+
+                if (
+                    !Number.isFinite(
+                        rating
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                const count =
+                    Number(
+                        entry.count
+                    ) || 0;
+
+
+                if (
+                    grouped.has(rating)
+                ) {
+
+                    grouped.set(
+                        rating,
+                        grouped.get(rating) +
+                        count
+                    );
+
+                }
+
+                else {
+
+                    grouped.set(
+                        rating,
+                        count
+                    );
+
+                }
+
+            }
+        );
+
+
+        return Array.from(
+            grouped.entries()
+        )
+        .sort(
+            function (a, b) {
+
+                return a[0] - b[0];
+
+            }
+        )
+        .map(
+            function (entry) {
+
+                return {
+
+                    rating:
+                        entry[0],
+
+                    count:
+                        entry[1]
+
+                };
+
+            }
+        );
+
+    }
+
+
+    /* =================================
+       CREATE CHART
+       ================================= */
+
+    function createChart(
+        chartDiv,
+        field
+    ) {
+
+        if (
+            !window.React ||
+            !window.ReactDOM ||
+            !window.Recharts
+        ) {
+
+            chartDiv.innerHTML =
+                "<p>Chart library could not be loaded.</p>";
+
+            return;
+
+        }
+
+
+        const React =
+            window.React;
+
+
+        const ReactDOM =
+            window.ReactDOM;
+
+
+        const Recharts =
+            window.Recharts;
+
+
+        /* =================================
+           NORMALIZE DATA
+           ================================= */
+
+        let data;
+
+
+        if (
+            field.field_type ===
+            "dropdown"
+        ) {
+
+            data =
+                normalizeDropdownData(
+                    field.distribution
+                );
+
+        }
+
+        else if (
+            field.field_type ===
+            "rating"
+        ) {
+
+            data =
+                normalizeRatingData(
+                    field.distribution
+                );
+
+        }
+
+        else {
+
+            data =
+                field.distribution ||
+                [];
+
+        }
+
+
+        let chartElement;
+
+
+        /* =================================
+           RATING BAR CHART
+           ================================= */
+
+        if (
+            field.field_type ===
+            "rating"
+        ) {
+
+            const ratingColors = [
+
+                "#ef4444",
+                "#f59e0b",
+                "#22c55e",
+                "#3b82f6",
+                "#8b5cf6"
+
+            ];
+
+
+            chartElement =
+                React.createElement(
+
+                    Recharts.ResponsiveContainer,
+
+                    {
+                        width: "100%",
+                        height: "100%"
+                    },
+
+
+                    React.createElement(
+
+                        Recharts.BarChart,
+
+                        {
+                            data: data,
+
+                            margin: {
+                                top: 20,
+                                right: 20,
+                                left: 10,
+                                bottom: 25
+                            }
+                        },
+
+
+                        React.createElement(
+
+                            Recharts.CartesianGrid,
+
+                            {
+                                strokeDasharray:
+                                    "3 3",
+
+                                vertical:
+                                    false
+                            }
+
+                        ),
+
+
+                        React.createElement(
+
+                            Recharts.XAxis,
+
+                            {
+                                dataKey:
+                                    "rating",
+
+                                tick: {
+                                    fontSize: 13
+                                },
+
+                                label: {
+                                    value:
+                                        "Rating",
+
+                                    position:
+                                        "insideBottom",
+
+                                    offset:
+                                        -15
+                                }
+                            }
+
+                        ),
+
+
+                        React.createElement(
+
+                            Recharts.YAxis,
+
+                            {
+                                allowDecimals:
+                                    false,
+
+                                tick: {
+                                    fontSize: 12
+                                },
+
+                                label: {
+                                    value:
+                                        "Responses",
+
+                                    angle:
+                                        -90,
+
+                                    position:
+                                        "insideLeft"
+                                }
+                            }
+
+                        ),
+
+
+                        React.createElement(
+
+                            Recharts.Tooltip,
+
+                            {
+                                formatter:
+                                    function (
+                                        value
+                                    ) {
+
+                                        return [
+                                            value,
+                                            "Responses"
+                                        ];
+
+                                    },
+
+                                labelFormatter:
+                                    function (
+                                        label
+                                    ) {
+
+                                        return (
+                                            "Rating " +
+                                            label
+                                        );
+
+                                    }
+                            }
+
+                        ),
+
+
+                        React.createElement(
+
+                            Recharts.Bar,
+
+                            {
+                                dataKey:
+                                    "count",
+
+                                name:
+                                    "Responses",
+
+                                radius:
+                                    [6, 6, 0, 0],
+
+                                isAnimationActive:
+                                    true
+                            },
+
+
+                            data.map(
+                                function (
+                                    entry,
+                                    index
+                                ) {
+
+                                    return React.createElement(
+
+                                        Recharts.Cell,
+
+                                        {
+                                            key:
+                                                "rating-cell-" +
+                                                entry.rating +
+                                                "-" +
+                                                index,
+
+                                            fill:
+                                                ratingColors[
+                                                    index %
+                                                    ratingColors.length
+                                                ]
+                                        }
+
+                                    );
+
+                                }
+                            )
+
+                        )
+
+                    )
+
+                );
+
+        }
+
+
+        /* =================================
+           DROPDOWN PIE CHART
+           ================================= */
+
+        else if (
+            field.field_type ===
+            "dropdown"
+        ) {
+
+            const pieColors = [
+
+                "#2563eb",
+                "#10b981",
+                "#f59e0b",
+                "#8b5cf6",
+                "#06b6d4",
+                "#ef4444",
+                "#f97316",
+                "#64748b"
+
+            ];
+
+
+            chartElement =
+                React.createElement(
+
+                    Recharts.ResponsiveContainer,
+
+                    {
+                        width: "100%",
+                        height: "100%"
+                    },
+
+
+                    React.createElement(
+
+                        Recharts.PieChart,
+
+                        null,
+
+
+                        React.createElement(
+
+                            Recharts.Pie,
+
+                            {
+                                data:
+                                    data,
+
+                                dataKey:
+                                    "count",
+
+                                nameKey:
+                                    "option",
+
+                                cx:
+                                    "50%",
+
+                                cy:
+                                    "45%",
+
+                                outerRadius:
+                                    105,
+
+                                innerRadius:
+                                    45,
+
+                                paddingAngle:
+                                    3,
+
+                                labelLine:
+                                    false,
+
+                                isAnimationActive:
+                                    true
+                            },
+
+
+                            data.map(
+                                function (
+                                    entry,
+                                    index
+                                ) {
+
+                                    return React.createElement(
+
+                                        Recharts.Cell,
+
+                                        {
+                                            key:
+                                                "pie-cell-" +
+                                                entry.option +
+                                                "-" +
+                                                index,
+
+                                            fill:
+                                                pieColors[
+                                                    index %
+                                                    pieColors.length
+                                                ]
+                                        }
+
+                                    );
+
+                                }
+                            )
+
+                        ),
+
+
+                        React.createElement(
+
+                            Recharts.Tooltip,
+
+                            {
+                                formatter:
+                                    function (
+                                        value
+                                    ) {
+
+                                        return [
+                                            value,
+                                            "Responses"
+                                        ];
+
+                                    },
+
+                                labelFormatter:
+                                    function (
+                                        label
+                                    ) {
+
+                                        return (
+                                            "Option: " +
+                                            label
+                                        );
+
+                                    }
+                            }
+
+                        ),
+
+
+                        React.createElement(
+
+                            Recharts.Legend,
+
+                            {
+                                verticalAlign:
+                                    "bottom",
+
+                                height:
+                                    45,
+
+                                iconType:
+                                    "circle",
+
+                                wrapperStyle: {
+                                    fontSize:
+                                        "13px"
+                                }
+                            }
+
+                        )
+
+                    )
+
+                );
+
+        }
+
+
+        /* =================================
+           UNSUPPORTED
+           ================================= */
+
+        else {
+
+            chartDiv.innerHTML =
+                "<p>Unsupported field type.</p>";
+
+            return;
+
+        }
+
+
+        /* =================================
+           RENDER
+           ================================= */
+
+        try {
+
+            const root =
+                ReactDOM.createRoot(
+                    chartDiv
+                );
+
+
+            root.render(
+                chartElement
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Chart rendering error:",
+                error
+            );
+
+
+            chartDiv.innerHTML =
+                "<p>Unable to display chart.</p>";
+
+        }
+
+    }
+
+
+    /* =================================
+       VERSION FILTER
+       ================================= */
+
+    async function loadVersions() {
+
+        const versionFilter =
+            document.getElementById(
+                "versionFilter"
+            );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/forms/${analyticsFormId}/versions`
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    "Unable to load form versions"
+                );
+
+            }
+
+
+            versionFilter.innerHTML = `
+
+                <option value="">
+
+                    All Versions
+
+                </option>
+
+            `;
+
+
+            const versions =
+                data.versions || [];
+
+
+            versions.forEach(
+                function (version) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        version.version_id;
+
+
+                    option.textContent =
+                        "Version " +
+                        version.version_number;
+
+
+                    versionFilter.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Version loading error:",
+                error
+            );
+
+
+            versionFilter.innerHTML = `
+
+                <option value="">
+
+                    All Versions
+
+                </option>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =================================
+       INITIAL LOAD
+       ================================= */
+
+    loadVersions();
+
+    loadAnalytics();
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>

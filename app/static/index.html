@@ -2,9 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dynamic Workflow Automation System</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- PWA Theme Color -->
+    <meta name="theme-color" content="#4f46e5">
+
+    <!-- Mobile PWA support -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Apple/iOS PWA support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Workflow System">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-color: #f5f7fb;
+            color: #222;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #4f46e5;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .language-container {
+            margin-bottom: 30px;
+        }
+
+        .language-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        #languageSelector {
+            padding: 10px 14px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
+
+    <div class="container">
+
+        <div class="language-container">
+            <label for="languageSelector" data-i18n="language">
+                Language
+            </label>
+
+            <select id="languageSelector">
+                <option value="en" data-i18n="english">
+                    English
+                </option>
+
+                <option value="te" data-i18n="telugu">
+                    Telugu
+                </option>
+
+                <option value="hi" data-i18n="hindi">
+                    Hindi
+                </option>
+
+                <option value="ta" data-i18n="tamil">
+                    Tamil
+                </option>
+            </select>
+        </div>
+
+        <h1 data-i18n="title">
+            Dynamic Workflow Automation System
+        </h1>
+
+        <p data-i18n="welcome">
+            Welcome to the Workflow Automation System.
+        </p>
+
+    </div>
+
+    <!-- Multilingual JavaScript -->
+    <script src="/static/language.js"></script>
+
+    <!-- PWA Service Worker -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/sw.js")
+                    .then((registration) => {
+                        console.log(
+                            "Service Worker registered successfully:",
+                            registration.scope
+                        );
+                    })
+                    .catch((error) => {
+                        console.error(
+                            "Service Worker registration failed:",
+                            error
+                        );
+                    });
+            });
+        }
+    </script>
 
 </body>
 </html>

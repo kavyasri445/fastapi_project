@@ -30,6 +30,24 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
+        .language-selector {
+            margin-bottom: 20px;
+        }
+
+        .language-selector label {
+            display: inline-block;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .language-selector select {
+            width: auto;
+            min-width: 130px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
         .field {
             margin-bottom: 20px;
         }
@@ -155,11 +173,49 @@
 
 <div class="container">
 
+    <!-- =====================================================
+         LANGUAGE SELECTOR
+         ===================================================== -->
+
+    <div class="language-selector">
+
+        <label
+            for="language-select"
+            id="language-label"
+        >
+            Language
+        </label>
+
+        <select id="language-select">
+
+            <option value="en">
+                English
+            </option>
+
+            <option value="te">
+                తెలుగు
+            </option>
+
+            <option value="hi">
+                हिन्दी
+            </option>
+
+            <option value="ta">
+                தமிழ்
+            </option>
+
+        </select>
+
+    </div>
+
+
     <div id="loading">
         Loading form...
     </div>
 
+
     <div id="error"></div>
+
 
     <div id="form-container">
 
@@ -190,30 +246,202 @@
 <script>
 
     // =========================================================
+    // MULTILINGUAL SUPPORT
+    // =========================================================
+
+    const translations = {
+
+        en: {
+            language: "Language",
+            submit: "Submit",
+            submitting: "Submitting...",
+            loading: "Loading form...",
+            selectOption: "Select an option",
+            success: "Form submitted successfully!",
+            uploading: "Uploading...",
+            uploadComplete: "Upload complete: 100%",
+            fileSelected: "selected",
+            fileUploaded: "uploaded successfully."
+        },
+
+        te: {
+            language: "భాష",
+            submit: "సమర్పించండి",
+            submitting: "సమర్పిస్తోంది...",
+            loading: "ఫారమ్ లోడ్ అవుతోంది...",
+            selectOption: "ఒక ఎంపికను ఎంచుకోండి",
+            success: "ఫారమ్ విజయవంతంగా సమర్పించబడింది!",
+            uploading: "అప్‌లోడ్ అవుతోంది...",
+            uploadComplete: "అప్‌లోడ్ పూర్తయింది: 100%",
+            fileSelected: "ఎంచుకోబడింది",
+            fileUploaded: "విజయవంతంగా అప్‌లోడ్ చేయబడింది."
+        },
+
+        hi: {
+            language: "भाषा",
+            submit: "सबमिट करें",
+            submitting: "सबमिट हो रहा है...",
+            loading: "फ़ॉर्म लोड हो रहा है...",
+            selectOption: "एक विकल्प चुनें",
+            success: "फ़ॉर्म सफलतापूर्वक सबमिट किया गया!",
+            uploading: "अपलोड हो रहा है...",
+            uploadComplete: "अपलोड पूरा हुआ: 100%",
+            fileSelected: "चयनित",
+            fileUploaded: "सफलतापूर्वक अपलोड किया गया।"
+        },
+
+        ta: {
+            language: "மொழி",
+            submit: "சமர்ப்பிக்கவும்",
+            submitting: "சமர்ப்பிக்கப்படுகிறது...",
+            loading: "படிவம் ஏற்றப்படுகிறது...",
+            selectOption: "ஒரு விருப்பத்தைத் தேர்ந்தெடுக்கவும்",
+            success: "படிவம் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
+            uploading: "பதிவேற்றப்படுகிறது...",
+            uploadComplete: "பதிவேற்றம் முடிந்தது: 100%",
+            fileSelected: "தேர்ந்தெடுக்கப்பட்டது",
+            fileUploaded: "வெற்றிகரமாக பதிவேற்றப்பட்டது."
+        }
+
+    };
+
+
+    let currentLanguage = "en";
+
+
+    function getTranslation() {
+
+        return (
+            translations[currentLanguage] ||
+            translations.en
+        );
+
+    }
+
+
+    function applyLanguage(language) {
+
+        currentLanguage =
+            translations[language]
+                ? language
+                : "en";
+
+
+        const t =
+            getTranslation();
+
+
+        document.documentElement.lang =
+            currentLanguage;
+
+
+        document.getElementById(
+            "language-label"
+        ).textContent =
+            t.language;
+
+
+        document.getElementById(
+            "submit-button"
+        ).textContent =
+            t.submit;
+
+
+        document.getElementById(
+            "loading"
+        ).textContent =
+            t.loading;
+
+
+        document.querySelectorAll(
+            'option[data-placeholder="true"]'
+        ).forEach(
+            option => {
+
+                option.textContent =
+                    t.selectOption;
+
+            }
+        );
+
+    }
+
+
+    document.getElementById(
+        "language-select"
+    ).addEventListener(
+        "change",
+        function() {
+
+            applyLanguage(
+                this.value
+            );
+
+        }
+    );
+
+
+    // =========================================================
     // GET SLUG FROM URL
     // =========================================================
 
     const pathParts =
         window.location.pathname.split("/");
 
+
     /*
-        Example URL:
+        Supported URLs:
 
-        /public/form-page/3DkyjYyEqqPVFH6eZ-75-Q
+        /public/form-page/SLUG
+        /public/forms/SLUG/page
 
-        pathParts:
-
-        ["", "public", "form-page", "3DkyjYyEqqPVFH6eZ-75-Q"]
-
-        Therefore slug = pathParts[3]
+        We find the slug by locating:
+        - form-page
+        - forms
     */
 
-    const slug = pathParts[3];
+
+    let slug = "";
+
+
+    const formPageIndex =
+        pathParts.indexOf("form-page");
+
+
+    const formsIndex =
+        pathParts.indexOf("forms");
+
+
+    if (
+        formPageIndex !== -1 &&
+        pathParts[formPageIndex + 1]
+    ) {
+
+        slug =
+            pathParts[
+                formPageIndex + 1
+            ];
+
+    }
+
+    else if (
+        formsIndex !== -1 &&
+        pathParts[formsIndex + 1]
+    ) {
+
+        slug =
+            pathParts[
+                formsIndex + 1
+            ];
+
+    }
+
 
     console.log(
         "Current URL:",
         window.location.pathname
     );
+
 
     console.log(
         "Public form slug:",
@@ -233,13 +461,16 @@
     // =========================================================
 
     const DEFAULT_ALLOWED_EXTENSIONS = [
+
         ".pdf",
         ".doc",
         ".docx",
         ".jpg",
         ".jpeg",
         ".png"
+
     ];
+
 
     const DEFAULT_MAX_FILE_SIZE =
         5 * 1024 * 1024;
@@ -284,10 +515,12 @@
                 let errorMessage =
                     "Unable to load public form.";
 
+
                 try {
 
                     const errorData =
                         await response.json();
+
 
                     errorMessage =
                         errorData.detail ||
@@ -302,6 +535,7 @@
                     );
 
                 }
+
 
                 throw new Error(
                     errorMessage
@@ -320,33 +554,39 @@
             );
 
 
-            currentForm = form;
+            currentForm =
+                form;
 
 
             document.getElementById(
                 "loading"
-            ).style.display = "none";
+            ).style.display =
+                "none";
 
 
             document.getElementById(
                 "form-container"
-            ).style.display = "block";
+            ).style.display =
+                "block";
 
 
             document.getElementById(
                 "form-title"
             ).textContent =
-                form.title || "Public Form";
+                form.title ||
+                "Public Form";
 
 
             document.getElementById(
                 "form-description"
             ).textContent =
-                form.description || "";
+                form.description ||
+                "";
 
 
             const fields =
-                form.fields || [];
+                form.fields ||
+                [];
 
 
             fields.sort(
@@ -362,7 +602,8 @@
                 );
 
 
-            fieldsContainer.innerHTML = "";
+            fieldsContainer.innerHTML =
+                "";
 
 
             // =================================================
@@ -377,8 +618,10 @@
                             "div"
                         );
 
+
                     fieldDiv.className =
                         "field";
+
 
                     fieldDiv.dataset.fieldId =
                         field.id;
@@ -393,22 +636,28 @@
                             "label"
                         );
 
+
                     label.textContent =
                         field.label;
 
 
-                    if (field.is_required) {
+                    if (
+                        field.is_required
+                    ) {
 
                         const required =
                             document.createElement(
                                 "span"
                             );
 
+
                         required.className =
                             "required";
 
+
                         required.textContent =
                             " *";
+
 
                         label.appendChild(
                             required
@@ -430,9 +679,16 @@
                     // =================================================
 
                     if (
-                        field.field_type === "file" ||
-                        field.field_type === "file_upload" ||
-                        field.field_type === "upload"
+
+                        field.field_type ===
+                            "file" ||
+
+                        field.field_type ===
+                            "file_upload" ||
+
+                        field.field_type ===
+                            "upload"
+
                     ) {
 
                         input =
@@ -440,18 +696,23 @@
                                 "input"
                             );
 
+
                         input.type =
                             "file";
 
 
                         const validationConfig =
-                            field.validation_config || {};
+                            field.validation_config ||
+                            {};
 
 
                         const allowedExtensions =
+
                             validationConfig.allowed_extensions &&
                             validationConfig.allowed_extensions.length > 0
+
                                 ? validationConfig.allowed_extensions
+
                                 : DEFAULT_ALLOWED_EXTENSIONS;
 
 
@@ -489,8 +750,10 @@
                                 "div"
                             );
 
+
                         fileInfo.className =
                             "file-info";
+
 
                         fileInfo.textContent =
                             `Allowed: ${allowedExtensions.join(", ")} | Maximum: 5 MB`;
@@ -499,6 +762,7 @@
                         fieldDiv.appendChild(
                             input
                         );
+
 
                         fieldDiv.appendChild(
                             fileInfo
@@ -509,6 +773,7 @@
                             document.createElement(
                                 "div"
                             );
+
 
                         fileError.className =
                             "file-error";
@@ -524,6 +789,7 @@
                                 "div"
                             );
 
+
                         fileSuccess.className =
                             "file-success";
 
@@ -538,6 +804,7 @@
                                 "div"
                             );
 
+
                         progressContainer.className =
                             "upload-progress-container";
 
@@ -547,17 +814,20 @@
                                 "div"
                             );
 
+
                         progressLabel.className =
                             "upload-progress-label";
 
+
                         progressLabel.textContent =
-                            "Uploading... 0%";
+                            `${getTranslation().uploading} 0%`;
 
 
                         const progressBarContainer =
                             document.createElement(
                                 "div"
                             );
+
 
                         progressBarContainer.className =
                             "upload-progress-bar";
@@ -567,6 +837,7 @@
                             document.createElement(
                                 "div"
                             );
+
 
                         progressBar.className =
                             "upload-progress";
@@ -603,18 +874,25 @@
                                 fileError.textContent =
                                     "";
 
+
                                 fileSuccess.textContent =
                                     "";
 
+
                                 progressContainer.style.display =
                                     "none";
+
 
                                 progressBar.style.width =
                                     "0%";
 
 
-                                if (!input.files.length) {
+                                if (
+                                    !input.files.length
+                                ) {
+
                                     return;
+
                                 }
 
 
@@ -636,8 +914,10 @@
                                     fileError.textContent =
                                         validationResult.message;
 
+
                                     input.value =
                                         "";
+
 
                                     return;
 
@@ -645,7 +925,7 @@
 
 
                                 fileSuccess.textContent =
-                                    `${file.name} selected (${formatFileSize(file.size)})`;
+                                    `${file.name} ${getTranslation().fileSelected} (${formatFileSize(file.size)})`;
 
                             }
                         );
@@ -658,8 +938,10 @@
                     // =================================================
 
                     else if (
+
                         field.field_type ===
                         "textarea"
+
                     ) {
 
                         input =
@@ -675,8 +957,13 @@
                     // =================================================
 
                     else if (
-                        field.field_type === "select" ||
-                        field.field_type === "dropdown"
+
+                        field.field_type ===
+                            "select" ||
+
+                        field.field_type ===
+                            "dropdown"
+
                     ) {
 
                         input =
@@ -690,24 +977,35 @@
                                 "option"
                             );
 
+
                         placeholderOption.value =
                             "";
 
+
                         placeholderOption.textContent =
-                            "Select an option";
+                            getTranslation().selectOption;
+
 
                         placeholderOption.disabled =
                             true;
 
+
                         placeholderOption.selected =
                             true;
+
+
+                        placeholderOption.dataset.placeholder =
+                            "true";
+
 
                         input.appendChild(
                             placeholderOption
                         );
 
 
-                        if (field.options) {
+                        if (
+                            field.options
+                        ) {
 
                             field.options.forEach(
                                 option => {
@@ -717,11 +1015,14 @@
                                             "option"
                                         );
 
+
                                     optionElement.value =
                                         option.value;
 
+
                                     optionElement.textContent =
                                         option.label;
+
 
                                     input.appendChild(
                                         optionElement
@@ -740,8 +1041,10 @@
                     // =================================================
 
                     else if (
+
                         field.field_type ===
                         "checkbox"
+
                     ) {
 
                         input =
@@ -749,19 +1052,18 @@
                                 "input"
                             );
 
+
                         input.type =
                             "checkbox";
+
 
                         input.name =
                             field.id;
 
+
                         input.dataset.fieldId =
                             field.id;
 
-                        /*
-                         * Checkbox values are handled
-                         * separately during submission.
-                         */
 
                         if (
                             field.is_required
@@ -771,6 +1073,7 @@
                                 true;
 
                         }
+
 
                         fieldDiv.appendChild(
                             input
@@ -784,8 +1087,10 @@
                     // =================================================
 
                     else if (
+
                         field.field_type ===
                         "rating"
+
                     ) {
 
                         input =
@@ -793,11 +1098,14 @@
                                 "input"
                             );
 
+
                         input.type =
                             "number";
 
+
                         input.min =
                             "1";
+
 
                         input.max =
                             "5";
@@ -818,17 +1126,21 @@
 
 
                         const allowedTypes = [
+
                             "text",
                             "number",
                             "email",
                             "date"
+
                         ];
 
 
                         if (
+
                             allowedTypes.includes(
                                 field.field_type
                             )
+
                         ) {
 
                             input.type =
@@ -851,18 +1163,32 @@
                     // =================================================
 
                     if (
+
                         input &&
-                        field.field_type !== "checkbox" &&
+
+                        field.field_type !==
+                            "checkbox" &&
+
                         !(
-                            field.field_type === "file" ||
-                            field.field_type === "file_upload" ||
-                            field.field_type === "upload"
+                            field.field_type ===
+                                "file" ||
+
+                            field.field_type ===
+                                "file_upload" ||
+
+                            field.field_type ===
+                                "upload"
                         )
+
                     ) {
 
                         if (
+
                             field.placeholder &&
-                            input.tagName !== "SELECT"
+
+                            input.tagName !==
+                                "SELECT"
+
                         ) {
 
                             input.placeholder =
@@ -912,7 +1238,8 @@
 
             document.getElementById(
                 "loading"
-            ).style.display = "none";
+            ).style.display =
+                "none";
 
 
             const errorBox =
@@ -937,16 +1264,22 @@
     // FILE SIZE FORMAT
     // =========================================================
 
-    function formatFileSize(bytes) {
+    function formatFileSize(
+        bytes
+    ) {
 
-        if (bytes < 1024) {
+        if (
+            bytes < 1024
+        ) {
 
             return `${bytes} bytes`;
 
         }
 
 
-        if (bytes < 1024 * 1024) {
+        if (
+            bytes < 1024 * 1024
+        ) {
 
             return `${(
                 bytes / 1024
@@ -983,9 +1316,12 @@
         ) {
 
             return {
+
                 valid: false,
+
                 message:
                     "File exceeds 5 MB limit."
+
             };
 
         }
@@ -1026,20 +1362,28 @@
             );
 
 
-        if (!isAllowed) {
+        if (
+            !isAllowed
+        ) {
 
             return {
+
                 valid: false,
+
                 message:
                     `Invalid file type. Allowed types: ${allowedExtensions.join(", ")}`
+
             };
 
         }
 
 
         return {
+
             valid: true,
+
             message: ""
+
         };
 
     }
@@ -1055,7 +1399,10 @@
     ) {
 
         return new Promise(
-            (resolve, reject) => {
+            (
+                resolve,
+                reject
+            ) => {
 
                 const fieldDiv =
                     input.closest(
@@ -1102,11 +1449,12 @@
 
 
                 progressLabel.textContent =
-                    "Uploading... 0%";
+                    `${getTranslation().uploading} 0%`;
 
 
                 fileSuccess.textContent =
                     "";
+
 
                 fileError.textContent =
                     "";
@@ -1148,7 +1496,7 @@
 
 
                             progressLabel.textContent =
-                                `Uploading... ${percent}%`;
+                                `${getTranslation().uploading} ${percent}%`;
 
                         }
 
@@ -1161,8 +1509,11 @@
                     function() {
 
                         if (
+
                             xhr.status >= 200 &&
+
                             xhr.status < 300
+
                         ) {
 
                             let data;
@@ -1185,6 +1536,7 @@
                                     )
                                 );
 
+
                                 return;
 
                             }
@@ -1195,11 +1547,11 @@
 
 
                             progressLabel.textContent =
-                                "Upload complete: 100%";
+                                getTranslation().uploadComplete;
 
 
                             fileSuccess.textContent =
-                                `${file.name} uploaded successfully.`;
+                                `${file.name} ${getTranslation().fileUploaded}`;
 
 
                             resolve(
@@ -1220,6 +1572,7 @@
                                     JSON.parse(
                                         xhr.responseText
                                     );
+
 
                                 message =
                                     errorData.detail ||
@@ -1298,7 +1651,9 @@
                 );
 
 
-                if (!currentForm) {
+                if (
+                    !currentForm
+                ) {
 
                     return;
 
@@ -1326,6 +1681,7 @@
                 successMessage.textContent =
                     "";
 
+
                 errorBox.textContent =
                     "";
 
@@ -1352,12 +1708,13 @@
 
 
                 submitButton.textContent =
-                    "Submitting...";
+                    getTranslation().submitting;
 
 
                 try {
 
-                    const responseValues = [];
+                    const responseValues =
+                        [];
 
 
                     // =================================================
@@ -1365,7 +1722,8 @@
                     // =================================================
 
                     const fields =
-                        currentForm.fields || [];
+                        currentForm.fields ||
+                        [];
 
 
                     for (
@@ -1379,7 +1737,9 @@
                             );
 
 
-                        if (!input) {
+                        if (
+                            !input
+                        ) {
 
                             continue;
 
@@ -1406,6 +1766,7 @@
                                         : "false"
 
                             });
+
 
                             continue;
 
@@ -1434,6 +1795,7 @@
                                     );
 
                                 }
+
 
                                 continue;
 
@@ -1476,8 +1838,11 @@
 
 
                             if (
+
                                 !uploadResult ||
+
                                 !uploadResult.stored_name
+
                             ) {
 
                                 throw new Error(
@@ -1500,6 +1865,7 @@
                                     filePath
 
                             });
+
 
                             continue;
 
@@ -1540,7 +1906,8 @@
                             `/public/forms/${slug}/submit`,
                             {
 
-                                method: "POST",
+                                method:
+                                    "POST",
 
                                 headers: {
 
@@ -1580,7 +1947,8 @@
                     );
 
 
-                    let data = null;
+                    let data =
+                        null;
 
 
                     try {
@@ -1608,7 +1976,9 @@
                         throw new Error(
 
                             data?.detail ||
+
                             responseText ||
+
                             "Form submission failed."
 
                         );
@@ -1627,7 +1997,7 @@
 
 
                     successMessage.textContent =
-                        "Form submitted successfully!";
+                        getTranslation().success;
 
 
                     formElement.reset();
@@ -1658,8 +2028,9 @@
                     submitButton.disabled =
                         false;
 
+
                     submitButton.textContent =
-                        "Submit";
+                        getTranslation().submit;
 
                 }
 
@@ -1671,6 +2042,8 @@
     // START
     // =========================================================
 
+    applyLanguage("en");
+
     loadForm();
 
 </script>
@@ -1678,3 +2051,4 @@
 </body>
 
 </html>
+

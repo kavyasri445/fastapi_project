@@ -1,0 +1,136 @@
+{
+  "title": "டைனமிக் வொர்க்ஃப்ளோ ஆட்டோமேஷன் சிஸ்டம்",
+  "welcome": "வொர்க்ஃப்ளோ ஆட்டோமேஷன் சிஸ்டத்திற்கு வரவேற்கிறோம்.",
+
+  "language": "மொழி",
+  "english": "ஆங்கிலம்",
+  "telugu": "தெலுங்கு",
+  "hindi": "இந்தி",
+  "tamil": "தமிழ்",
+
+  "formList": "படிவப் பட்டியல்",
+  "createNewForm": "+ புதிய படிவத்தை உருவாக்கவும்",
+  "formBuilder": "படிவ பில்டர்",
+
+  "formId": "படிவ ID",
+  "status": "நிலை",
+
+  "edit": "திருத்து",
+  "archive": "காப்பகப்படுத்து",
+  "builder": "பில்டர்",
+  "analytics": "பகுப்பாய்வு",
+
+  "loading": "படிவங்கள் ஏற்றப்படுகின்றன...",
+  "noFormsFound": "படிவங்கள் எதுவும் கிடைக்கவில்லை.",
+  "noDescription": "விளக்கம் இல்லை",
+
+  "unableToLoadForms": "படிவங்களை ஏற்ற முடியவில்லை.",
+  "serverError": "சர்வருடன் இணைப்பதில் பிழை.",
+
+  "builderMessage": "வரைவு படிவத்தைத் தேர்ந்தெடுத்து பில்டரை கிளிக் செய்யவும்.",
+
+  "error": "பிழை",
+  "unableToArchive": "படிவத்தை காப்பகப்படுத்த முடியவில்லை",
+  "archiveSuccess": "படிவம் வெற்றிகரமாக காப்பகப்படுத்தப்பட்டது!",
+
+  "createFormTitle": "படிவத்தை உருவாக்கவும்",
+  "formTitle": "படிவத் தலைப்பு",
+  "enterFormTitle": "படிவத் தலைப்பை உள்ளிடவும்",
+  "description": "விளக்கம்",
+  "enterFormDescription": "படிவ விளக்கத்தை உள்ளிடவும்",
+  "createdBy": "உருவாக்கியவர் (பயனர் ID)",
+  "enterUserUUID": "பயனர் UUID-ஐ உள்ளிடவும்",
+  "createFormButton": "படிவத்தை உருவாக்கவும்",
+  "back": "பின்செல்",
+  "failedToCreateForm": "படிவத்தை உருவாக்க முடியவில்லை",
+  "formCreatedSuccess": "படிவம் வெற்றிகரமாக உருவாக்கப்பட்டது!",
+
+  "formBuilderTitle": "படிவ பில்டர்",
+  "saveChanges": "மாற்றங்களைச் சேமிக்கவும்",
+  "fields": "புலங்கள்",
+  "conditionalRules": "நிபந்தனை விதிகள்",
+  "addRule": "+ விதியைச் சேர்க்கவும்",
+  "existingRules": "ஏற்கனவே உள்ள விதிகள்",
+
+  "type": "வகை",
+  "order": "வரிசை",
+  "delete": "நீக்கு",
+  "unnamedField": "பெயரிடப்படாத புலம்",
+
+  "loadingFields": "புலங்கள் ஏற்றப்படுகின்றன...",
+  "noFieldsAvailable": "இந்தப் படிவத்திற்கு புலங்கள் எதுவும் இல்லை.",
+  "unableToLoadFields": "புலங்களை ஏற்ற முடியவில்லை.",
+  "failedToLoadFields": "புலங்களை ஏற்ற முடியவில்லை",
+
+  "formIdNotFound": "படிவ ID கிடைக்கவில்லை",
+  "formIdMissing": "படிவ ID இல்லை.",
+
+  "confirmDeleteField": "இந்தப் புலத்தை நீக்க விரும்புகிறீர்களா?",
+  "failedToDeleteField": "புலத்தை நீக்க முடியவில்லை.",
+  "fieldDeletedSuccess": "புலம் வெற்றிகரமாக நீக்கப்பட்டது.",
+
+  "addConditionalRule": "நிபந்தனை விதியைச் சேர்க்கவும்",
+  "editConditionalRule": "நிபந்தனை விதியைத் திருத்தவும்",
+
+  "whenField": "புலம்:",
+  "operator": "ஆபரேட்டர்:",
+  "value": "மதிப்பு:",
+  "then": "பின்னர்:",
+  "field": "புலம்:",
+
+  "selectTriggerField": "டிரிகர் புலத்தைத் தேர்ந்தெடுக்கவும்",
+  "selectTargetField": "இலக்கு புலத்தைத் தேர்ந்தெடுக்கவும்",
+  "selectOperator": "ஆபரேட்டரைத் தேர்ந்தெடுக்கவும்",
+
+  "equals": "சமம்",
+  "notEquals": "சமம் இல்லை",
+  "contains": "கொண்டுள்ளது",
+  "greaterThan": "விட அதிகம்",
+  "isEmpty": "காலியாக உள்ளது",
+
+  "show": "காட்டு",
+  "hide": "மறை",
+
+  "enterComparisonValue": "ஒப்பீட்டு மதிப்பை உள்ளிடவும்",
+  "notRequiredForIsEmpty": "Is Empty-க்கு தேவையில்லை",
+
+  "saveRule": "விதியைச் சேமிக்கவும்",
+  "cancel": "ரத்து செய்",
+
+  "selectTriggerFieldError": "டிரிகர் புலத்தைத் தேர்ந்தெடுக்கவும்.",
+  "selectOperatorError": "ஆபரேட்டரைத் தேர்ந்தெடுக்கவும்.",
+  "comparisonValueError": "ஒப்பீட்டு மதிப்பை உள்ளிடவும்.",
+  "selectTargetFieldError": "இலக்கு புலத்தைத் தேர்ந்தெடுக்கவும்.",
+  "sameFieldError": "டிரிகர் புலமும் இலக்கு புலமும் ஒரே மாதிரியாக இருக்கக்கூடாது.",
+
+  "failedToSaveRule": "விதியைச் சேமிக்க முடியவில்லை.",
+  "ruleCreatedSuccess": "விதி வெற்றிகரமாக உருவாக்கப்பட்டது!",
+  "ruleUpdatedSuccess": "விதி வெற்றிகரமாக புதுப்பிக்கப்பட்டது!",
+
+  "loadingRules": "விதிகள் ஏற்றப்படுகின்றன...",
+  "failedToLoadRules": "விதிகளை ஏற்ற முடியவில்லை.",
+  "unableToLoadRules": "விதிகளை ஏற்ற முடியவில்லை.",
+  "noRulesCreated": "இதுவரை நிபந்தனை விதிகள் எதுவும் உருவாக்கப்படவில்லை.",
+
+  "if": "என்றால்",
+
+  "ruleNotFound": "விதி கிடைக்கவில்லை.",
+  "unableToLoadRule": "விதியை ஏற்ற முடியவில்லை.",
+
+  "confirmDeleteRule": "இந்த விதியை நீக்க விரும்புகிறீர்களா?",
+  "failedToDeleteRule": "விதியை நீக்க முடியவில்லை.",
+  "ruleDeletedSuccess": "நிபந்தனை விதி வெற்றிகரமாக நீக்கப்பட்டது.",
+
+  "enterFormTitleError": "படிவத் தலைப்பை உள்ளிடவும்.",
+  "formUpdateEndpointMessage": "படிவத் தகவல் தயாராக உள்ளது. இந்த பொத்தானை உங்கள் Form update endpoint-க்கு இணைக்கவும்.",
+
+  "editFormTitle": "படிவத்தைத் திருத்தவும்",
+  "titleRequired": "தலைப்பு தேவை.",
+  "unableToLoadForm": "படிவத்தை ஏற்ற முடியவில்லை.",
+  "unableToUpdateForm": "படிவத்தைப் புதுப்பிக்க முடியவில்லை.",
+  "formUpdatedSuccess": "படிவம் வெற்றிகரமாகப் புதுப்பிக்கப்பட்டது!",
+  "openEditFormCorrectly": "படிவ ID இல்லை. சரியான படிவ ID-யுடன் Edit Form பக்கத்தைத் திறக்கவும்.",
+  "unknownField": "தெரியாத புலம்"
+
+
+}

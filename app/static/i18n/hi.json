@@ -1,0 +1,136 @@
+{
+  "title": "डायनामिक वर्कफ़्लो ऑटोमेशन सिस्टम",
+  "welcome": "वर्कफ़्लो ऑटोमेशन सिस्टम में आपका स्वागत है।",
+
+  "language": "भाषा",
+  "english": "अंग्रेज़ी",
+  "telugu": "तेलुगु",
+  "hindi": "हिंदी",
+  "tamil": "तमिल",
+
+  "formList": "फ़ॉर्म सूची",
+  "createNewForm": "+ नया फ़ॉर्म बनाएँ",
+  "formBuilder": "फ़ॉर्म बिल्डर",
+
+  "formId": "फ़ॉर्म ID",
+  "status": "स्थिति",
+
+  "edit": "संपादित करें",
+  "archive": "आर्काइव",
+  "builder": "बिल्डर",
+  "analytics": "विश्लेषण",
+
+  "loading": "फ़ॉर्म लोड हो रहे हैं...",
+  "noFormsFound": "कोई फ़ॉर्म नहीं मिला।",
+  "noDescription": "कोई विवरण नहीं",
+
+  "unableToLoadForms": "फ़ॉर्म लोड नहीं किए जा सके।",
+  "serverError": "सर्वर से कनेक्ट करने में त्रुटि।",
+
+  "builderMessage": "कृपया ड्राफ्ट फ़ॉर्म चुनें और बिल्डर पर क्लिक करें।",
+
+  "error": "त्रुटि",
+  "unableToArchive": "फ़ॉर्म को आर्काइव नहीं किया जा सका",
+  "archiveSuccess": "फ़ॉर्म सफलतापूर्वक आर्काइव किया गया!",
+
+  "createFormTitle": "फ़ॉर्म बनाएँ",
+  "formTitle": "फ़ॉर्म शीर्षक",
+  "enterFormTitle": "फ़ॉर्म शीर्षक दर्ज करें",
+  "description": "विवरण",
+  "enterFormDescription": "फ़ॉर्म का विवरण दर्ज करें",
+  "createdBy": "द्वारा बनाया गया (यूज़र ID)",
+  "enterUserUUID": "यूज़र UUID दर्ज करें",
+  "createFormButton": "फ़ॉर्म बनाएँ",
+  "back": "वापस",
+  "failedToCreateForm": "फ़ॉर्म बनाने में विफल",
+  "formCreatedSuccess": "फ़ॉर्म सफलतापूर्वक बनाया गया!",
+
+  "formBuilderTitle": "फ़ॉर्म बिल्डर",
+  "saveChanges": "परिवर्तन सहेजें",
+  "fields": "फ़ील्ड",
+  "conditionalRules": "कंडीशनल नियम",
+  "addRule": "+ नियम जोड़ें",
+  "existingRules": "मौजूदा नियम",
+
+  "type": "प्रकार",
+  "order": "क्रम",
+  "delete": "हटाएँ",
+  "unnamedField": "बिना नाम वाला फ़ील्ड",
+
+  "loadingFields": "फ़ील्ड लोड हो रहे हैं...",
+  "noFieldsAvailable": "इस फ़ॉर्म के लिए कोई फ़ील्ड उपलब्ध नहीं है।",
+  "unableToLoadFields": "फ़ील्ड लोड नहीं किए जा सके।",
+  "failedToLoadFields": "फ़ील्ड लोड करने में विफल",
+
+  "formIdNotFound": "फ़ॉर्म ID नहीं मिला",
+  "formIdMissing": "फ़ॉर्म ID उपलब्ध नहीं है।",
+
+  "confirmDeleteField": "क्या आप इस फ़ील्ड को हटाना चाहते हैं?",
+  "failedToDeleteField": "फ़ील्ड हटाने में विफल।",
+  "fieldDeletedSuccess": "फ़ील्ड सफलतापूर्वक हटा दिया गया।",
+
+  "addConditionalRule": "कंडीशनल नियम जोड़ें",
+  "editConditionalRule": "कंडीशनल नियम संपादित करें",
+
+  "whenField": "फ़ील्ड:",
+  "operator": "ऑपरेटर:",
+  "value": "मान:",
+  "then": "तब:",
+  "field": "फ़ील्ड:",
+
+  "selectTriggerField": "ट्रिगर फ़ील्ड चुनें",
+  "selectTargetField": "टार्गेट फ़ील्ड चुनें",
+  "selectOperator": "ऑपरेटर चुनें",
+
+  "equals": "बराबर",
+  "notEquals": "बराबर नहीं",
+  "contains": "शामिल है",
+  "greaterThan": "से अधिक",
+  "isEmpty": "खाली है",
+
+  "show": "दिखाएँ",
+  "hide": "छिपाएँ",
+
+  "enterComparisonValue": "तुलना मान दर्ज करें",
+  "notRequiredForIsEmpty": "Is Empty के लिए आवश्यक नहीं",
+
+  "saveRule": "नियम सहेजें",
+  "cancel": "रद्द करें",
+
+  "selectTriggerFieldError": "कृपया ट्रिगर फ़ील्ड चुनें।",
+  "selectOperatorError": "कृपया ऑपरेटर चुनें।",
+  "comparisonValueError": "कृपया तुलना मान दर्ज करें।",
+  "selectTargetFieldError": "कृपया टार्गेट फ़ील्ड चुनें।",
+  "sameFieldError": "ट्रिगर फ़ील्ड और टार्गेट फ़ील्ड समान नहीं हो सकते।",
+
+  "failedToSaveRule": "नियम सहेजने में विफल।",
+  "ruleCreatedSuccess": "नियम सफलतापूर्वक बनाया गया!",
+  "ruleUpdatedSuccess": "नियम सफलतापूर्वक अपडेट किया गया!",
+
+  "loadingRules": "नियम लोड हो रहे हैं...",
+  "failedToLoadRules": "नियम लोड करने में विफल।",
+  "unableToLoadRules": "नियम लोड नहीं किए जा सके।",
+  "noRulesCreated": "अभी तक कोई कंडीशनल नियम नहीं बनाया गया है।",
+
+  "if": "यदि",
+
+  "ruleNotFound": "नियम नहीं मिला।",
+  "unableToLoadRule": "नियम लोड नहीं किया जा सका।",
+
+  "confirmDeleteRule": "क्या आप इस नियम को हटाना चाहते हैं?",
+  "failedToDeleteRule": "नियम हटाने में विफल।",
+  "ruleDeletedSuccess": "कंडीशनल नियम सफलतापूर्वक हटा दिया गया।",
+
+  "enterFormTitleError": "कृपया फ़ॉर्म शीर्षक दर्ज करें।",
+  "formUpdateEndpointMessage": "फ़ॉर्म की जानकारी तैयार है। इस बटन को अपने मौजूदा Form update endpoint से कनेक्ट करें।",
+
+  "editFormTitle": "फ़ॉर्म संपादित करें",
+  "titleRequired": "शीर्षक आवश्यक है।",
+  "unableToLoadForm": "फ़ॉर्म लोड नहीं किया जा सका।",
+  "unableToUpdateForm": "फ़ॉर्म अपडेट नहीं किया जा सका।",
+  "formUpdatedSuccess": "फ़ॉर्म सफलतापूर्वक अपडेट किया गया!",
+  "openEditFormCorrectly": "फ़ॉर्म ID उपलब्ध नहीं है। सही फ़ॉर्म ID के साथ Edit Form पेज खोलें।",
+  "unknownField": "अज्ञात फ़ील्ड"
+
+
+}

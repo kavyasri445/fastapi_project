@@ -1,0 +1,6740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Response Management</title>
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ====================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #0f172a;
+            --navy-light: #172554;
+            --blue: #2563eb;
+            --blue-light: #3b82f6;
+            --purple: #7c3aed;
+            --violet: #8b5cf6;
+            --cyan: #06b6d4;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #ef4444;
+            --text: #172033;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --white: #ffffff;
+        }
+
+
+        /* =====================================================
+           BODY
+        ====================================================== */
+
+        body {
+            margin: 0;
+
+            font-family: "Segoe UI",
+            Arial,
+            sans-serif;
+
+            color: var(--text);
+
+            min-height: 100vh;
+
+            background: radial-gradient(
+                    circle at 10% 10%,
+                    rgba(59, 130, 246, 0.30),
+                    transparent 28%
+            ),
+            radial-gradient(
+                    circle at 90% 10%,
+                    rgba(139, 92, 246, 0.30),
+                    transparent 28%
+            ),
+            radial-gradient(
+                    circle at 50% 100%,
+                    rgba(6, 182, 212, 0.18),
+                    transparent 30%
+            ),
+            linear-gradient(
+                    135deg,
+                    #020617 0%,
+                    #0f172a 45%,
+                    #1e1b4b 100%
+            );
+
+            background-attachment: fixed;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ====================================================== */
+
+        .header {
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 30px 45px;
+
+            color: black;
+
+            background: linear-gradient(
+                    135deg,
+                    #1d4ed8 0%,
+                    #4f46e5 45%,
+                    #7c3aed 100%
+            );
+
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.30);
+        }
+
+
+        .header::before {
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            right: -100px;
+            top: -160px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+
+        .header::after {
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            right: 180px;
+            bottom: -130px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+
+        .header-content {
+            position: relative;
+
+            z-index: 2;
+
+            max-width: 1450px;
+
+            margin: auto;
+        }
+
+
+        .header h1 {
+            margin: 0;
+
+            font-size: 32px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.5px;
+        }
+
+
+        .header p {
+            margin: 8px 0 0;
+
+            opacity: 0.92;
+
+            font-size: 15px;
+        }
+
+
+        .header-badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 12px;
+
+            padding: 6px 12px;
+
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, 0.16);
+
+            border: 1px solid rgba(255, 255, 255, 0.25);
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.7px;
+        }
+
+
+        .header-badge::before {
+            content: "";
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #86efac;
+
+            box-shadow: 0 0 10px #86efac;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ====================================================== */
+
+        .container {
+            max-width: 1450px;
+
+            margin: 30px auto;
+
+            padding: 0 24px;
+        }
+
+
+        /* =====================================================
+           DASHBOARD SUMMARY
+        ====================================================== */
+
+        .summary-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 24px;
+        }
+
+
+        .summary-card {
+            position: relative;
+
+            overflow: hidden;
+
+            min-height: 135px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 17px;
+
+            padding: 24px;
+
+            border-radius: 20px;
+
+            color: black;
+
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+
+            transition: transform 0.25s ease,
+            box-shadow 0.25s ease;
+        }
+
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.35);
+        }
+
+
+        .summary-card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 140px;
+            height: 140px;
+
+            right: -45px;
+            top: -65px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+
+        .summary-icon {
+            position: relative;
+
+            z-index: 2;
+
+            width: 58px;
+            height: 58px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 16px;
+
+            font-size: 27px;
+
+            font-weight: 800;
+
+            background: rgba(255, 255, 255, 0.18);
+
+            border: 1px solid rgba(255, 255, 255, 0.25);
+
+            backdrop-filter: blur(5px);
+        }
+
+
+        .summary-content {
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .summary-label {
+            font-size: 13px;
+
+            font-weight: 600;
+
+            opacity: 0.88;
+
+            margin-bottom: 7px;
+        }
+
+
+        .summary-value {
+            font-size: 31px;
+
+            font-weight: 800;
+
+            line-height: 1;
+        }
+
+
+        .summary-subtitle {
+            margin-top: 7px;
+
+            font-size: 11px;
+
+            opacity: 0.75;
+        }
+
+
+        .total-card {
+            background: linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+            );
+        }
+
+
+        .completed-card {
+            background: linear-gradient(
+                    135deg,
+                    #059669,
+                    #10b981
+            );
+        }
+
+
+        .incomplete-card {
+            background: linear-gradient(
+                    135deg,
+                    #ea580c,
+                    #f59e0b
+            );
+        }
+
+
+        .page-card {
+            background: linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #a855f7
+            );
+        }
+
+
+        /* =====================================================
+           CARDS
+        ====================================================== */
+
+        .card {
+            position: relative;
+
+            background: rgba(255, 255, 255, 0.97);
+
+            border: 1px solid rgba(255, 255, 255, 0.30);
+
+            border-radius: 20px;
+
+            padding: 25px;
+
+            margin-bottom: 22px;
+
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+
+            backdrop-filter: blur(10px);
+        }
+
+
+        .card h2 {
+            margin: 0 0 20px;
+
+            font-size: 21px;
+
+            color: #172554;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+        }
+
+
+        .card h2::before {
+            content: "";
+
+            width: 5px;
+            height: 25px;
+
+            border-radius: 10px;
+
+            background: linear-gradient(
+                    180deg,
+                    #2563eb,
+                    #7c3aed
+            );
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ====================================================== */
+
+        .message {
+            padding: 15px 18px;
+
+            border-radius: 12px;
+
+            margin-bottom: 18px;
+
+            display: none;
+
+            font-weight: 600;
+
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.10);
+        }
+
+
+        .error {
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            border-left: 5px solid #ef4444;
+        }
+
+
+        .success {
+            background: #d1fae5;
+
+            color: #065f46;
+
+            border-left: 5px solid #10b981;
+        }
+
+
+        /* =====================================================
+           EXPORT SECTION
+        ====================================================== */
+
+        .export-card {
+            background: linear-gradient(
+                    135deg,
+                    rgba(239, 246, 255, 0.98),
+                    rgba(238, 242, 255, 0.98)
+            );
+        }
+
+
+        .export-description {
+            margin-top: -8px;
+
+            margin-bottom: 18px;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        .export-buttons {
+            display: flex;
+
+            gap: 14px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .export-btn {
+            min-width: 170px;
+
+            padding: 13px 20px;
+
+            color: white;
+
+            border-radius: 11px;
+
+            font-weight: 700;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            box-shadow: 0 7px 18px rgba(37, 99, 235, 0.25);
+        }
+
+
+        .csv-btn {
+            background: linear-gradient(
+                    135deg,
+                    #0284c7,
+                    #2563eb
+            );
+        }
+
+
+        .json-btn {
+            background: linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #7c3aed
+            );
+        }
+
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.32);
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ====================================================== */
+
+        button {
+            border: none;
+
+            border-radius: 10px;
+
+            padding: 11px 18px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition: transform 0.15s ease,
+            box-shadow 0.15s ease,
+            background 0.15s ease;
+        }
+
+
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+
+            box-shadow: 0 6px 15px rgba(15, 23, 42, 0.16);
+        }
+
+
+        button:disabled {
+            opacity: 0.45;
+
+            cursor: not-allowed;
+        }
+
+
+        .primary-btn {
+            color: white;
+
+            background: linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+            );
+        }
+
+
+        .primary-btn:hover:not(:disabled) {
+            background: linear-gradient(
+                    135deg,
+                    #1d4ed8,
+                    #4338ca
+            );
+        }
+
+
+        .secondary-btn {
+            color: #334155;
+
+            background: #e2e8f0;
+        }
+
+
+        .secondary-btn:hover:not(:disabled) {
+            background: #cbd5e1;
+        }
+
+
+        .danger-btn {
+            color: white;
+
+            background: linear-gradient(
+                    135deg,
+                    #ef4444,
+                    #dc2626
+            );
+        }
+
+
+        .danger-btn:hover:not(:disabled) {
+            background: linear-gradient(
+                    135deg,
+                    #dc2626,
+                    #b91c1c
+            );
+        }
+
+
+        .blue-btn {
+            color: white;
+
+            background: linear-gradient(
+                    135deg,
+                    #0284c7,
+                    #2563eb
+            );
+        }
+
+
+        .blue-btn:hover:not(:disabled) {
+            background: linear-gradient(
+                    135deg,
+                    #0369a1,
+                    #1d4ed8
+            );
+        }
+
+
+        /* =====================================================
+           ACTION ROW
+        ====================================================== */
+
+        .action-row {
+            display: flex;
+
+            gap: 10px;
+
+            flex-wrap: wrap;
+
+            align-items: center;
+        }
+
+
+        .action-row button {
+            margin-top: 5px;
+        }
+
+
+        /* =====================================================
+           RETENTION
+        ====================================================== */
+
+        .retention-card {
+            background: linear-gradient(
+                    135deg,
+                    #fff7ed,
+                    #fffbeb
+            );
+
+            border: 1px solid #fed7aa;
+        }
+
+
+        .retention-row {
+            display: flex;
+
+            gap: 14px;
+
+            align-items: end;
+
+            flex-wrap: wrap;
+
+            padding: 18px;
+
+            border-radius: 15px;
+
+            background: rgba(255, 255, 255, 0.70);
+
+            border: 1px solid #fed7aa;
+        }
+
+
+        .retention-input {
+            width: 220px;
+        }
+
+
+        .retention-row .primary-btn {
+            background: linear-gradient(
+                    135deg,
+                    #f59e0b,
+                    #ea580c
+            );
+        }
+
+
+        .retention-row .primary-btn:hover {
+            background: linear-gradient(
+                    135deg,
+                    #d97706,
+                    #c2410c
+            );
+        }
+
+
+        .retention-help {
+            color: #92400e;
+
+            font-size: 13px;
+
+            margin-top: 12px;
+
+            padding-left: 4px;
+        }
+
+
+        /* =====================================================
+           FILTERS
+        ====================================================== */
+
+        .filter-card {
+            background: linear-gradient(
+                    135deg,
+                    rgba(248, 250, 252, 0.98),
+                    rgba(239, 246, 255, 0.98)
+            );
+        }
+
+
+        .filter-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 16px;
+        }
+
+
+        .filter-group {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .filter-group label {
+            font-weight: 700;
+
+            margin-bottom: 7px;
+
+            font-size: 13px;
+
+            color: #334155;
+        }
+
+
+        /* =====================================================
+           INPUTS
+        ====================================================== */
+
+        input,
+        select {
+            padding: 12px 13px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            width: 100%;
+
+            background: #ffffff;
+
+            color: #172033;
+
+            outline: none;
+
+            transition: border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+        }
+
+
+        input:hover,
+        select:hover {
+            border-color: #93c5fd;
+        }
+
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.13);
+        }
+
+
+        /* =====================================================
+           SEARCH
+        ====================================================== */
+
+        .search-row {
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+
+        .search-row input {
+            flex: 1;
+        }
+
+
+        .field-filter {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr auto;
+
+            gap: 12px;
+
+            margin-top: 18px;
+
+            align-items: end;
+
+            padding-top: 18px;
+
+            border-top: 1px solid #e2e8f0;
+        }
+
+
+        /* =====================================================
+           TABLE HEADER AREA
+        ====================================================== */
+
+        .submission-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin-bottom: 18px;
+        }
+
+
+        .submission-header h2 {
+            margin-bottom: 0;
+        }
+
+
+        .submission-description {
+            color: #64748b;
+
+            font-size: 13px;
+
+            margin-top: -10px;
+
+            margin-bottom: 18px;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ====================================================== */
+
+        .table-container {
+            overflow-x: auto;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 15px;
+
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
+        }
+
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1100px;
+
+            background: white;
+        }
+
+
+        th,
+        td {
+            padding: 14px 12px;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            text-align: left;
+
+            vertical-align: top;
+        }
+
+
+        th {
+            background: linear-gradient(
+                    135deg,
+                    #eff6ff,
+                    #eef2ff
+            );
+
+            color: #1e3a8a;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+
+        td {
+            font-size: 13px;
+
+            color: #334155;
+        }
+
+
+        tbody tr {
+            transition: background 0.15s ease;
+        }
+
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        /* =====================================================
+           CHECKBOX
+        ====================================================== */
+
+        .checkbox-cell {
+            width: 45px;
+
+            text-align: center;
+        }
+
+
+        .checkbox-cell input {
+            width: auto;
+
+            transform: scale(1.15);
+
+            cursor: pointer;
+
+            accent-color: #2563eb;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ====================================================== */
+
+        .status {
+            display: inline-block;
+
+            padding: 6px 11px;
+
+            border-radius: 999px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.2px;
+        }
+
+
+        .status-completed {
+            background: #d1fae5;
+
+            color: #047857;
+
+            border: 1px solid #a7f3d0;
+        }
+
+
+        .status-incomplete {
+            background: #fef3c7;
+
+            color: #b45309;
+
+            border: 1px solid #fde68a;
+        }
+
+
+        /* =====================================================
+           RESPONSE DATA
+        ====================================================== */
+
+        .response-data {
+            max-width: 400px;
+
+            line-height: 1.6;
+
+            color: #475569;
+        }
+
+
+        .response-item {
+            margin-bottom: 5px;
+        }
+
+
+        .response-label {
+            font-weight: 700;
+
+            color: #1e293b;
+        }
+
+
+        /* =====================================================
+           BULK ACTION AREA
+        ====================================================== */
+
+        .bulk-action-bar {
+            margin-top: 20px;
+
+            padding: 14px 16px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+
+            border-radius: 13px;
+
+            background: linear-gradient(
+                    135deg,
+                    #f8fafc,
+                    #f1f5f9
+            );
+
+            border: 1px solid #e2e8f0;
+        }
+
+
+        .selected-info {
+            margin-left: auto;
+
+            font-weight: 700;
+
+            color: #334155;
+
+            background: #eef2ff;
+
+            padding: 8px 13px;
+
+            border-radius: 999px;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           PAGINATION
+        ====================================================== */
+
+        .pagination {
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-top: 22px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .pagination button {
+            min-width: 42px;
+
+            background: #e2e8f0;
+
+            color: #334155;
+        }
+
+
+        .pagination button:hover:not(:disabled) {
+            background: #cbd5e1;
+        }
+
+
+        .pagination button.active {
+            color: white;
+
+            background: linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+            );
+        }
+
+
+        .page-info {
+            margin: 0 10px;
+
+            font-weight: 700;
+
+            color: #475569;
+        }
+
+
+        /* =====================================================
+           LOADING / EMPTY
+        ====================================================== */
+
+        .loading {
+            text-align: center;
+
+            padding: 40px;
+
+            font-size: 15px;
+
+            color: #64748b;
+        }
+
+
+        .empty {
+            text-align: center;
+
+            padding: 45px;
+
+            color: #64748b;
+
+            background: #f8fafc;
+
+            border-radius: 12px;
+        }
+
+
+        /* =====================================================
+           MODAL
+        ====================================================== */
+
+        .modal-overlay {
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(2, 6, 23, 0.78);
+
+            display: none;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+
+            z-index: 1000;
+
+            backdrop-filter: blur(6px);
+        }
+
+
+        .modal {
+            background: white;
+
+            width: 100%;
+
+            max-width: 850px;
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            border-radius: 20px;
+
+            padding: 28px;
+
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.40);
+        }
+
+
+        .modal-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 22px;
+
+            padding-bottom: 15px;
+
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+
+        .modal-header h2 {
+            margin: 0;
+
+            color: #172554;
+        }
+
+
+        .close-btn {
+            background: #fee2e2;
+
+            color: #b91c1c;
+
+            font-size: 22px;
+
+            padding: 5px 13px;
+
+            border-radius: 9px;
+        }
+
+
+        .close-btn:hover {
+            background: #fecaca;
+        }
+
+
+        /* =====================================================
+           DETAIL GRID
+        ====================================================== */
+
+        .detail-grid {
+            display: grid;
+
+            grid-template-columns:
+                180px 1fr;
+
+            gap: 12px;
+
+            padding: 17px;
+
+            background: linear-gradient(
+                    135deg,
+                    #f8fafc,
+                    #eef2ff
+            );
+
+            border-radius: 13px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .detail-label {
+            font-weight: 800;
+
+            color: #334155;
+        }
+
+
+        /* =====================================================
+           ANSWER CARDS
+        ====================================================== */
+
+        .answer-card {
+            border: 1px solid #e2e8f0;
+
+            border-left: 5px solid #6366f1;
+
+            border-radius: 13px;
+
+            padding: 16px;
+
+            margin-bottom: 12px;
+
+            background: linear-gradient(
+                    135deg,
+                    #ffffff,
+                    #f8fafc
+            );
+
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+        }
+
+
+        .answer-label {
+            font-weight: 800;
+
+            margin-bottom: 7px;
+
+            color: #312e81;
+        }
+
+
+        /* =====================================================
+           SCROLLBAR
+        ====================================================== */
+
+        ::-webkit-scrollbar {
+            width: 9px;
+
+            height: 9px;
+        }
+
+
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(
+                    180deg,
+                    #2563eb,
+                    #7c3aed
+            );
+
+            border-radius: 10px;
+        }
+
+        /* =====================================================
+   LANGUAGE SELECTOR
+===================================================== */
+
+        .header-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 25px;
+        }
+
+
+        .language-container {
+            position: relative;
+
+            z-index: 5;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 6px;
+
+            min-width: 150px;
+        }
+
+
+        .language-container label {
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            opacity: 0.9;
+        }
+
+
+        .language-container select {
+            min-width: 150px;
+
+            padding: 10px 12px;
+
+            border: 1px solid rgba(255, 255, 255, 0.35);
+
+            border-radius: 10px;
+
+            background: rgba(255, 255, 255, 0.15);
+
+            color: white;
+
+            font-weight: 700;
+
+            backdrop-filter: blur(8px);
+
+            cursor: pointer;
+        }
+
+
+        .language-container select option {
+            background: white;
+
+            color: #172033;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .header-top {
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+
+            .language-container {
+                width: 100%;
+            }
+
+
+            .language-container select {
+                width: 100%;
+            }
+
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 1100px) {
+
+            .summary-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .filter-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 900px) {
+
+            .field-filter {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .header {
+                padding: 25px;
+            }
+
+
+            .container {
+                padding: 0 16px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .summary-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .filter-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .search-row {
+                flex-direction: column;
+            }
+
+
+            .retention-row {
+                align-items: stretch;
+            }
+
+
+            .retention-input {
+                width: 100%;
+            }
+
+
+            .detail-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .selected-info {
+                margin-left: 0;
+
+                width: 100%;
+
+                text-align: center;
+            }
+
+
+            .header h1 {
+                font-size: 25px;
+            }
+
+
+            .card {
+                padding: 18px;
+            }
+
+
+            .export-buttons {
+                flex-direction: column;
+            }
+
+
+            .export-btn {
+                width: 100%;
+            }
+
+        }
+
+        /* =========================================================
+           RESPONSE ANALYTICS
+        ========================================================= */
+
+        .analytics-chart-section {
+            margin-top: 30px;
+        }
+
+        .analytics-chart-section h3 {
+            margin-bottom: 20px;
+        }
+
+        .analytics-chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .analytics-chart-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 300px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .analytics-chart-card h4 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .analytics-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+
+        .analytics-loading {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-chart-card {
+                min-height: 250px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================== -->
+
+<div class="header">
+
+
+    <div class="header-content">
+
+        <div class="header-top">
+
+            <div>
+                <div class="header-badge" data-i18n="responseManagementDashboard">
+                    Response Management Dashboard
+                </div>
+
+                <h1 data-i18n="responseManagement">
+                    Response Management
+                </h1>
+
+                <p id="formTitle">
+                    Loading form...
+                </p>
+            </div>
+
+            <div class="language-container">
+
+                <label
+                        for="languageSelector"
+                        data-i18n="language"
+                >
+                    Language
+                </label>
+
+                <select id="languageSelector">
+
+                    <option value="en">
+                        English
+                    </option>
+
+                    <option value="te">
+                        తెలుగు
+                    </option>
+
+                    <option value="hi">
+                        हिन्दी
+                    </option>
+
+                    <option value="ta">
+                        தமிழ்
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="container">
+        <div id="message" class="message"></div>
+
+
+        <!-- =====================================================
+         DASHBOARD SUMMARY
+    ====================================================== -->
+
+        <div class="summary-grid">
+
+            <div class="summary-card total-card">
+
+                <div class="summary-icon">
+                    📊
+                </div>
+
+                <div class="summary-content">
+
+                    <div class="summary-label">
+                        Responses on Page
+                    </div>
+
+                    <div
+                            class="summary-value"
+                            id="totalResponses"
+                    >
+                        0
+                    </div>
+
+                    <div class="summary-subtitle">
+                        Current filtered results
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card completed-card">
+
+                <div class="summary-icon">
+                    ✓
+                </div>
+
+                <div class="summary-content">
+
+                    <div class="summary-label">
+                        Completed
+                    </div>
+
+                    <div
+                            class="summary-value"
+                            id="completedResponses"
+                    >
+                        0
+                    </div>
+
+                    <div class="summary-subtitle">
+                        Completed on current page
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card incomplete-card">
+
+                <div class="summary-icon">
+                    !
+                </div>
+
+                <div class="summary-content">
+
+                    <div class="summary-label">
+                        Incomplete
+                    </div>
+
+                    <div
+                            class="summary-value"
+                            id="incompleteResponses"
+                    >
+                        0
+                    </div>
+
+                    <div class="summary-subtitle">
+                        Incomplete on current page
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card page-card">
+
+                <div class="summary-icon">
+                    #
+                </div>
+
+                <div class="summary-content">
+
+                    <div class="summary-label">
+                        Current Page
+                    </div>
+
+                    <div
+                            class="summary-value"
+                            id="currentPageNumber"
+                    >
+                        1
+                    </div>
+
+                    <div
+                            class="summary-subtitle"
+                            id="pageSummary"
+                    >
+                        Page 1 of 1
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================================
+         EXPORT
+    ====================================================== -->
+
+        <div class="card export-card">
+
+
+            <h2>
+                Export Responses
+            </h2>
+
+            <div class="export-description">
+                Download collected responses in CSV or JSON format
+                for reporting, analysis, and record keeping.
+            </div>
+
+            <div class="export-buttons">
+
+                <button
+                        class="export-btn csv-btn"
+                        onclick="exportResponses('csv')"
+                >
+                    📄 Export CSV
+                </button>
+
+                <button
+                        class="export-btn json-btn"
+                        onclick="exportResponses('json')"
+                >
+                    {} Export JSON
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+         RETENTION SETTINGS
+    ====================================================== -->
+
+        <div class="card retention-card">
+
+            <h2>
+                Retention Settings
+            </h2>
+
+            <div class="retention-row">
+
+                <div class="filter-group retention-input">
+
+                    <label for="retentionDays">
+                        Auto Archive Responses After
+                    </label>
+
+                    <input
+                            type="number"
+                            id="retentionDays"
+                            value="90"
+                            min="1"
+                    >
+
+                </div>
+
+                <button
+                        class="primary-btn"
+                        onclick="archiveResponses()"
+                >
+                    🗄 Apply Retention
+                </button>
+
+            </div>
+
+            <div class="retention-help">
+                Responses older than the selected number of days
+                will be marked as archived.
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+         FILTERS
+    ====================================================== -->
+
+        <div class="card filter-card">
+
+            <h2>
+                Response Filters
+            </h2>
+
+            <div class="filter-grid">
+
+                <div class="filter-group">
+
+                    <label for="startDate">
+                        Start Date
+                    </label>
+
+                    <input
+                            type="date"
+                            id="startDate"
+                    >
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="endDate">
+                        End Date
+                    </label>
+
+                    <input
+                            type="date"
+                            id="endDate"
+                    >
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="status">
+                        Completion Status
+                    </label>
+
+                    <select id="status">
+
+                        <option value="">
+                            All
+                        </option>
+
+                        <option value="completed">
+                            Completed
+                        </option>
+
+                        <option value="incomplete">
+                            Incomplete
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="pageSize">
+                        Records Per Page
+                    </label>
+
+                    <select id="pageSize">
+
+                        <option value="20" selected>
+                            20
+                        </option>
+
+                        <option value="50">
+                            50
+                        </option>
+
+                        <option value="100">
+                            100
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- Search -->
+
+            <div class="search-row">
+
+                <input
+                        type="text"
+                        id="search"
+                        placeholder="🔎 Search responses, e.g. Rahul"
+                >
+
+                <button
+                        class="primary-btn"
+                        onclick="applyFilters()"
+                >
+                    Search
+                </button>
+
+                <button
+                        class="secondary-btn"
+                        onclick="clearFilters()"
+                >
+                    Clear
+                </button>
+
+            </div>
+
+
+            <!-- Field Value Filter -->
+
+            <div class="field-filter">
+
+                <div class="filter-group">
+
+                    <label for="fieldId">
+                        Field
+                    </label>
+
+                    <select id="fieldId">
+
+                        <option value="">
+                            Select Field
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="fieldValue">
+                        Field Value
+                    </label>
+
+                    <input
+                            type="text"
+                            id="fieldValue"
+                            placeholder="Example: Female"
+                    >
+
+                </div>
+
+
+                <button
+                        class="primary-btn"
+                        onclick="applyFilters()"
+                >
+                    Apply Filters
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+         SUBMISSIONS
+    ====================================================== -->
+
+        <div class="card">
+
+            <div class="submission-header">
+
+                <h2>
+                    Submissions
+                </h2>
+
+            </div>
+
+            <div class="submission-description">
+                Browse, inspect, filter, and manage submitted responses.
+            </div>
+
+
+            <div
+                    id="loading"
+                    class="loading"
+            >
+                Loading responses...
+            </div>
+
+
+            <div
+                    id="tableContainer"
+                    class="table-container"
+                    style="display: none;"
+            >
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+
+                        <th class="checkbox-cell">
+
+                            <input
+                                    type="checkbox"
+                                    id="selectAll"
+                                    onchange="toggleSelectAll()"
+                            >
+
+                        </th>
+
+                        <th>
+                            Response ID
+                        </th>
+
+                        <th>
+                            Submitted Date
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Version
+                        </th>
+
+                        <th>
+                            Completion Time
+                        </th>
+
+                        <th>
+                            Response Data
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="responseTableBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div
+                    id="emptyMessage"
+                    class="empty"
+                    style="display: none;"
+            >
+                No responses found.
+            </div>
+
+
+            <!-- =================================================
+             BULK ACTIONS
+        ================================================== -->
+
+            <div class="bulk-action-bar">
+
+                <button
+                        id="deleteSelectedButton"
+                        class="danger-btn"
+                        onclick="deleteSelectedResponses()"
+                        disabled
+                >
+                    🗑 Delete Selected
+                </button>
+
+                <span
+                        id="selectedInfo"
+                        class="selected-info"
+                >
+                0 responses selected
+            </span>
+
+            </div>
+
+
+            <!-- Pagination -->
+
+            <div
+                    id="pagination"
+                    class="pagination"
+                    style="display: none;"
+            >
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+     RESPONSE DETAIL MODAL
+========================================================== -->
+
+    <div
+            id="detailModal"
+            class="modal-overlay"
+    >
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <h2>
+                    Response Details
+                </h2>
+
+                <button
+                        class="close-btn"
+                        onclick="closeDetailModal()"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <div id="detailContent">
+                Loading...
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+
+        // =========================================================
+        // GET FORM ID
+        // =========================================================
+
+        const pathParts =
+            window.location.pathname.split("/");
+
+        const formId =
+            pathParts[pathParts.length - 1];
+
+
+        // =========================================================
+        // GLOBAL VARIABLES
+        // =========================================================
+
+        let currentPage = 1;
+
+        let totalPages = 1;
+
+        const DEFAULT_PAGE_SIZE = 20;
+
+        let selectedResponseIds = new Set();
+
+        let currentLanguage =
+            localStorage.getItem(
+                "responseManagementLanguage"
+            ) || "en";
+
+
+        // =========================================================
+        // TRANSLATIONS
+        // =========================================================
+
+        const translations = {
+
+            en: {
+
+                responseManagementDashboard:
+                    "Response Management Dashboard",
+
+                responseManagement:
+                    "Response Management",
+
+                language:
+                    "Language",
+
+                responsesOnPage:
+                    "Responses on Page",
+
+                currentPage:
+                    "Current page",
+
+                completed:
+                    "Completed",
+
+                successfullyCompleted:
+                    "Successfully completed",
+
+                incomplete:
+                    "Incomplete",
+
+                notCompleted:
+                    "Not completed",
+
+                page:
+                    "Page",
+
+                of:
+                    "of",
+
+                exportResponses:
+                    "Export Responses",
+
+                exportDescription:
+                    "Download response data in CSV or JSON format.",
+
+                exportCSV:
+                    "Export CSV",
+
+                exportJSON:
+                    "Export JSON",
+
+                retentionSettings:
+                    "Retention Settings",
+
+                autoArchive:
+                    "Auto Archive Responses After",
+
+                days:
+                    "days",
+
+                applyRetention:
+                    "Apply Retention",
+
+                retentionHelp:
+                    "Responses older than the specified number of days will be archived.",
+
+                responseFilters:
+                    "Response Filters",
+
+                startDate:
+                    "Start Date",
+
+                endDate:
+                    "End Date",
+
+                completionStatus:
+                    "Completion Status",
+
+                all:
+                    "All",
+
+                selectStatus:
+                    "Select Status",
+
+                recordsPerPage:
+                    "Records Per Page",
+
+                search:
+                    "Search",
+
+                searchPlaceholder:
+                    "Search responses...",
+
+                clear:
+                    "Clear",
+
+                field:
+                    "Field",
+
+                selectField:
+                    "Select Field",
+
+                fieldValue:
+                    "Field Value",
+
+                fieldValuePlaceholder:
+                    "Enter field value",
+
+                applyFilters:
+                    "Apply Filters",
+
+                submissions:
+                    "Submissions",
+
+                submissionDescription:
+                    "View, filter, search, export and manage submitted responses.",
+
+                responseID:
+                    "Response ID",
+
+                submittedDate:
+                    "Submitted Date",
+
+                status:
+                    "Status",
+
+                version:
+                    "Version",
+
+                completionTime:
+                    "Completion Time",
+
+                responseData:
+                    "Response Data",
+
+                actions:
+                    "Actions",
+
+                view:
+                    "View",
+
+                loading:
+                    "Loading...",
+
+                noResponses:
+                    "No responses found.",
+
+                deleteSelected:
+                    "Delete Selected",
+
+                selected:
+                    "selected",
+
+                responseSelected:
+                    "response selected",
+
+                responsesSelected:
+                    "responses selected",
+
+                prev:
+                    "Prev",
+
+                next:
+                    "Next",
+
+                response:
+                    "Response",
+
+                responses:
+                    "Responses",
+
+                responseIDMissing:
+                    "Response ID is missing.",
+
+                failedToLoadFields:
+                    "Failed to load fields.",
+
+                noFieldsAvailable:
+                    "No fields available",
+
+                unableToLoadFields:
+                    "Unable to load fields",
+
+                unnamedField:
+                    "Unnamed Field",
+
+                failedToLoadResponses:
+                    "Failed to load responses.",
+
+                failedToDelete:
+                    "Failed to delete responses.",
+
+                deleteSuccess:
+                    "Responses deleted successfully.",
+
+                deleteConfirm:
+                    "Are you sure you want to delete",
+
+                selectedResponses:
+                    "selected response(s)? This action cannot be undone.",
+
+                loadingResponseDetails:
+                    "Loading response details...",
+
+                failedToLoadResponseDetails:
+                    "Failed to load response details.",
+
+                submittedAt:
+                    "Submitted At",
+
+                form:
+                    "Form",
+
+                submittedAnswers:
+                    "Submitted Answers",
+
+                noAnswers:
+                    "No answers found.",
+
+                type:
+                    "Type",
+
+                value:
+                    "Value",
+
+                fieldFallback:
+                    "Field",
+
+                unknown:
+                    "Unknown",
+
+                unknownStatus:
+                    "Unknown",
+
+                completedStatus:
+                    "Completed",
+
+                incompleteStatus:
+                    "Incomplete",
+
+                min:
+                    "min",
+
+                sec:
+                    "sec",
+
+                close:
+                    "Close",
+
+                invalidDays:
+                    "Please enter a valid number of days.",
+
+                archiveConfirm:
+                    "Archive responses older than",
+
+                archiveDays:
+                    "days?",
+
+                archivedSuccess:
+                    "response(s) archived successfully.",
+
+                failedToArchive:
+                    "Failed to archive responses."
+
+            },
+
+
+            te: {
+
+                responseManagementDashboard:
+                    "ప్రతిస్పందన నిర్వహణ డాష్‌బోర్డ్",
+
+                responseManagement:
+                    "ప్రతిస్పందన నిర్వహణ",
+
+                language:
+                    "భాష",
+
+                responsesOnPage:
+                    "ఈ పేజీలో ప్రతిస్పందనలు",
+
+                currentPage:
+                    "ప్రస్తుత పేజీ",
+
+                completed:
+                    "పూర్తయినవి",
+
+                successfullyCompleted:
+                    "విజయవంతంగా పూర్తయినవి",
+
+                incomplete:
+                    "అసంపూర్తి",
+
+                notCompleted:
+                    "పూర్తి కాలేదు",
+
+                page:
+                    "పేజీ",
+
+                of:
+                    "లో",
+
+                exportResponses:
+                    "ప్రతిస్పందనలను ఎగుమతి చేయండి",
+
+                exportDescription:
+                    "ప్రతిస్పందన డేటాను CSV లేదా JSON రూపంలో డౌన్‌లోడ్ చేయండి.",
+
+                exportCSV:
+                    "CSV ఎగుమతి",
+
+                exportJSON:
+                    "JSON ఎగుమతి",
+
+                retentionSettings:
+                    "రిటెన్షన్ సెట్టింగ్స్",
+
+                autoArchive:
+                    "ఇంత కాలం తర్వాత ప్రతిస్పందనలను ఆర్కైవ్ చేయండి",
+
+                days:
+                    "రోజులు",
+
+                applyRetention:
+                    "రిటెన్షన్ వర్తింపజేయండి",
+
+                retentionHelp:
+                    "ఎంచుకున్న రోజుల కంటే పాత ప్రతిస్పందనలు ఆర్కైవ్ చేయబడతాయి.",
+
+                responseFilters:
+                    "ప్రతిస్పందన ఫిల్టర్లు",
+
+                startDate:
+                    "ప్రారంభ తేదీ",
+
+                endDate:
+                    "ముగింపు తేదీ",
+
+                completionStatus:
+                    "పూర్తి స్థితి",
+
+                all:
+                    "అన్నీ",
+
+                selectStatus:
+                    "స్థితిని ఎంచుకోండి",
+
+                recordsPerPage:
+                    "ప్రతి పేజీకి రికార్డులు",
+
+                search:
+                    "శోధన",
+
+                searchPlaceholder:
+                    "ప్రతిస్పందనలను శోధించండి...",
+
+                clear:
+                    "క్లియర్",
+
+                field:
+                    "ఫీల్డ్",
+
+                selectField:
+                    "ఫీల్డ్ ఎంచుకోండి",
+
+                fieldValue:
+                    "ఫీల్డ్ విలువ",
+
+                fieldValuePlaceholder:
+                    "ఫీల్డ్ విలువను నమోదు చేయండి",
+
+                applyFilters:
+                    "ఫిల్టర్లు వర్తింపజేయండి",
+
+                submissions:
+                    "సమర్పణలు",
+
+                submissionDescription:
+                    "సమర్పించిన ప్రతిస్పందనలను వీక్షించండి, ఫిల్టర్ చేయండి, శోధించండి, ఎగుమతి చేయండి మరియు నిర్వహించండి.",
+
+                responseID:
+                    "ప్రతిస్పందన ID",
+
+                submittedDate:
+                    "సమర్పించిన తేదీ",
+
+                status:
+                    "స్థితి",
+
+                version:
+                    "వెర్షన్",
+
+                completionTime:
+                    "పూర్తి సమయం",
+
+                responseData:
+                    "ప్రతిస్పందన డేటా",
+
+                actions:
+                    "చర్యలు",
+
+                view:
+                    "వీక్షించండి",
+
+                loading:
+                    "లోడ్ అవుతోంది...",
+
+                noResponses:
+                    "ప్రతిస్పందనలు కనుగొనబడలేదు.",
+
+                deleteSelected:
+                    "ఎంచుకున్నవి తొలగించండి",
+
+                selected:
+                    "ఎంచుకోబడింది",
+
+                responseSelected:
+                    "ప్రతిస్పందన ఎంచుకోబడింది",
+
+                responsesSelected:
+                    "ప్రతిస్పందనలు ఎంచుకోబడ్డాయి",
+
+                prev:
+                    "మునుపటి",
+
+                next:
+                    "తదుపరి",
+
+                response:
+                    "ప్రతిస్పందన",
+
+                responses:
+                    "ప్రతిస్పందనలు",
+
+                responseIDMissing:
+                    "ప్రతిస్పందన ID లేదు.",
+
+                failedToLoadFields:
+                    "ఫీల్డులను లోడ్ చేయడంలో విఫలమైంది.",
+
+                noFieldsAvailable:
+                    "ఫీల్డులు అందుబాటులో లేవు",
+
+                unableToLoadFields:
+                    "ఫీల్డులను లోడ్ చేయడం సాధ్యం కాలేదు",
+
+                unnamedField:
+                    "పేరు లేని ఫీల్డ్",
+
+                failedToLoadResponses:
+                    "ప్రతిస్పందనలను లోడ్ చేయడంలో విఫలమైంది.",
+
+                failedToDelete:
+                    "ప్రతిస్పందనలను తొలగించడంలో విఫలమైంది.",
+
+                deleteSuccess:
+                    "ప్రతిస్పందనలు విజయవంతంగా తొలగించబడ్డాయి.",
+
+                deleteConfirm:
+                    "మీరు తొలగించాలనుకుంటున్నారా",
+
+                selectedResponses:
+                    "ఎంచుకున్న ప్రతిస్పందన(లు)? ఈ చర్యను తిరిగి మార్చలేరు.",
+
+                loadingResponseDetails:
+                    "ప్రతిస్పందన వివరాలు లోడ్ అవుతున్నాయి...",
+
+                failedToLoadResponseDetails:
+                    "ప్రతిస్పందన వివరాలను లోడ్ చేయడంలో విఫలమైంది.",
+
+                submittedAt:
+                    "సమర్పించిన సమయం",
+
+                form:
+                    "ఫారం",
+
+                submittedAnswers:
+                    "సమర్పించిన సమాధానాలు",
+
+                noAnswers:
+                    "సమాధానాలు కనుగొనబడలేదు.",
+
+                type:
+                    "రకం",
+
+                value:
+                    "విలువ",
+
+                fieldFallback:
+                    "ఫీల్డ్",
+
+                unknown:
+                    "తెలియదు",
+
+                unknownStatus:
+                    "తెలియదు",
+
+                completedStatus:
+                    "పూర్తయింది",
+
+                incompleteStatus:
+                    "అసంపూర్తి",
+
+                min:
+                    "ని",
+
+                sec:
+                    "సెకన్లు",
+
+                close:
+                    "మూసివేయి",
+
+                invalidDays:
+                    "దయచేసి సరైన రోజుల సంఖ్యను నమోదు చేయండి.",
+
+                archiveConfirm:
+                    "కంటే పాత ప్రతిస్పందనలను ఆర్కైవ్ చేయాలా",
+
+                archiveDays:
+                    "రోజులు?",
+
+                archivedSuccess:
+                    "ప్రతిస్పందన(లు) విజయవంతంగా ఆర్కైవ్ చేయబడ్డాయి.",
+
+                failedToArchive:
+                    "ప్రతిస్పందనలను ఆర్కైవ్ చేయడంలో విఫలమైంది."
+
+            },
+
+
+            hi: {
+
+                responseManagementDashboard:
+                    "प्रतिक्रिया प्रबंधन डैशबोर्ड",
+
+                responseManagement:
+                    "प्रतिक्रिया प्रबंधन",
+
+                language:
+                    "भाषा",
+
+                responsesOnPage:
+                    "इस पेज की प्रतिक्रियाएँ",
+
+                currentPage:
+                    "वर्तमान पेज",
+
+                completed:
+                    "पूर्ण",
+
+                successfullyCompleted:
+                    "सफलतापूर्वक पूर्ण",
+
+                incomplete:
+                    "अपूर्ण",
+
+                notCompleted:
+                    "पूर्ण नहीं",
+
+                page:
+                    "पेज",
+
+                of:
+                    "में",
+
+                exportResponses:
+                    "प्रतिक्रियाएँ निर्यात करें",
+
+                exportDescription:
+                    "प्रतिक्रिया डेटा को CSV या JSON प्रारूप में डाउनलोड करें।",
+
+                exportCSV:
+                    "CSV निर्यात",
+
+                exportJSON:
+                    "JSON निर्यात",
+
+                retentionSettings:
+                    "रिटेंशन सेटिंग्स",
+
+                autoArchive:
+                    "इसके बाद प्रतिक्रियाएँ स्वचालित रूप से संग्रहित करें",
+
+                days:
+                    "दिन",
+
+                applyRetention:
+                    "रिटेंशन लागू करें",
+
+                retentionHelp:
+                    "निर्दिष्ट दिनों से पुरानी प्रतिक्रियाएँ संग्रहित की जाएँगी।",
+
+                responseFilters:
+                    "प्रतिक्रिया फ़िल्टर",
+
+                startDate:
+                    "प्रारंभ तिथि",
+
+                endDate:
+                    "अंतिम तिथि",
+
+                completionStatus:
+                    "पूर्णता स्थिति",
+
+                all:
+                    "सभी",
+
+                selectStatus:
+                    "स्थिति चुनें",
+
+                recordsPerPage:
+                    "प्रति पेज रिकॉर्ड",
+
+                search:
+                    "खोजें",
+
+                searchPlaceholder:
+                    "प्रतिक्रियाएँ खोजें...",
+
+                clear:
+                    "साफ़ करें",
+
+                field:
+                    "फ़ील्ड",
+
+                selectField:
+                    "फ़ील्ड चुनें",
+
+                fieldValue:
+                    "फ़ील्ड मान",
+
+                fieldValuePlaceholder:
+                    "फ़ील्ड मान दर्ज करें",
+
+                applyFilters:
+                    "फ़िल्टर लागू करें",
+
+                submissions:
+                    "सबमिशन",
+
+                submissionDescription:
+                    "सबमिट की गई प्रतिक्रियाओं को देखें, फ़िल्टर करें, खोजें, निर्यात करें और प्रबंधित करें।",
+
+                responseID:
+                    "प्रतिक्रिया ID",
+
+                submittedDate:
+                    "सबमिट की गई तारीख",
+
+                status:
+                    "स्थिति",
+
+                version:
+                    "वर्ज़न",
+
+                completionTime:
+                    "पूर्णता समय",
+
+                responseData:
+                    "प्रतिक्रिया डेटा",
+
+                actions:
+                    "क्रियाएँ",
+
+                view:
+                    "देखें",
+
+                loading:
+                    "लोड हो रहा है...",
+
+                noResponses:
+                    "कोई प्रतिक्रिया नहीं मिली।",
+
+                deleteSelected:
+                    "चयनित हटाएँ",
+
+                selected:
+                    "चयनित",
+
+                responseSelected:
+                    "प्रतिक्रिया चयनित",
+
+                responsesSelected:
+                    "प्रतिक्रियाएँ चयनित",
+
+                prev:
+                    "पिछला",
+
+                next:
+                    "अगला",
+
+                response:
+                    "प्रतिक्रिया",
+
+                responses:
+                    "प्रतिक्रियाएँ",
+
+                responseIDMissing:
+                    "प्रतिक्रिया ID उपलब्ध नहीं है।",
+
+                failedToLoadFields:
+                    "फ़ील्ड लोड करने में विफल।",
+
+                noFieldsAvailable:
+                    "कोई फ़ील्ड उपलब्ध नहीं है",
+
+                unableToLoadFields:
+                    "फ़ील्ड लोड नहीं हो सके",
+
+                unnamedField:
+                    "अनाम फ़ील्ड",
+
+                failedToLoadResponses:
+                    "प्रतिक्रियाएँ लोड करने में विफल।",
+
+                failedToDelete:
+                    "प्रतिक्रियाएँ हटाने में विफल।",
+
+                deleteSuccess:
+                    "प्रतिक्रियाएँ सफलतापूर्वक हटा दी गईं।",
+
+                deleteConfirm:
+                    "क्या आप हटाना चाहते हैं",
+
+                selectedResponses:
+                    "चयनित प्रतिक्रिया(एँ)? यह कार्रवाई वापस नहीं की जा सकती।",
+
+                loadingResponseDetails:
+                    "प्रतिक्रिया विवरण लोड हो रहा है...",
+
+                failedToLoadResponseDetails:
+                    "प्रतिक्रिया विवरण लोड करने में विफल।",
+
+                submittedAt:
+                    "सबमिट किया गया समय",
+
+                form:
+                    "फॉर्म",
+
+                submittedAnswers:
+                    "सबमिट किए गए उत्तर",
+
+                noAnswers:
+                    "कोई उत्तर नहीं मिला।",
+
+                type:
+                    "प्रकार",
+
+                value:
+                    "मान",
+
+                fieldFallback:
+                    "फ़ील्ड",
+
+                unknown:
+                    "अज्ञात",
+
+                unknownStatus:
+                    "अज्ञात",
+
+                completedStatus:
+                    "पूर्ण",
+
+                incompleteStatus:
+                    "अपूर्ण",
+
+                min:
+                    "मिनट",
+
+                sec:
+                    "सेकंड",
+
+                close:
+                    "बंद करें",
+
+                invalidDays:
+                    "कृपया दिनों की सही संख्या दर्ज करें।",
+
+                archiveConfirm:
+                    "से अधिक पुराने प्रतिक्रियाओं को संग्रहित करें",
+
+                archiveDays:
+                    "दिन?",
+
+                archivedSuccess:
+                    "प्रतिक्रिया(एँ) सफलतापूर्वक संग्रहित की गईं।",
+
+                failedToArchive:
+                    "प्रतिक्रियाएँ संग्रहित करने में विफल।"
+
+            },
+
+
+            ta: {
+
+                responseManagementDashboard:
+                    "பதில் மேலாண்மை டாஷ்போர்டு",
+
+                responseManagement:
+                    "பதில் மேலாண்மை",
+
+                language:
+                    "மொழி",
+
+                responsesOnPage:
+                    "இந்தப் பக்கத்தில் உள்ள பதில்கள்",
+
+                currentPage:
+                    "தற்போதைய பக்கம்",
+
+                completed:
+                    "முடிந்தது",
+
+                successfullyCompleted:
+                    "வெற்றிகரமாக முடிந்தது",
+
+                incomplete:
+                    "முழுமையற்றது",
+
+                notCompleted:
+                    "முடிக்கப்படவில்லை",
+
+                page:
+                    "பக்கம்",
+
+                of:
+                    "இல்",
+
+                exportResponses:
+                    "பதில்களை ஏற்றுமதி செய்க",
+
+                exportDescription:
+                    "பதில் தரவை CSV அல்லது JSON வடிவத்தில் பதிவிறக்கவும்.",
+
+                exportCSV:
+                    "CSV ஏற்றுமதி",
+
+                exportJSON:
+                    "JSON ஏற்றுமதி",
+
+                retentionSettings:
+                    "தக்கவைப்பு அமைப்புகள்",
+
+                autoArchive:
+                    "இதற்குப் பிறகு பதில்களை தானாக காப்பகப்படுத்தவும்",
+
+                days:
+                    "நாட்கள்",
+
+                applyRetention:
+                    "தக்கவைப்பைப் பயன்படுத்தவும்",
+
+                retentionHelp:
+                    "குறிப்பிட்ட நாட்களை விட பழைய பதில்கள் காப்பகப்படுத்தப்படும்.",
+
+                responseFilters:
+                    "பதில் வடிகட்டிகள்",
+
+                startDate:
+                    "தொடக்க தேதி",
+
+                endDate:
+                    "முடிவு தேதி",
+
+                completionStatus:
+                    "முழுமை நிலை",
+
+                all:
+                    "அனைத்தும்",
+
+                selectStatus:
+                    "நிலையைத் தேர்ந்தெடுக்கவும்",
+
+                recordsPerPage:
+                    "ஒரு பக்கத்திற்கான பதிவுகள்",
+
+                search:
+                    "தேடல்",
+
+                searchPlaceholder:
+                    "பதில்களைத் தேடுங்கள்...",
+
+                clear:
+                    "அழிக்கவும்",
+
+                field:
+                    "புலம்",
+
+                selectField:
+                    "புலத்தைத் தேர்ந்தெடுக்கவும்",
+
+                fieldValue:
+                    "புல மதிப்பு",
+
+                fieldValuePlaceholder:
+                    "புல மதிப்பை உள்ளிடவும்",
+
+                applyFilters:
+                    "வடிகட்டிகளைப் பயன்படுத்தவும்",
+
+                submissions:
+                    "சமர்ப்பிப்புகள்",
+
+                submissionDescription:
+                    "சமர்ப்பிக்கப்பட்ட பதில்களைப் பார்க்கவும், வடிகட்டவும், தேடவும், ஏற்றுமதி செய்யவும் மற்றும் நிர்வகிக்கவும்.",
+
+                responseID:
+                    "பதில் ID",
+
+                submittedDate:
+                    "சமர்ப்பித்த தேதி",
+
+                status:
+                    "நிலை",
+
+                version:
+                    "பதிப்பு",
+
+                completionTime:
+                    "முடிவு நேரம்",
+
+                responseData:
+                    "பதில் தரவு",
+
+                actions:
+                    "செயல்கள்",
+
+                view:
+                    "பார்க்கவும்",
+
+                loading:
+                    "ஏற்றுகிறது...",
+
+                noResponses:
+                    "பதில்கள் எதுவும் கிடைக்கவில்லை.",
+
+                deleteSelected:
+                    "தேர்ந்தெடுத்தவற்றை நீக்கு",
+
+                selected:
+                    "தேர்ந்தெடுக்கப்பட்டது",
+
+                responseSelected:
+                    "பதில் தேர்ந்தெடுக்கப்பட்டது",
+
+                responsesSelected:
+                    "பதில்கள் தேர்ந்தெடுக்கப்பட்டன",
+
+                prev:
+                    "முந்தைய",
+
+                next:
+                    "அடுத்து",
+
+                response:
+                    "பதில்",
+
+                responses:
+                    "பதில்கள்",
+
+                responseIDMissing:
+                    "பதில் ID இல்லை.",
+
+                failedToLoadFields:
+                    "புலங்களை ஏற்ற முடியவில்லை.",
+
+                noFieldsAvailable:
+                    "புலங்கள் எதுவும் இல்லை",
+
+                unableToLoadFields:
+                    "புலங்களை ஏற்ற முடியவில்லை",
+
+                unnamedField:
+                    "பெயரிடப்படாத புலம்",
+
+                failedToLoadResponses:
+                    "பதில்களை ஏற்ற முடியவில்லை.",
+
+                failedToDelete:
+                    "பதில்களை நீக்க முடியவில்லை.",
+
+                deleteSuccess:
+                    "பதில்கள் வெற்றிகரமாக நீக்கப்பட்டன.",
+
+                deleteConfirm:
+                    "நீங்கள் நீக்க விரும்புகிறீர்களா",
+
+                selectedResponses:
+                    "தேர்ந்தெடுக்கப்பட்ட பதில்(கள்)? இந்தச் செயலை மீட்டெடுக்க முடியாது.",
+
+                loadingResponseDetails:
+                    "பதில் விவரங்கள் ஏற்றப்படுகின்றன...",
+
+                failedToLoadResponseDetails:
+                    "பதில் விவரங்களை ஏற்ற முடியவில்லை.",
+
+                submittedAt:
+                    "சமர்ப்பித்த நேரம்",
+
+                form:
+                    "படிவம்",
+
+                submittedAnswers:
+                    "சமர்ப்பிக்கப்பட்ட பதில்கள்",
+
+                noAnswers:
+                    "பதில்கள் எதுவும் கிடைக்கவில்லை.",
+
+                type:
+                    "வகை",
+
+                value:
+                    "மதிப்பு",
+
+                fieldFallback:
+                    "புலம்",
+
+                unknown:
+                    "தெரியவில்லை",
+
+                unknownStatus:
+                    "தெரியவில்லை",
+
+                completedStatus:
+                    "முடிந்தது",
+
+                incompleteStatus:
+                    "முழுமையற்றது",
+
+                min:
+                    "நிமி",
+
+                sec:
+                    "வினாடி",
+
+                close:
+                    "மூடு",
+
+                invalidDays:
+                    "சரியான நாட்களின் எண்ணிக்கையை உள்ளிடவும்.",
+
+                archiveConfirm:
+                    "இதற்கு மேல் பழைய பதில்களை காப்பகப்படுத்தவா",
+
+                archiveDays:
+                    "நாட்கள்?",
+
+                archivedSuccess:
+                    "பதில்(கள்) வெற்றிகரமாக காப்பகப்படுத்தப்பட்டன.",
+
+                failedToArchive:
+                    "பதில்களை காப்பகப்படுத்த முடியவில்லை."
+
+            }
+
+        };
+
+
+        // =========================================================
+        // TRANSLATION HELPER
+        // =========================================================
+
+        function t(key) {
+
+            return (
+                    translations[currentLanguage] &&
+                    translations[currentLanguage][key]
+                ) ||
+                translations.en[key] ||
+                key;
+
+
+        }
+
+
+        // =====================================================
+        // SUBMISSIONS
+        // =====================================================
+
+        const submissionsCard =
+            Array.from(
+                document.querySelectorAll(".card")
+            ).find(
+                function (card){
+                    return card.querySelector(
+                        ".submission-description"
+                    );
+                }
+            );
+
+        if (submissionsCard) {
+
+            const submissionsHeading =
+                submissionsCard.querySelector(
+                    "h2"
+                );
+
+            if (submissionsHeading) {
+
+                submissionsHeading.textContent =
+                    t("submissions");
+
+            }
+
+
+            const submissionsDescription =
+                submissionsCard.querySelector(
+                    ".submission-description"
+                );
+
+            if (submissionsDescription) {
+
+                submissionsDescription.textContent =
+                    t("submissionDescription");
+
+            }
+
+        }
+
+
+        // =====================================================
+        // TABLE HEADERS
+        // =====================================================
+
+        const tableHeaders =
+            document.querySelectorAll(
+                "table thead th"
+            );
+
+
+        if (tableHeaders.length >= 8) {
+
+            tableHeaders[1].textContent =
+                t("responseID");
+
+            tableHeaders[2].textContent =
+                t("submittedDate");
+
+            tableHeaders[3].textContent =
+                t("status");
+
+            tableHeaders[4].textContent =
+                t("version");
+
+            tableHeaders[5].textContent =
+                t("completionTime");
+
+            tableHeaders[6].textContent =
+                t("versions");
+        }
+        // =========================================================
+        // APPLY STATIC TRANSLATIONS
+        // =========================================================
+
+        function applyStaticTranslations() {
+
+            // =====================================================
+            // HEADER
+            // =====================================================
+
+            const badge =
+                document.querySelector(
+                    ".header-badge"
+                );
+
+            if (badge) {
+                badge.textContent =
+                    t("responseManagementDashboard");
+            }
+
+
+            const heading =
+                document.querySelector(
+                    ".header h1"
+                );
+
+            if (heading) {
+                heading.textContent =
+                    t("responseManagement");
+            }
+
+
+            const languageLabel =
+                document.querySelector(
+                    "label[for='languageSelector']"
+                );
+
+            if (languageLabel) {
+                languageLabel.textContent =
+                    t("language");
+            }
+
+
+            // =====================================================
+            // DASHBOARD SUMMARY
+            // =====================================================
+
+            const dashboardSummary =
+                document.querySelector(
+                    ".summary-grid"
+                );
+
+            if (dashboardSummary) {
+
+                const summaryLabels =
+                    dashboardSummary.querySelectorAll(
+                        ".summary-label"
+                    );
+
+                if (summaryLabels.length >= 4) {
+
+                    summaryLabels[0].textContent =
+                        t("responsesOnPage");
+
+                    summaryLabels[1].textContent =
+                        t("completed");
+
+                    summaryLabels[2].textContent =
+                        t("incomplete");
+
+                    summaryLabels[3].textContent =
+                        t("currentPage");
+                }
+            }
+            const summarySubtitles =
+                document.querySelectorAll(
+                    ".summary-subtitle"
+                );
+
+            if (summarySubtitles.length >= 4) {
+
+                summarySubtitles[0].textContent =
+                    t("currentPage");
+
+                summarySubtitles[1].textContent =
+                    t("successfullyCompleted");
+
+                summarySubtitles[2].textContent =
+                    t("notCompleted");
+
+                summarySubtitles[3].textContent =
+                    t("page") +
+                    " " +
+                    currentPage +
+                    " " +
+                    t("of") +
+                    " " +
+                    totalPages;
+            }
+
+
+            // =====================================================
+            // FIND ALL CARDS
+            // =====================================================
+
+            const cards =
+                document.querySelectorAll(
+                    ".card"
+                );
+
+
+            // =====================================================
+            // EXPORT RESPONSES
+            // =====================================================
+
+            const exportCard =
+                Array.from(cards).find(
+                    function (card) {
+
+                        return card.querySelector(
+                            ".export-description"
+                        );
+
+                    }
+                );
+
+
+            if (exportCard) {
+
+                const exportHeading =
+                    exportCard.querySelector(
+                        "h2"
+                    );
+
+                if (exportHeading) {
+
+                    exportHeading.textContent =
+                        t("exportResponses");
+
+                }
+
+
+                const exportDescription =
+                    exportCard.querySelector(
+                        ".export-description"
+                    );
+
+                if (exportDescription) {
+
+                    exportDescription.textContent =
+                        t("exportDescription");
+
+                }
+
+
+                const exportButtons =
+                    exportCard.querySelectorAll(
+                        ".export-btn"
+                    );
+
+                if (exportButtons.length >= 2) {
+
+                    exportButtons[0].textContent =
+                        "📊 " +
+                        t("exportCSV");
+
+                    exportButtons[1].textContent =
+                        "📄 " +
+                        t("exportJSON");
+
+                }
+
+            }
+
+
+            // =====================================================
+            // RETENTION SETTINGS
+            // =====================================================
+
+            const retentionCard =
+                Array.from(cards).find(
+                    function (card) {
+
+                        return card.querySelector(
+                            "#retentionDays"
+                        );
+
+                    }
+                );
+
+
+            if (retentionCard) {
+
+                const retentionHeading =
+                    retentionCard.querySelector(
+                        "h2"
+                    );
+
+                if (retentionHeading) {
+
+                    retentionHeading.textContent =
+                        t("retentionSettings");
+
+                }
+
+
+                const retentionLabel =
+                    retentionCard.querySelector(
+                        "label[for='retentionDays']"
+                    );
+
+                if (retentionLabel) {
+
+                    retentionLabel.textContent =
+                        t("autoArchive");
+
+                }
+
+
+                const retentionButton =
+                    retentionCard.querySelector(
+                        ".retention-row .primary-btn"
+                    );
+
+                if (retentionButton) {
+
+                    retentionButton.textContent =
+                        t("applyRetention");
+
+                }
+
+
+                const retentionHelp =
+                    retentionCard.querySelector(
+                        ".retention-help"
+                    );
+
+                if (retentionHelp) {
+
+                    retentionHelp.textContent =
+                        t("retentionHelp");
+
+                }
+
+            }
+
+
+            // =====================================================
+            // RESPONSE FILTERS
+            // =====================================================
+
+            const filterCard =
+                Array.from(cards).find(
+                    function (card) {
+
+                        return (
+                            card.querySelector(
+                                "#startDate"
+                            ) &&
+                            card.querySelector(
+                                "#endDate"
+                            ) &&
+                            card.querySelector(
+                                "#status"
+                            )
+                        );
+
+                    }
+                );
+
+
+            if (filterCard) {
+
+                const filterHeading =
+                    filterCard.querySelector(
+                        "h2"
+                    );
+
+                if (filterHeading) {
+
+                    filterHeading.textContent =
+                        t("responseFilters");
+
+                }
+
+
+                const labels =
+                    filterCard.querySelectorAll(
+                        ".filter-group label"
+                    );
+
+
+                if (labels.length >= 4) {
+
+                    labels[0].textContent =
+                        t("startDate");
+
+                    labels[1].textContent =
+                        t("endDate");
+
+                    labels[2].textContent =
+                        t("completionStatus");
+
+                    labels[3].textContent =
+                        t("recordsPerPage");
+
+                }
+
+
+                const status =
+                    document.getElementById(
+                        "status"
+                    );
+
+
+                if (status) {
+
+                    const firstOption =
+                        status.querySelector(
+                            "option[value='']"
+                        );
+
+                    if (firstOption) {
+
+                        firstOption.textContent =
+                            t("all");
+
+                    }
+
+                }
+
+
+                const searchInput =
+                    document.getElementById(
+                        "search"
+                    );
+
+
+                if (searchInput) {
+
+                    searchInput.placeholder =
+                        t("searchPlaceholder");
+
+                }
+
+
+                const fieldLabel =
+                    filterCard.querySelector(
+                        "label[for='fieldId']"
+                    );
+
+
+                if (fieldLabel) {
+
+                    fieldLabel.textContent =
+                        t("field");
+
+                }
+
+
+                const fieldValueLabel =
+                    filterCard.querySelector(
+                        "label[for='fieldValue']"
+                    );
+
+
+                if (fieldValueLabel) {
+
+                    fieldValueLabel.textContent =
+                        t("fieldValue");
+
+                }
+
+
+                const fieldSelect =
+                    document.getElementById(
+                        "fieldId"
+                    );
+
+
+                if (fieldSelect) {
+
+                    const firstOption =
+                        fieldSelect.querySelector(
+                            "option:first-child"
+                        );
+
+                    if (firstOption) {
+
+                        firstOption.textContent =
+                            t("selectField");
+
+                    }
+
+                }
+
+
+                const fieldValue =
+                    document.getElementById(
+                        "fieldValue"
+                    );
+
+
+                if (fieldValue) {
+
+                    fieldValue.placeholder =
+                        t("fieldValuePlaceholder");
+
+                }
+
+
+                const buttons =
+                    filterCard.querySelectorAll(
+                        "button"
+                    );
+
+
+                buttons.forEach(
+                    function (button) {
+
+                        const text =
+                            button.textContent.trim();
+
+
+                        if (
+                            text.includes(
+                                "Apply Filters"
+                            )
+                        ) {
+
+                            button.textContent =
+                                t("applyFilters");
+
+                        }
+
+
+                        if (
+                            text === "Clear"
+                        ) {
+
+                            button.textContent =
+                                t("clear");
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            // =====================================================
+            // SUBMISSIONS
+            // =====================================================
+
+            const submissionsCard =
+                Array.from(cards).find(
+                    function (card) {
+
+                        return card.querySelector(
+                            ".submission-description"
+                        );
+
+                    }
+                );
+
+
+            if (submissionsCard) {
+
+                const submissionsHeading =
+                    submissionsCard.querySelector(
+                        "h2"
+                    );
+
+                if (submissionsHeading) {
+
+                    submissionsHeading.textContent =
+                        t("submissions");
+
+                }
+
+
+                const submissionsDescription =
+                    submissionsCard.querySelector(
+                        ".submission-description"
+                    );
+
+                if (submissionsDescription) {
+
+                    submissionsDescription.textContent =
+                        t("submissionDescription");
+
+                }
+
+            }
+
+
+            // =====================================================
+            // TABLE HEADERS
+            // =====================================================
+
+            const tableHeaders =
+                document.querySelectorAll(
+                    "table thead th"
+                );
+
+
+            if (tableHeaders.length >= 8) {
+
+                tableHeaders[1].textContent =
+                    t("responseID");
+
+                tableHeaders[2].textContent =
+                    t("submittedDate");
+
+                tableHeaders[3].textContent =
+                    t("status");
+
+                tableHeaders[4].textContent =
+                    t("version");
+
+                tableHeaders[5].textContent =
+                    t("completionTime");
+
+                tableHeaders[6].textContent =
+                    t("responseData");
+
+                tableHeaders[7].textContent =
+                    t("actions");
+
+            }
+
+
+            // =====================================================
+            // DELETE SELECTED BUTTON
+            // =====================================================
+
+            const deleteButton =
+                document.getElementById(
+                    "deleteSelectedButton"
+                );
+
+
+            if (deleteButton) {
+
+                if (
+                    selectedResponseIds.size === 0
+                ) {
+
+                    deleteButton.textContent =
+                        t("deleteSelected");
+
+                }
+
+            }
+
+
+            // =====================================================
+            // DETAIL MODAL CLOSE BUTTON
+            // =====================================================
+
+            const closeButton =
+                document.querySelector(
+                    "#detailModal button"
+                );
+
+
+            if (closeButton) {
+
+                closeButton.textContent =
+                    t("close");
+
+
+            }
+        }
+
+
+            // =========================================================
+            // LOAD LANGUAGE
+            // =========================================================
+
+            function loadLanguage(language) {
+
+                if (
+                    !translations[language]
+                ) {
+                    language = "en";
+                }
+
+                currentLanguage =
+                    language;
+
+                localStorage.setItem(
+                    "responseManagementLanguage",
+                    language
+                );
+
+
+                const selector =
+                    document.getElementById(
+                        "languageSelector"
+                    );
+
+                if (selector) {
+                    selector.value =
+                        language;
+                }
+
+
+                document.documentElement.lang =
+                    language;
+
+
+                applyStaticTranslations();
+
+
+                const existingRows =
+                    document.querySelectorAll(
+                        "#responseTableBody tr"
+                    );
+
+                if (
+                    existingRows.length > 0
+                ) {
+                    renderResponsesFromCurrentData();
+                }
+
+
+                if (totalPages > 0) {
+
+                    const pageSummary =
+                        document.getElementById(
+                            "pageSummary"
+                        );
+
+                    if (pageSummary) {
+
+                        pageSummary.textContent =
+                            t("page") +
+                            " " +
+                            currentPage +
+                            " " +
+                            t("of") +
+                            " " +
+                            totalPages;
+
+                    }
+
+                }
+
+            }
+
+
+            // =========================================================
+            // LANGUAGE SELECTOR
+            // =========================================================
+
+            const languageSelector =
+                document.getElementById(
+                    "languageSelector"
+                );
+
+            if (languageSelector) {
+
+                languageSelector.addEventListener(
+                    "change",
+                    function (event) {
+
+                        loadLanguage(
+                            event.target.value
+                        );
+
+                    }
+                );
+
+            }
+
+
+            // =========================================================
+            // CURRENT RESPONSES CACHE
+            // =========================================================
+
+            let currentResponses = [];
+
+            let currentResponseData = null;
+
+
+            function renderResponsesFromCurrentData() {
+
+                if (
+                    currentResponses &&
+                    currentResponses.length > 0
+                ) {
+
+                    renderResponses(
+                        currentResponses
+                    );
+
+                }
+
+            }
+
+
+            // =========================================================
+            // SHOW MESSAGE
+            // =========================================================
+
+            function showMessage(
+                message,
+                type
+            ) {
+
+                const messageBox =
+                    document.getElementById(
+                        "message"
+                    );
+
+                messageBox.textContent =
+                    message;
+
+                messageBox.className =
+                    "message " + type;
+
+                messageBox.style.display =
+                    "block";
+
+            }
+
+
+            function hideMessage() {
+
+                const messageBox =
+                    document.getElementById(
+                        "message"
+                    );
+
+                messageBox.style.display =
+                    "none";
+
+            }
+
+
+            // =========================================================
+            // FORMAT DATE
+            // =========================================================
+
+            function formatDate(
+                dateString
+            ) {
+
+                if (!dateString) {
+                    return "-";
+                }
+
+                const date =
+                    new Date(dateString);
+
+                return date.toLocaleString();
+
+            }
+
+            // =========================================================
+            // FORMAT COMPLETION TIME
+            // =========================================================
+
+            function formatCompletionTime(
+                seconds
+            ) {
+
+                if (
+                    seconds === null ||
+                    seconds === undefined
+                ) {
+
+                    return "-";
+
+                }
+
+
+                seconds =
+                    Number(seconds);
+
+
+                const minutes =
+                    Math.floor(
+                        seconds / 60
+                    );
+
+
+                const remainingSeconds =
+                    seconds % 60;
+
+
+                if (minutes > 0) {
+
+                    return (
+                        minutes +
+                        " " +
+                        t("min") +
+                        " " +
+                        remainingSeconds +
+                        " " +
+                        t("sec")
+                    );
+
+                }
+
+
+                return (
+                    seconds +
+                    " " +
+                    t("sec")
+                );
+
+            }
+
+
+            // =========================================================
+            // LOAD FORM INFORMATION
+            // =========================================================
+
+            async function loadFormInfo() {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/forms/${formId}`
+                        );
+
+
+                    if (!response.ok) {
+                        return;
+                    }
+
+
+                    const form =
+                        await response.json();
+
+
+                    if (form.title) {
+
+                        document.getElementById(
+                            "formTitle"
+                        ).textContent =
+                            form.title;
+
+                    }
+
+                } catch (error) {
+
+                    console.log(
+                        "Could not load form information:",
+                        error
+                    );
+
+                }
+
+            }
+
+
+            // =========================================================
+            // LOAD FIELDS
+            // =========================================================
+
+            async function loadFields() {
+
+                const fieldSelect =
+                    document.getElementById(
+                        "fieldId"
+                    );
+
+
+                try {
+
+                    const url =
+                        `/fields/form/${formId}`;
+
+
+                    const response =
+                        await fetch(url);
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            t("failedToLoadFields")
+                        );
+
+                    }
+
+
+                    let fieldList = [];
+
+
+                    if (Array.isArray(data)) {
+
+                        fieldList =
+                            data;
+
+                    } else if (
+                        data &&
+                        Array.isArray(data.fields)
+                    ) {
+
+                        fieldList =
+                            data.fields;
+
+                    }
+
+
+                    fieldSelect.innerHTML =
+                        `
+                <option value="">
+                    ${t("selectField")}
+                </option>
+                `;
+
+
+                    fieldList.forEach(
+                        function (field) {
+
+                            const option =
+                                document.createElement(
+                                    "option"
+                                );
+
+
+                            option.value =
+                                field.id;
+
+
+                            option.textContent =
+                                field.label ||
+                                field.name ||
+                                field.field_name ||
+                                field.title ||
+                                t("unnamedField");
+
+
+                            fieldSelect.appendChild(
+                                option
+                            );
+
+                        }
+                    );
+
+
+                    if (
+                        fieldList.length === 0
+                    ) {
+
+                        fieldSelect.innerHTML =
+                            `
+                    <option value="">
+                        ${t("noFieldsAvailable")}
+                    </option>
+                    `;
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Could not load fields:",
+                        error
+                    );
+
+
+                    fieldSelect.innerHTML =
+                        `
+                <option value="">
+                    ${t("unableToLoadFields")}
+                </option>
+                `;
+
+                }
+
+            }
+
+
+            // =========================================================
+            // BUILD API URL
+            // =========================================================
+
+            function buildApiUrl() {
+
+                const params =
+                    new URLSearchParams();
+
+
+                const startDate =
+                    document.getElementById(
+                        "startDate"
+                    ).value;
+
+
+                const endDate =
+                    document.getElementById(
+                        "endDate"
+                    ).value;
+
+
+                const status =
+                    document.getElementById(
+                        "status"
+                    ).value;
+
+
+                const search =
+                    document.getElementById(
+                        "search"
+                    ).value.trim();
+
+
+                const fieldId =
+                    document.getElementById(
+                        "fieldId"
+                    ).value;
+
+
+                const fieldValue =
+                    document.getElementById(
+                        "fieldValue"
+                    ).value.trim();
+
+
+                const pageSize =
+                    document.getElementById(
+                        "pageSize"
+                    ).value;
+
+
+                params.set(
+                    "page",
+                    currentPage
+                );
+
+
+                params.set(
+                    "page_size",
+                    pageSize
+                );
+
+
+                if (startDate) {
+
+                    params.set(
+                        "start_date",
+                        startDate
+                    );
+
+                }
+
+
+                if (endDate) {
+
+                    params.set(
+                        "end_date",
+                        endDate
+                    );
+
+                }
+
+
+                if (status) {
+
+                    params.set(
+                        "status",
+                        status
+                    );
+
+                }
+
+
+                if (search) {
+
+                    params.set(
+                        "search",
+                        search
+                    );
+
+                }
+
+
+                if (fieldId) {
+
+                    params.set(
+                        "field_id",
+                        fieldId
+                    );
+
+                }
+
+
+                if (fieldValue) {
+
+                    params.set(
+                        "field_value",
+                        fieldValue
+                    );
+
+                }
+
+
+                return (
+                    `/forms/${formId}/responses?` +
+                    params.toString()
+                );
+
+            }
+
+
+            // =========================================================
+            // UPDATE DASHBOARD SUMMARY
+            // =========================================================
+
+            function updateDashboardSummary(
+                responses,
+                data
+            ) {
+
+                const total =
+                    responses.length;
+
+
+                let completed = 0;
+
+                let incomplete = 0;
+
+
+                responses.forEach(
+                    function (response) {
+
+                        if (
+                            response.status ===
+                            "Completed"
+                        ) {
+
+                            completed++;
+
+                        } else {
+
+                            incomplete++;
+
+                        }
+
+                    }
+                );
+
+
+                document.getElementById(
+                    "totalResponses"
+                ).textContent =
+                    total;
+
+
+                document.getElementById(
+                    "completedResponses"
+                ).textContent =
+                    completed;
+
+
+                document.getElementById(
+                    "incompleteResponses"
+                ).textContent =
+                    incomplete;
+
+
+                currentPage =
+                    data.page ||
+                    currentPage;
+
+
+                totalPages =
+                    data.total_pages ||
+                    1;
+
+
+                document.getElementById(
+                    "currentPageNumber"
+                ).textContent =
+                    currentPage;
+
+
+                document.getElementById(
+                    "pageSummary"
+                ).textContent =
+                    t("page") +
+                    " " +
+                    currentPage +
+                    " " +
+                    t("of") +
+                    " " +
+                    totalPages;
+
+            }
+
+            // =========================================================
+// LOAD RESPONSE ANALYTICS
+// =========================================================
+
+            async function loadResponseAnalytics() {
+                console.log("🔥 ANALYTICS FUNCTION CALLED");
+                const analyticsCharts =
+                    document.getElementById(
+                        "responseAnalyticsCharts"
+                    );
+
+
+                try {
+
+                    if (analyticsCharts) {
+
+                        analyticsCharts.innerHTML =
+                            `
+                <p class="analytics-loading">
+                    ${t("loadingAnalytics")}
+                </p>
+                `;
+
+                    }
+
+
+                    const response =
+                        await fetch(
+                            `/forms/${formId}/analytics`
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    console.log(
+                        "Analytics API response:",
+                        data
+                    );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            "Unable to load analytics"
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // UPDATE ANALYTICS SUMMARY
+                    // =================================================
+
+                    const totalSubmissions =
+                        document.getElementById(
+                            "analyticsTotalSubmissions"
+                        );
+
+
+                    if (totalSubmissions) {
+
+                        totalSubmissions.textContent =
+                            data.total_submissions || 0;
+
+                    }
+
+
+                    const completionRate =
+                        document.getElementById(
+                            "analyticsCompletionRate"
+                        );
+
+
+                    if (completionRate) {
+
+                        completionRate.textContent =
+                            data.completion_rate_percentage ||
+                            "0%";
+
+                    }
+
+
+                    const averageTime =
+                        document.getElementById(
+                            "analyticsAverageTime"
+                        );
+
+
+                    if (averageTime) {
+
+                        averageTime.textContent =
+                            data.average_completion_time ||
+                            "0 min 0 sec";
+
+                    }
+
+
+                    // =================================================
+                    // DISPLAY FIELD ANALYTICS
+                    // =================================================
+
+                    displayResponseFieldAnalytics(
+                        data.field_analytics || []
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Analytics loading error:",
+                        error
+                    );
+
+
+                    if (analyticsCharts) {
+
+                        analyticsCharts.innerHTML =
+                            `
+                <p class="analytics-empty">
+                    ${escapeHtml(
+                                error.message
+                            )}
+                </p>
+                `;
+
+                    }
+
+                }
+
+            }
+
+
+// =========================================================
+// DISPLAY FIELD ANALYTICS
+// =========================================================
+
+            function displayResponseFieldAnalytics(
+                fieldAnalytics
+            ) {
+
+                const container =
+                    document.getElementById(
+                        "responseAnalyticsCharts"
+                    );
+
+
+                if (!container) {
+                    return;
+                }
+
+
+                container.innerHTML =
+                    "";
+
+
+                if (
+                    !fieldAnalytics ||
+                    fieldAnalytics.length === 0
+                ) {
+
+                    container.innerHTML =
+                        `
+            <p class="analytics-empty">
+                No dropdown or rating analytics available.
+            </p>
+            `;
+
+                    return;
+
+                }
+
+
+                fieldAnalytics.forEach(
+                    function (field) {
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "analytics-chart-card";
+
+
+                        const title =
+                            document.createElement(
+                                "h4"
+                            );
+
+
+                        title.textContent =
+                            field.field_label ||
+                            t("field");
+
+
+                        card.appendChild(
+                            title
+                        );
+
+
+                        const distribution =
+                            field.distribution || [];
+
+
+                        if (
+                            distribution.length === 0
+                        ) {
+
+                            const empty =
+                                document.createElement(
+                                    "p"
+                                );
+
+
+                            empty.className =
+                                "analytics-empty";
+
+
+                            empty.textContent =
+                                "No data available.";
+
+
+                            card.appendChild(
+                                empty
+                            );
+
+
+                            container.appendChild(
+                                card
+                            );
+
+
+                            return;
+
+                        }
+
+
+                        distribution.forEach(
+                            function (item) {
+
+                                const row =
+                                    document.createElement(
+                                        "div"
+                                    );
+
+
+                                row.style.display =
+                                    "flex";
+
+
+                                row.style.justifyContent =
+                                    "space-between";
+
+
+                                row.style.padding =
+                                    "10px 0";
+
+
+                                row.style.borderBottom =
+                                    "1px solid #e5e7eb";
+
+
+                                const label =
+                                    document.createElement(
+                                        "span"
+                                    );
+
+
+                                if (
+                                    field.field_type ===
+                                    "rating"
+                                ) {
+
+                                    label.textContent =
+                                        "Rating " +
+                                        item.rating;
+
+                                } else {
+
+                                    label.textContent =
+                                        item.option ||
+                                        item.value ||
+                                        "-";
+
+                                }
+
+
+                                const count =
+                                    document.createElement(
+                                        "strong"
+                                    );
+
+
+                                count.textContent =
+                                    item.count || 0;
+
+
+                                row.appendChild(
+                                    label
+                                );
+
+
+                                row.appendChild(
+                                    count
+                                );
+
+
+                                card.appendChild(
+                                    row
+                                );
+
+                            }
+                        );
+
+
+                        container.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+            }
+
+
+            // =========================================================
+            // LOAD RESPONSES
+            // =========================================================
+
+            async function loadResponses() {
+
+                const loading =
+                    document.getElementById(
+                        "loading"
+                    );
+
+
+                const tableContainer =
+                    document.getElementById(
+                        "tableContainer"
+                    );
+
+
+                const emptyMessage =
+                    document.getElementById(
+                        "emptyMessage"
+                    );
+
+
+                const pagination =
+                    document.getElementById(
+                        "pagination"
+                    );
+
+
+                loading.style.display =
+                    "block";
+
+
+                tableContainer.style.display =
+                    "none";
+
+
+                emptyMessage.style.display =
+                    "none";
+
+
+                pagination.style.display =
+                    "none";
+
+
+                hideMessage();
+
+
+                try {
+
+                    const url =
+                        buildApiUrl();
+
+
+                    console.log(
+                        "Loading responses:",
+                        url
+                    );
+
+
+                    const response =
+                        await fetch(url);
+
+
+                    if (!response.ok) {
+
+                        let errorText =
+                            t("failedToLoadResponses");
+
+
+                        try {
+
+                            const errorData =
+                                await response.json();
+
+
+                            if (
+                                errorData.detail
+                            ) {
+
+                                errorText =
+                                    errorData.detail;
+
+                            }
+
+                        } catch (error) {
+
+                            console.log(
+                                "Could not read error response:",
+                                error
+                            );
+
+                        }
+
+
+                        throw new Error(
+                            errorText
+                        );
+
+                    }
+
+
+                    const data =
+                        await response.json();
+
+
+                    currentResponseData =
+                        data;
+
+
+                    totalPages =
+                        data.total_pages ||
+                        1;
+
+
+                    currentPage =
+                        data.page ||
+                        currentPage;
+
+
+                    const responses =
+                        data.responses ||
+                        [];
+
+
+                    currentResponses =
+                        responses;
+
+
+                    updateDashboardSummary(
+                        responses,
+                        data
+                    );
+
+
+                    renderResponses(
+                        responses
+                    );
+
+
+                    renderPagination(
+                        data
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Response loading error:",
+                        error
+                    );
+
+
+                    showMessage(
+                        error.message,
+                        "error"
+                    );
+
+                } finally {
+
+                    loading.style.display =
+                        "none";
+
+                }
+
+            }
+
+
+            // =========================================================
+            // RENDER RESPONSES
+            // =========================================================
+
+            function renderResponses(
+                responses
+            ) {
+
+                const tbody =
+                    document.getElementById(
+                        "responseTableBody"
+                    );
+
+
+                const tableContainer =
+                    document.getElementById(
+                        "tableContainer"
+                    );
+
+
+                const emptyMessage =
+                    document.getElementById(
+                        "emptyMessage"
+                    );
+
+
+                const selectAll =
+                    document.getElementById(
+                        "selectAll"
+                    );
+
+
+                tbody.innerHTML =
+                    "";
+
+
+                selectAll.checked =
+                    false;
+
+
+                if (
+                    !responses ||
+                    responses.length === 0
+                ) {
+
+                    tableContainer.style.display =
+                        "none";
+
+
+                    emptyMessage.style.display =
+                        "block";
+
+
+                    emptyMessage.textContent =
+                        t("noResponses");
+
+
+                    updateSelectionUI();
+
+
+                    return;
+
+                }
+
+
+                responses.forEach(
+                    function (response) {
+
+                        const row =
+                            document.createElement(
+                                "tr"
+                            );
+
+
+                        // CHECKBOX
+
+                        const checkboxCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        checkboxCell.className =
+                            "checkbox-cell";
+
+
+                        const checkbox =
+                            document.createElement(
+                                "input"
+                            );
+
+
+                        checkbox.type =
+                            "checkbox";
+
+
+                        checkbox.className =
+                            "response-checkbox";
+
+
+                        checkbox.value =
+                            response.response_id ||
+                            "";
+
+
+                        checkbox.checked =
+                            selectedResponseIds.has(
+                                response.response_id
+                            );
+
+
+                        checkbox.onchange =
+                            function () {
+
+                                if (
+                                    checkbox.checked
+                                ) {
+
+                                    selectedResponseIds.add(
+                                        checkbox.value
+                                    );
+
+                                } else {
+
+                                    selectedResponseIds.delete(
+                                        checkbox.value
+                                    );
+
+                                }
+
+
+                                updateSelectionUI();
+
+                            };
+
+
+                        checkboxCell.appendChild(
+                            checkbox
+                        );
+
+
+                        row.appendChild(
+                            checkboxCell
+                        );
+
+
+                        // RESPONSE ID
+
+                        const responseIdCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        responseIdCell.textContent =
+                            response.response_id ||
+                            "-";
+
+
+                        row.appendChild(
+                            responseIdCell
+                        );
+
+
+                        // SUBMITTED DATE
+
+                        const dateCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        dateCell.textContent =
+                            formatDate(
+                                response.submitted_at
+                            );
+
+
+                        row.appendChild(
+                            dateCell
+                        );
+
+
+                        // STATUS
+
+                        const statusCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        const statusBadge =
+                            document.createElement(
+                                "span"
+                            );
+
+
+                        statusBadge.classList.add(
+                            "status"
+                        );
+
+
+                        if (
+                            response.status ===
+                            "Completed"
+                        ) {
+
+                            statusBadge.classList.add(
+                                "status-completed"
+                            );
+
+
+                            statusBadge.textContent =
+                                t("completedStatus");
+
+                        } else {
+
+                            statusBadge.classList.add(
+                                "status-incomplete"
+                            );
+
+
+                            statusBadge.textContent =
+                                response.status ===
+                                "Incomplete"
+                                    ? t("incompleteStatus")
+                                    : t("unknownStatus");
+
+                        }
+
+
+                        statusCell.appendChild(
+                            statusBadge
+                        );
+
+
+                        row.appendChild(
+                            statusCell
+                        );
+
+
+                        // VERSION
+
+                        const versionCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        versionCell.textContent =
+                            response.version_number
+                                ? t("version") +
+                                " " +
+                                response.version_number
+                                : "-";
+
+
+                        row.appendChild(
+                            versionCell
+                        );
+
+
+                        // COMPLETION TIME
+
+                        const timeCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        timeCell.textContent =
+                            formatCompletionTime(
+                                response.completion_time_seconds
+                            );
+
+
+                        row.appendChild(
+                            timeCell
+                        );
+
+
+                        // RESPONSE DATA
+
+                        const dataCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        const dataContainer =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        dataContainer.className =
+                            "response-data";
+
+
+                        const responseData =
+                            response.response_data ||
+                            {};
+
+
+                        Object.values(
+                            responseData
+                        ).forEach(
+                            function (field) {
+
+                                const item =
+                                    document.createElement(
+                                        "div"
+                                    );
+
+
+                                item.className =
+                                    "response-item";
+
+
+                                const label =
+                                    document.createElement(
+                                        "span"
+                                    );
+
+
+                                label.className =
+                                    "response-label";
+
+
+                                label.textContent =
+                                    (
+                                        field.field_label ||
+                                        t("fieldFallback")
+                                    ) +
+                                    ": ";
+
+
+                                const value =
+                                    document.createElement(
+                                        "span"
+                                    );
+
+
+                                value.textContent =
+                                    field.value ??
+                                    "-";
+
+
+                                item.appendChild(
+                                    label
+                                );
+
+
+                                item.appendChild(
+                                    value
+                                );
+
+
+                                dataContainer.appendChild(
+                                    item
+                                );
+
+                            }
+                        );
+
+
+                        dataCell.appendChild(
+                            dataContainer
+                        );
+
+
+                        row.appendChild(
+                            dataCell
+                        );
+
+
+                        // VIEW BUTTON
+
+                        const actionCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        const viewButton =
+                            document.createElement(
+                                "button"
+                            );
+
+
+                        viewButton.className =
+                            "blue-btn";
+
+
+                        viewButton.textContent =
+                            t("view");
+
+
+                        viewButton.onclick =
+                            function () {
+
+                                viewResponse(
+                                    response.response_id
+                                );
+
+                            };
+
+
+                        actionCell.appendChild(
+                            viewButton
+                        );
+
+
+                        row.appendChild(
+                            actionCell
+                        );
+
+
+                        tbody.appendChild(
+                            row
+                        );
+
+                    }
+                );
+
+
+                tableContainer.style.display =
+                    "block";
+
+
+                updateSelectionUI();
+
+            }
+
+
+            // =========================================================
+            // SELECT ALL
+            // =========================================================
+
+            function toggleSelectAll() {
+
+                const selectAll =
+                    document.getElementById(
+                        "selectAll"
+                    );
+
+
+                const checkboxes =
+                    document.querySelectorAll(
+                        ".response-checkbox"
+                    );
+
+
+                checkboxes.forEach(
+                    function (checkbox) {
+
+                        checkbox.checked =
+                            selectAll.checked;
+
+
+                        if (
+                            selectAll.checked
+                        ) {
+
+                            if (
+                                checkbox.value
+                            ) {
+
+                                selectedResponseIds.add(
+                                    checkbox.value
+                                );
+
+                            }
+
+                        } else {
+
+                            selectedResponseIds.delete(
+                                checkbox.value
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                updateSelectionUI();
+
+            }
+
+            // =========================================================
+            // UPDATE SELECTION UI
+            // =========================================================
+
+            function updateSelectionUI() {
+
+                const count =
+                    selectedResponseIds.size;
+
+
+                const deleteButton =
+                    document.getElementById(
+                        "deleteSelectedButton"
+                    );
+
+
+                const selectedInfo =
+                    document.getElementById(
+                        "selectedInfo"
+                    );
+
+
+                deleteButton.disabled =
+                    count === 0;
+
+
+                if (count === 0) {
+
+                    selectedInfo.textContent =
+                        "0 " +
+                        t("selected");
+
+                    deleteButton.textContent =
+                        t("deleteSelected");
+
+                } else if (count === 1) {
+
+                    selectedInfo.textContent =
+                        "1 " +
+                        t("responseSelected");
+
+                    deleteButton.textContent =
+                        t("deleteSelected");
+
+                } else {
+
+                    selectedInfo.textContent =
+                        count +
+                        " " +
+                        t("responsesSelected");
+
+                    deleteButton.textContent =
+                        t("deleteSelected");
+
+                }
+
+            }
+
+
+            // =========================================================
+            // DELETE SELECTED RESPONSES
+            // =========================================================
+
+            async function deleteSelectedResponses() {
+
+                const ids =
+                    Array.from(
+                        selectedResponseIds
+                    );
+
+
+                if (
+                    ids.length === 0
+                ) {
+
+                    return;
+
+                }
+
+
+                const confirmed =
+                    confirm(
+                        t("deleteConfirm") +
+                        " " +
+                        ids.length +
+                        " " +
+                        t("selectedResponses")
+                    );
+
+
+                if (!confirmed) {
+
+                    return;
+
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/responses/bulk",
+                            {
+                                method: "DELETE",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+
+                                    "Accept":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+                                    response_ids: ids
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            t("failedToDelete")
+                        );
+
+                    }
+
+
+                    showMessage(
+                        data.message ||
+                        t("deleteSuccess"),
+                        "success"
+                    );
+
+
+                    selectedResponseIds.clear();
+
+
+                    updateSelectionUI();
+
+
+                    currentPage =
+                        1;
+
+
+                    await loadResponses();
+
+                } catch (error) {
+
+                    console.error(
+                        "Bulk delete error:",
+                        error
+                    );
+
+
+                    showMessage(
+                        error.message,
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // =========================================================
+            // VIEW RESPONSE DETAILS
+            // =========================================================
+
+            async function viewResponse(
+                responseId
+            ) {
+
+                if (!responseId) {
+
+                    showMessage(
+                        t("responseIDMissing"),
+                        "error"
+                    );
+
+
+                    return;
+
+                }
+
+
+                const modal =
+                    document.getElementById(
+                        "detailModal"
+                    );
+
+
+                const content =
+                    document.getElementById(
+                        "detailContent"
+                    );
+
+
+                modal.style.display =
+                    "flex";
+
+
+                content.innerHTML =
+                    `
+            <div class="loading">
+                ${t("loadingResponseDetails")}
+            </div>
+            `;
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/responses/${responseId}`
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            t("failedToLoadResponseDetails")
+                        );
+
+                    }
+
+
+                    let answersHtml =
+                        "";
+
+
+                    if (
+                        data.answers &&
+                        data.answers.length > 0
+                    ) {
+
+                        data.answers.forEach(
+                            function (answer) {
+
+                                answersHtml +=
+                                    `
+                            <div class="answer-card">
+
+                                <div class="answer-label">
+                                    ${escapeHtml(
+                                        answer.field_label ||
+                                        t("fieldFallback")
+                                    )}
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        ${t("type")}:
+                                    </strong>
+
+                                    ${escapeHtml(
+                                        answer.field_type ||
+                                        "-"
+                                    )}
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        ${t("value")}:
+                                    </strong>
+
+                                    ${escapeHtml(
+                                        answer.value ??
+                                        "-"
+                                    )}
+                                </div>
+
+                            </div>
+                            `;
+
+                            }
+                        );
+
+                    } else {
+
+                        answersHtml =
+                            `<p>${t("noAnswers")}</p>`;
+
+                    }
+
+
+                    content.innerHTML =
+                        `
+                <div class="detail-grid">
+
+                    <div class="detail-label">
+                        ${t("responseID")}
+                    </div>
+
+                    <div>
+                        ${escapeHtml(
+                            data.response_id ||
+                            "-"
+                        )}
+                    </div>
+
+
+                    <div class="detail-label">
+                        ${t("form")}
+                    </div>
+
+                    <div>
+                        ${escapeHtml(
+                            data.form_title ||
+                            "-"
+                        )}
+                    </div>
+
+
+                    <div class="detail-label">
+                        ${t("version")}
+                    </div>
+
+                    <div>
+                        ${
+                            data.version_number
+                                ? t("version") +
+                                " " +
+                                data.version_number
+                                : "-"
+                        }
+                    </div>
+
+
+                    <div class="detail-label">
+                        ${t("submittedAt")}
+                    </div>
+
+                    <div>
+                        ${escapeHtml(
+                            formatDate(
+                                data.submitted_at
+                            )
+                        )}
+                    </div>
+
+
+                    <div class="detail-label">
+                        ${t("status")}
+                    </div>
+
+                    <div>
+                        ${escapeHtml(
+                            data.status ===
+                            "Completed"
+                                ? t("completedStatus")
+                                : data.status ===
+                                "Incomplete"
+                                    ? t("incompleteStatus")
+                                    : t("unknownStatus")
+                        )}
+                    </div>
+
+
+                    <div class="detail-label">
+                        ${t("completionTime")}
+                    </div>
+
+                    <div>
+                        ${escapeHtml(
+                            formatCompletionTime(
+                                data.completion_time_seconds
+                            )
+                        )}
+                    </div>
+
+                </div>
+
+
+                <hr
+                    style="
+                        margin: 20px 0;
+                        border: 0;
+                        border-top: 1px solid #e2e8f0;
+                    "
+                >
+
+
+                <h3
+                    style="
+                        color: #172554;
+                        margin-bottom: 15px;
+                    "
+                >
+                    ${t("submittedAnswers")}
+                </h3>
+
+
+                ${answersHtml}
+                `;
+
+                } catch (error) {
+
+                    console.error(
+                        "Response detail error:",
+                        error
+                    );
+
+
+                    content.innerHTML =
+                        `
+                <div
+                    class="message error"
+                    style="display:block;"
+                >
+                    ${escapeHtml(
+                            error.message
+                        )}
+                </div>
+                `;
+
+                }
+
+            }
+
+
+            // =========================================================
+            // ESCAPE HTML
+            // =========================================================
+
+            function escapeHtml(
+                value
+            ) {
+
+                if (
+                    value === null ||
+                    value === undefined
+                ) {
+
+                    return "";
+
+                }
+
+
+                return String(value)
+                    .replace(
+                        /&/g,
+                        "&amp;"
+                    )
+                    .replace(
+                        /</g,
+                        "&lt;"
+                    )
+                    .replace(
+                        />/g,
+                        "&gt;"
+                    )
+                    .replace(
+                        /"/g,
+                        "&quot;"
+                    )
+                    .replace(
+                        /'/g,
+                        "&#039;"
+                    );
+
+            }
+
+
+            // =========================================================
+            // CLOSE DETAIL MODAL
+            // =========================================================
+
+            function closeDetailModal() {
+
+                document.getElementById(
+                    "detailModal"
+                ).style.display =
+                    "none";
+
+            }
+
+
+            // =========================================================
+            // EXPORT RESPONSES
+            // =========================================================
+
+            function exportResponses(
+                format
+            ) {
+
+                const url =
+                    `/forms/${formId}/export/${format}`;
+
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                link.href =
+                    url;
+
+
+                link.download =
+                    "";
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                document.body.removeChild(
+                    link
+                );
+
+            }
+
+
+            // =========================================================
+            // ARCHIVE OLD RESPONSES
+            // =========================================================
+
+            async function archiveResponses() {
+
+                const days =
+                    Number(
+                        document.getElementById(
+                            "retentionDays"
+                        ).value
+                    );
+
+
+                if (
+                    !days ||
+                    days <= 0
+                ) {
+
+                    showMessage(
+                        t("invalidDays"),
+                        "error"
+                    );
+
+
+                    return;
+
+                }
+
+
+                const confirmed =
+                    confirm(
+                        t("archiveConfirm") +
+                        " " +
+                        days +
+                        " " +
+                        t("archiveDays")
+                    );
+
+
+                if (!confirmed) {
+
+                    return;
+
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/responses/archive",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+
+                                    "Accept":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+                                    days: days
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            t("failedToArchive")
+                        );
+
+                    }
+
+
+                    showMessage(
+                        (
+                            data.archived_count ||
+                            0
+                        ) +
+                        " " +
+                        t("archivedSuccess"),
+                        "success"
+                    );
+
+
+                    await loadResponses();
+
+                } catch (error) {
+
+                    console.error(
+                        "Archive error:",
+                        error
+                    );
+
+
+                    showMessage(
+                        error.message,
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // =========================================================
+            // RENDER PAGINATION
+            // =========================================================
+
+            function renderPagination(
+                data
+            ) {
+
+                const pagination =
+                    document.getElementById(
+                        "pagination"
+                    );
+
+
+                pagination.innerHTML =
+                    "";
+
+
+                if (
+                    !data ||
+                    data.total_pages <= 1
+                ) {
+
+                    pagination.style.display =
+                        "none";
+
+
+                    return;
+
+                }
+
+
+                const previousButton =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                previousButton.textContent =
+                    t("prev");
+
+
+                previousButton.disabled =
+                    !data.has_previous;
+
+
+                previousButton.onclick =
+                    function () {
+
+                        if (
+                            data.has_previous
+                        ) {
+
+                            currentPage--;
+
+                            loadResponses();
+
+                        }
+
+                    };
+
+
+                pagination.appendChild(
+                    previousButton
+                );
+
+
+                const maxVisiblePages =
+                    5;
+
+
+                let startPage =
+                    Math.max(
+                        1,
+                        currentPage -
+                        Math.floor(
+                            maxVisiblePages / 2
+                        )
+                    );
+
+
+                let endPage =
+                    Math.min(
+                        data.total_pages,
+                        startPage +
+                        maxVisiblePages -
+                        1
+                    );
+
+
+                if (
+                    endPage -
+                    startPage +
+                    1 <
+                    maxVisiblePages
+                ) {
+
+                    startPage =
+                        Math.max(
+                            1,
+                            endPage -
+                            maxVisiblePages +
+                            1
+                        );
+
+                }
+
+
+                for (
+                    let page = startPage;
+                    page <= endPage;
+                    page++
+                ) {
+
+                    const pageButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    pageButton.textContent =
+                        page;
+
+
+                    if (
+                        page === currentPage
+                    ) {
+
+                        pageButton.classList.add(
+                            "active"
+                        );
+
+                    }
+
+
+                    pageButton.onclick =
+                        function () {
+
+                            currentPage =
+                                page;
+
+                            loadResponses();
+
+                        };
+
+
+                    pagination.appendChild(
+                        pageButton
+                    );
+
+                }
+
+
+                const nextButton =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                nextButton.textContent =
+                    t("next");
+
+
+                nextButton.disabled =
+                    !data.has_next;
+
+
+                nextButton.onclick =
+                    function () {
+
+                        if (
+                            data.has_next
+                        ) {
+
+                            currentPage++;
+
+                            loadResponses();
+
+                        }
+
+                    };
+
+
+                pagination.appendChild(
+                    nextButton
+                );
+
+
+                const pageInfo =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                pageInfo.className =
+                    "page-info";
+
+
+                pageInfo.textContent =
+                    t("page") +
+                    " " +
+                    data.page +
+                    " " +
+                    t("of") +
+                    " " +
+                    data.total_pages;
+
+
+                pagination.appendChild(
+                    pageInfo
+                );
+
+
+                pagination.style.display =
+                    "flex";
+
+            }
+
+
+            // =========================================================
+            // APPLY FILTERS
+            // =========================================================
+
+            function applyFilters() {
+
+                currentPage =
+                    1;
+
+
+                loadResponses();
+
+            }
+
+
+            // =========================================================
+            // CLEAR FILTERS
+            // =========================================================
+
+            function clearFilters() {
+
+                document.getElementById(
+                    "startDate"
+                ).value =
+                    "";
+
+
+                document.getElementById(
+                    "endDate"
+                ).value =
+                    "";
+
+
+                document.getElementById(
+                    "status"
+                ).value =
+                    "";
+
+
+                document.getElementById(
+                    "search"
+                ).value =
+                    "";
+
+
+                document.getElementById(
+                    "fieldId"
+                ).value =
+                    "";
+
+
+                document.getElementById(
+                    "fieldValue"
+                ).value =
+                    "";
+
+
+                document.getElementById(
+                    "pageSize"
+                ).value =
+                    DEFAULT_PAGE_SIZE;
+
+
+                currentPage =
+                    1;
+
+
+                loadResponses();
+
+            }
+
+
+            // =========================================================
+            // SEARCH ON ENTER
+            // =========================================================
+
+            document.getElementById(
+                "search"
+            ).addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        applyFilters();
+
+                    }
+
+                }
+            );
+
+// =========================================================
+// CHANGE PAGE SIZE
+// =========================================================
+
+            document.getElementById(
+                "pageSize"
+            ).addEventListener(
+                "change",
+                function () {
+
+                    currentPage =
+                        1;
+
+                    loadResponses();
+
+                }
+            );
+
+
+// =========================================================
+// LOAD RESPONSE ANALYTICS
+// =========================================================
+
+            async function loadResponseAnalytics() {
+
+                const analyticsCharts =
+                    document.getElementById(
+                        "responseAnalyticsCharts"
+                    );
+
+                try {
+
+                    if (analyticsCharts) {
+
+                        analyticsCharts.innerHTML =
+                            `
+                <p class="analytics-loading">
+                    ${t("loadingAnalytics")}
+                </p>
+                `;
+
+                    }
+
+                    const response =
+                        await fetch(
+                            `/forms/${formId}/analytics`
+                        );
+
+                    const data =
+                        await response.json();
+
+                    console.log(
+                        "Analytics API response:",
+                        data
+                    );
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            "Unable to load analytics"
+                        );
+
+                    }
+
+                    const totalSubmissions =
+                        document.getElementById(
+                            "analyticsTotalSubmissions"
+                        );
+
+                    if (totalSubmissions) {
+
+                        totalSubmissions.textContent =
+                            data.total_submissions || 0;
+
+                    }
+
+                    const completionRate =
+                        document.getElementById(
+                            "analyticsCompletionRate"
+                        );
+
+                    if (completionRate) {
+
+                        completionRate.textContent =
+                            data.completion_rate_percentage ||
+                            "0%";
+
+                    }
+
+                    const averageTime =
+                        document.getElementById(
+                            "analyticsAverageTime"
+                        );
+
+                    if (averageTime) {
+
+                        averageTime.textContent =
+                            data.average_completion_time ||
+                            "0 min 0 sec";
+
+                    }
+
+                    displayResponseFieldAnalytics(
+                        data.field_analytics || []
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Analytics loading error:",
+                        error
+                    );
+
+                    if (analyticsCharts) {
+
+                        analyticsCharts.innerHTML =
+                            `
+                <p class="analytics-empty">
+                    ${escapeHtml(
+                                error.message
+                            )}
+                </p>
+                `;
+
+                    }
+
+                }
+
+            }
+
+
+// =========================================================
+// INITIAL PAGE LOAD
+// =========================================================
+
+            async function initializePage() {
+
+                await loadFormInfo();
+
+                await loadFields();
+
+                await loadResponses();
+
+
+
+            }
+
+
+// =========================================================
+// INITIALIZE LANGUAGE FIRST
+// =========================================================
+
+            loadLanguage(
+                currentLanguage
+            );
+
+
+// =========================================================
+// START PAGE
+// =========================================================
+
+            initializePage();
+
+
+    </script>
+</div>
+</body>
+</html>

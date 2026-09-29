@@ -9,6 +9,9 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
+    <link rel="manifest" href="/static/manifest.json">
+
+    <meta name="theme-color" content="#4f46e5">
 
     <title>Public Form</title>
 
@@ -1783,9 +1786,53 @@
     loadForm();
 
 
+// =========================================================
+// PWA SERVICE WORKER
+// =========================================================
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener(
+        "load",
+        function () {
+
+            navigator.serviceWorker
+                .register("/static/service-worker.js")
+
+                .then(
+                    function (registration) {
+
+                        console.log(
+                            "Service Worker registered:",
+                            registration.scope
+                        );
+
+                    }
+                )
+
+                .catch(
+                    function (error) {
+
+                        console.error(
+                            "Service Worker registration failed:",
+                            error
+                        );
+
+                    }
+                );
+
+        }
+    );
+
+}
+
+
 </script>
 
 
 </body>
 
 </html>
+
+
+
