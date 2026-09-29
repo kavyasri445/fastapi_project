@@ -3,7 +3,7 @@
   "name": "Dynamic Workflow Automation System",
   "short_name": "Workflow System",
   "description": "A digital data collection and workflow automation system",
-  "start_url": "/",
+  "start_url": "/forms-page",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
